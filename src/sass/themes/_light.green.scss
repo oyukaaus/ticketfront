@@ -1,0 +1,98 @@
+/*
+*
+* Light Green
+*
+* Theme variables.
+*
+*/
+
+html[data-color='light-green'] {
+  --primary:  #fff;
+  --secondary: #36a3f7;
+  --tertiary: #34b92e;
+  --quaternary: #65ccb5;
+  --primary-rgb: 117, 171, 56;
+  --secondary-rgb: 184, 213, 24;
+  --tertiary-rgb: 52, 185, 46;
+  --quaternary-rgb: 100, 203, 158;
+
+  --primary-darker: #e7a800;
+  --secondary-darker: #0a8cf0;
+  --tertiary-darker: #2ea529;
+  --quaternary-darker: #58b38b;
+
+  --body: #505050;
+  --alternate: #716aca;
+  --muted: #afafaf;
+  --separator: #dddddd;
+  --separator-light: #f1f1f1;
+  --body-rgb: 59, 59, 59;
+  --alternate-rgb: 124, 124, 124;
+  --muted-rgb: 176, 176, 176;
+  --separator-rgb: 221, 221, 221;
+  --separator-light-rgb: 241, 241, 241;
+
+  --background: #ff5b1d;
+  --foreground: #ffffff;
+  --background-rgb: 255, 246, 242;
+  --foreground-rgb: 255, 255, 255;
+
+  --background-theme: #eaf1ec;
+  --background-light: #f8f8f8;
+
+  --gradient-1: #75ab38;
+  --gradient-2: #78af3a;
+  --gradient-3: #7db53e;
+
+  --gradient-1-lighter: #83bd42;
+  --gradient-1-darker: #699932;
+
+  --light-text:  #fff;
+  --dark-text: #343a40;
+  --light-text-darker: #eeeeee;
+  --dark-text-darker: #23272b;
+
+  --light-text-rgb: 255, 255, 255;
+  --dark-text-rgb: 52, 58, 64;
+
+  --danger: #f4516b;
+  --info: #ff5b1d;
+  --warning: #ebb71a;
+  --success: #5dd75c;
+  --light: #868aa8;
+  --dark: #4e4e4e;
+  --danger-darker: #f12142;
+  --info-darker: #e94000;
+  --warning-darker: #aa830f;
+  --success-darker: #2fb92d;
+  --light-darker: #696e92;
+  --dark-darker: #282828;
+  --body-darker: #333333;
+  --alternate-darker: #4d44bd;
+  --muted-darker: #888888;
+  --separator-darker: #c0c0c0;
+  // Custom colors start
+  --info-soft: #ff936a;
+  --black: #000;
+  --aqua: #41c5dc;
+  --aqua-darker: #24aec6;
+  --danger-back: #ff2f1a;
+  --danger-back-darker: #e61500;
+  --grey-text: #575962;
+  --calendar-event-green: #3ebfa3;
+  // Custom colors end
+  --danger-rgb: 182, 40, 54;
+  --info-rgb: 255, 91, 29;
+  --warning-rgb: 235, 183, 26;
+  --success-rgb: 65, 139, 56;
+  --light-rgb: 218, 218, 218;
+  --dark-rgb: 78, 78, 78;
+
+  --menu-shadow: 0px 3px 10px rgba(0, 0, 0, 0.12);
+  --menu-shadow-navcolor: 0px 2px 6px rgba(0, 0, 0, 0.05);
+
+  --background-navcolor-light: #fff;
+  --background-navcolor-dark: #24352b;
+
+  --theme-image-filter: hue-rotate(249deg) contrast(0.7) brightness(1.1);
+}

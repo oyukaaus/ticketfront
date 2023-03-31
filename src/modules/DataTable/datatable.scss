@@ -1,0 +1,179 @@
+.react-bootstrap-table thead tr {
+    text-transform: uppercase;
+}
+.react-bootstrap-table thead tr th {
+    color: var(--grey-text);
+    font-size: 12px;
+    font-family: 'Mulish';
+    font-weight: 600;
+}
+.react-bootstrap-table tbody tr td {
+    color: var(--grey-text);
+    font-family: 'Mulish';
+    font-size: 15px;
+}
+
+table.react-bootstrap-table.custom-dt thead tr td, table.react-bootstrap-table.custom-dt thead tr th {
+    border: 1px solid #ebedf2;
+    background: #fff;
+}
+
+table.react-bootstrap-table.custom-dt tbody tr td, table.react-bootstrap-table.custom-dt thead tr th {
+    border: 1px solid #ebedf2;
+    background: #fff;
+}
+
+.custom-size-per-page {
+    border-radius: 6px;
+}
+.custom-size-per-page button {
+    background-color: #fff !important;
+    color: #575962;
+    font-family: Mulish !important;
+    border: 1px solid #dcdcdc !important;
+    border-radius: 0.2rem;
+    padding: 10px 15px !important;
+}
+
+.dt-cm-wrapper {
+    position: absolute;
+    background: #fff;
+    overflow: hidden;
+    border-radius: 6px;
+    box-shadow: 0 1px 10px 0 rgba(145, 155, 192, 0.3);
+    z-index: 100000;
+}
+
+.dt-cm-item {
+    display: flex;
+    align-items: center;
+    padding: 5px 1.5rem 5px 1rem;
+    font-weight: 500;
+}
+.dt-cm-item span{
+    margin-left: 15px;
+}
+.dt-cm-item svg {
+    position: relative;
+    top: 2px;
+}
+.dt-cm-item:hover {
+    cursor: pointer;
+    background: rgba(255, 73, 0, 0.2);
+}
+
+tr.dt-drag-hover-top td {
+    border-top: 2px solid blue !important;
+}
+
+tr.dt-drag-hover-bottom td {
+    border-bottom: 2px solid blue !important;
+}
+
+.dt-cm-item-icon {
+    margin-right: .5rem;
+    color: #1e1e2d;
+    font-size: 25px;
+}
+.dt-cm-item-icon-18 {
+    margin-right: .5rem;
+    color: #1e1e2d;
+    font-size: 18px;
+}
+.dt-cm-item-icon-19 {
+    margin-right: .5rem;
+    color: #1e1e2d;
+    font-size: 19px;
+}
+.dt-cm-item-icon-20 {
+    margin-right: .5rem;
+    color: #1e1e2d;
+    font-size: 20px;
+}
+.height-0 {
+    height: 0;
+}
+.react-bootstrap-table th.sortable {
+    cursor: pointer;
+}
+.react-bootstrap-table th .order-4:before{
+    color: rgba(255, 91, 29);
+}
+.react-bootstrap-table th .caret-4-asc:before{
+    color: #ff5b1d;
+}
+.react-bootstrap-table th .caret-4-desc:before{
+    color: #ff5b1d;
+}
+.react-bootstrap-table th .order-4:after {
+    color: rgba(255, 91, 29);
+}
+.react-bootstrap-table th .caret-4-asc:after {
+    color: rgba(255, 91, 29);
+}
+.react-bootstrap-table th .caret-4-desc:after {
+    color: #ff5b1d;
+}
+#split-button-menu span:last-child{
+    font-family: 'Mulish';
+    font-size: 12px;
+}
+#split-button-menu svg{
+    color: #ff5b1d !important;
+}
+.react-bs-table-sizePerPage-dropdown ul li a{
+    font-weight: bold;
+    padding-left: 10px;
+    display: inline-block;
+    position: relative;
+    z-index: 1;
+    width: 100%;
+}
+.react-bs-table-sizePerPage-dropdown ul li{
+    padding: unset !important;
+}
+
+.react-bs-table-sizePerPage-dropdown ul li:hover{
+    background: rgba(0,0,0,.05) !important;
+}
+/***************** datatable pagination link css **************/
+.pagination-link a{
+    font-family: Mulish !important;
+    /*box-shadow: 0 1px 10px rgb(0 0 0 / 15%) !important;*/
+    background: #ffded2;
+    border-radius: 50%;
+    width: 32px !important;
+    height: 32px !important;
+    font-size: 14px;
+    line-height: 1rem !important;
+}
+.pagination-link a i {
+    position: relative;
+    right: 2px;
+}
+.pagination-link a.active{
+    color: #fff !important;
+    background-color: #ff5b1d !important;
+}
+.pagination-link a.inactive{
+    color: var(--grey-text) !important;
+    background-color: white !important;
+}
+.btn-pagination{
+    color: #ff5b1d !important;
+}
+.btn-pagination:hover{
+    color: #fff !important;
+    // old colorbackground-color: rgba(255, 73, 0, 0.8) !important;
+    background-color: #ff5b1d !important;
+}
+.pagination-link a.disabled {
+    background-color: #ffd5c8 !important;
+}
+/***************** datatable pagination link css **************/
+table > thead > tr > th > span > svg {
+    color: var(--info)
+}
+table > tbody > tr > td > span > svg {
+    color: var(--info)
+}

@@ -1,0 +1,1162 @@
+/* This file is reserved for overriding and extending the template styles. */
+
+@font-face {
+    font-family: LineAwesomeOld;
+    src: url(../font/line-awesome/line-awesome.eot);
+    src: url(../font/line-awesome/line-awesome.eot??v=1.1.#iefix) format("embedded-opentype"), url(../font/line-awesome/line-awesome.woff2?v=1.1.) format("woff2"), url(../font/line-awesome/line-awesome.woff?v=1.1.) format("woff"), url(../font/line-awesome/line-awesome.ttf?v=1.1.) format("truetype"), url(../font/line-awesome/line-awesome.svg?v=1.1.#fa) format("svg");
+    font-weight: 400;
+    font-style: normal
+}
+
+@media screen and (-webkit-min-device-pixel-ratio: 0) {
+    @font-face {
+        font-family: LineAwesomeOld;
+        src: url(../font/line-awesome/line-awesome.svg?v=1.1.#fa) format("svg")
+    }
+}
+
+.icon-wait {
+    background: url('../font/custom/waitIcon.png');
+    background-repeat: no-repeat;
+    background-size: 33px 33px;
+    height: 33px;
+    width: 33px;
+    display: inline-block;
+}
+
+.icon-wait-success {
+    background: url('../font/custom/waitIcon-success.png');
+    background-repeat: no-repeat;
+    background-size: 33px 33px;
+    height: 33px;
+    width: 33px;
+    display: inline-block;
+}
+
+.icon-qPay {
+    background: url('../font/custom/qpay.png');
+    background-repeat: no-repeat;
+    background-size: 33px 33px;
+    height: 33px;
+    width: 33px;
+    display: inline-block;
+}
+
+.icon-dollar {
+    background: url('../font/custom/dollar.png');
+    background-repeat: no-repeat;
+    background-size: 33px 27px;
+    height: 27px;
+    width: 33px;
+    display: inline-block;
+}
+
+.icon-card {
+    background: url('../font/custom/card.png');
+    background-repeat: no-repeat;
+    background-size: 33px 33px;
+    height: 33px;
+    width: 33px;
+    display: inline-block;
+}
+
+.la-old {
+    display: inline-block;
+    font: normal normal normal 22px/1 LineAwesomeOld !important;
+    font-size: inherit;
+    text-decoration: inherit;
+    text-rendering: optimizeLegibility;
+    text-transform: none;
+    -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    font-smoothing: antialiased
+}
+
+input[type="color"] {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    width: 33px;
+    height: 33px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
+input[type="color"]::-webkit-color-swatch {
+    border-radius: 4px;
+    border: 0;
+}
+
+.la-file-excel-o:before {
+    content: "\f1e3" !important;
+}
+
+a.active {
+    color: var(--info);
+}
+
+.css-1wa3eu0-placeholder {
+    color: hsl(0, 0%, 80%) !important;
+    opacity: 1;
+}
+
+.react-datepicker-ignore-onclickoutside::placeholder {
+    color: hsl(0, 0%, 80%);
+    opacity: 1;
+}
+
+.react-datepicker-ignore-onclickoutside::-ms-input-placeholder {
+    color: hsl(0, 0%, 80%);
+}
+
+.react-datepicker-ignore-onclickoutside:-ms-input-placeholder {
+    color: hsl(0, 0%, 80%);
+}
+
+.first-datepicker::placeholder {
+    color: hsl(0, 0%, 80%);
+}
+
+.first-datepicker::-ms-input-placeholder {
+    color: hsl(0, 0%, 80%);
+}
+
+.first-datepicker:-ms-input-placeholder {
+    color: hsl(0, 0%, 80%);
+}
+
+.last-datepicker::placeholder {
+    color: hsl(0, 0%, 80%);
+}
+
+.last-datepicker::-ms-input-placeholder {
+    color: hsl(0, 0%, 80%);
+}
+
+.last-datepicker:-ms-input-placeholder {
+    color: hsl(0, 0%, 80%);
+}
+
+.form-control::placeholder {
+    color: hsl(0, 0%, 80%);
+    opacity: 1;
+    /* Firefox */
+}
+
+.form-control:-ms-input-placeholder {
+    /* Internet Explorer 10-11 */
+    color: hsl(0, 0%, 80%);
+}
+
+.form-control::-ms-input-placeholder {
+    /* Microsoft Edge */
+    color: hsl(0, 0%, 80%);
+}
+
+:root {
+    --font-heading: 'Pinnacle', sans-serif;
+    --font-heading-bold: 'Pinnacle-Bold', sans-serif;
+}
+
+th {
+    font-weight: normal;
+}
+
+.main-green {
+    color: #82b542
+}
+
+.main-orange {
+    color: #ff4900
+}
+
+.main-gray {
+    color: #b2b3b2
+}
+
+.context-click-menu-style {
+    border: 1px solid #ff4900;
+    border-radius: 6px;
+    background: #fff;
+    color: #ff4900;
+    font-size: 0.8rem;
+    padding: 2px 4px;
+}
+
+.black-color {
+    color: #000;
+    font-weight: 500;
+}
+
+.grey-color {
+    color: var(--grey-text);
+    font-weight: 500;
+}
+
+.modal .modal-title {
+    font-size: 0.9rem;
+    color: #ff4900;
+    font-family: 'Pinnacle-DemiBold';
+}
+
+/************ datetime picker css ***********/
+.react-datepicker-wrapper {
+    width: auto !important;
+}
+
+.react-calendar {
+    width: 260px !important;
+}
+
+.react-datetime-picker .react-datetime-picker__wrapper {
+    border: none;
+}
+
+.react-datetime-picker .react-datetime-picker__wrapper .react-datetime-picker__button {
+    display: none;
+}
+
+.react-datetime-picker .react-datetime-picker__wrapper .react-datetime-picker__inputGroup {
+    padding: 0.65rem 1rem;
+    border-radius: 0.42rem;
+    border: 1px solid #575962;
+    text-align: center;
+    height: 37px;
+    line-height: 1;
+}
+
+.react-datepicker-wrapper .react-datepicker__input-container input {
+    display: block;
+    border: 1px solid var(--separator);
+    ;
+    width: 100%;
+    height: 38px;
+    padding: 0.65rem 1rem;
+    font-size: 0.9rem;
+    font-weight: 400;
+    line-height: 1.5;
+    color: #575962;
+    background-color: #ffffff;
+    background-clip: padding-box;
+    border-radius: 4px;
+    box-shadow: none;
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out
+}
+
+.react-datepicker-wrapper .react-datepicker__input-container input:focus {
+    outline: none;
+    border-color: var(--info);
+}
+
+/************ datetime picker css end ***********/
+/***************** date-picker-range-container css **************/
+.date-picker-range-container {
+    width: auto;
+    display: inline-flex;
+}
+
+.date-picker-range-container .first-datepicker {
+    height: 37px !important;
+    border-right-width: 0 !important;
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+.date-picker-range-container .last-datepicker {
+    height: 37px !important;
+    border-left-width: 0 !important;
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}
+
+.date-picker-range-container .first-timepicker {
+    height: 37px !important;
+    border-right-width: 0 !important;
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
+}
+
+.date-picker-range-container .last-timepicker {
+    height: 37px !important;
+    border-left-width: 0 !important;
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}
+
+.date-picker-range-container .react-datepicker-wrapper:nth-child(2) {
+    font-size: 1.3rem;
+    width: auto !important;
+}
+
+.date-picker-range-container .react-datepicker-with-icon {
+    font-size: 1.3rem !important;
+}
+
+/***************** date-picker-range-container css end **************/
+/***************** dropdown css **************/
+.eschool-select.is-invalid>div:first-of-type {
+    border: 1px solid #F64E60 !important;
+    box-shadow: none;
+}
+
+/***************** dropdown css end **************/
+/***************** modal css **************/
+.modal-footer {
+    display: block;
+}
+
+/***************** modal css end **************/
+/***************** card css end **************/
+.card-header {
+    padding: 1rem 2.25rem !important;
+}
+
+.card-header-with-tab .card-header {
+    border-bottom: 2px solid rgba(255, 91, 29, 0.5) !important;
+}
+
+.card-header-tabs {
+    margin-bottom: -1rem !important;
+    margin-left: -2.25rem !important;
+}
+
+.card-header-tabs .nav-item {
+    margin-right: 0 !important;
+}
+
+.card-header-tabs .nav-item .nav-link {
+    position: relative;
+    top: 1px;
+    border-left: none;
+    border-top: none;
+    border-right: none;
+}
+
+.card-header-tabs .nav-item .nav-link.active {
+    position: relative;
+    top: 1px;
+    color: var(--info);
+    font-weight: bold;
+    border-left: none;
+    border-top: none;
+    border-right: none;
+    border-bottom: 2px solid var(--info);
+}
+
+.nav .show>.nav-link,
+.nav .nav-link:hover:not(.disabled),
+.nav .nav-link.active {
+    /* position: relative;
+    top: 1px; */
+    /* font-weight: bold; */
+    color: #ff4900 !important;
+    /*font-weight: 500;*/
+    border-left: none;
+    border-top: none;
+    border-right: none;
+    /* border-bottom: 2px solid #ff4900; */
+}
+
+.custom-tab-col .nav-tabs {
+    border-bottom: 2px solid rgba(255, 91, 29, 0.5);
+}
+
+.nav-tabs .nav-link.active {
+    font-family: 'Pinnacle-DemiBold';
+    border-bottom: 2px solid var(--info);
+}
+
+.nav .show>.nav-link,
+.nav .nav-link:hover:not(.disabled) {
+    /* position: relative;
+    top: 1px; */
+    /* font-weight: bold; */
+    /*color: #29569f !important;*/
+    /*font-weight: 500;*/
+    border-left: none;
+    border-top: none;
+    border-right: none;
+    /* border: 1px solid transparent; */
+    border-bottom: 2px solid #ff4900;
+}
+
+a.nav-link:focus {
+    border: 1px solid transparent;
+    color: var(--body);
+}
+
+.nav-item>.card-btn:hover {
+    transform: scale(1.05);
+}
+
+/***************** card css end **************/
+
+/*&.separator-border-2 {*/
+/*     border-bottom-width: 2px;*/
+/* }*/
+
+/*&.separator-border-3 {*/
+/*     border-bottom-width: 3px;*/
+/* }*/
+
+/*&.separator-border-4 {*/
+/*     border-bottom-width: 4px;*/
+/* }*/
+
+/*// Theme colors*/
+/*@each $name, $color in $theme-colors {*/
+/*&.separator-#{$name} {*/
+/*    border-bottom-color: $color;*/
+/*}*/
+/*}*/
+/*}*/
+/***************** date-picker-range-container css end **************/
+/***************** font weight changing classes start**************/
+.font-weight-100 {
+    font-weight: 100;
+}
+
+.font-weight-200 {
+    font-weight: 200;
+}
+
+.font-weight-300 {
+    font-weight: 300;
+}
+
+.font-weight-400 {
+    font-weight: 400;
+}
+
+.font-weight-500 {
+    font-weight: 500;
+}
+
+.font-weight-600 {
+    font-weight: 600;
+}
+
+.font-weight-700 {
+    font-weight: 700;
+}
+
+.font-weight-800 {
+    font-weight: 800;
+}
+
+.font-weight-900 {
+    font-weight: 900;
+}
+
+/***************** font weight changing classes end**************/
+/***************** border setting classes start**************/
+.no-border-radius {
+    border-radius: 0;
+}
+
+.br-1 {
+    border-radius: 1px;
+}
+
+.br-2 {
+    border-radius: 2px;
+}
+
+.br-3 {
+    border-radius: 3px;
+}
+
+.br-4 {
+    border-radius: 4px;
+}
+
+.br-5 {
+    border-radius: 5px;
+}
+
+.br-6 {
+    border-radius: 6px;
+}
+
+.br-7 {
+    border-radius: 7px;
+}
+
+.br-8 {
+    border-radius: 8px;
+}
+
+.br-9 {
+    border-radius: 9px;
+}
+
+.br-10 {
+    border-radius: 10px !important;
+}
+
+.br-11 {
+    border-radius: 11px;
+}
+
+.br-12 {
+    border-radius: 12px;
+}
+
+.br-13 {
+    border-radius: 13px;
+}
+
+.br-14 {
+    border-radius: 14px;
+}
+
+.br-15 {
+    border-radius: 15px;
+}
+
+.br-16 {
+    border-radius: 16px;
+}
+
+.br-17 {
+    border-radius: 17px;
+}
+
+.br-18 {
+    border-radius: 18px;
+}
+
+.br-19 {
+    border-radius: 19px;
+}
+
+.br-20 {
+    border-radius: 20px;
+}
+
+/***************** border setting classes end**************/
+/***************** margin left(start) classes start**************/
+.ms-01 {
+    margin-left: 0.1rem;
+}
+
+.ms-02 {
+    margin-left: 0.2rem;
+}
+
+.ms-03 {
+    margin-left: 0.3rem;
+}
+
+.ms-04 {
+    margin-left: 0.4rem;
+}
+
+.ms-05 {
+    margin-left: 0.5rem;
+}
+
+.ms-06 {
+    margin-left: 0.6rem;
+}
+
+.ms-07 {
+    margin-left: 0.7rem;
+}
+
+.ms-08 {
+    margin-left: 0.8rem;
+}
+
+.ms-09 {
+    margin-left: 0.9rem;
+}
+
+.ms-10 {
+    margin-left: 1.0rem;
+}
+
+.ms-11 {
+    margin-left: 1.1rem;
+}
+
+.ms-12 {
+    margin-left: 1.2rem;
+}
+
+/***************** margin left(start) classes end**************/
+/***************** margin bottom(start) classes start**************/
+.mb-01 {
+    margin-bottom: 0.1rem;
+}
+
+.mb-02 {
+    margin-bottom: 0.2rem;
+}
+
+.mb-03 {
+    margin-bottom: 0.3rem;
+}
+
+.mb-04 {
+    margin-bottom: 0.4rem;
+}
+
+.mb-05 {
+    margin-bottom: 0.5rem;
+}
+
+.mb-06 {
+    margin-bottom: 0.6rem;
+}
+
+.mb-07 {
+    margin-bottom: 0.7rem;
+}
+
+.mb-08 {
+    margin-bottom: 0.8rem;
+}
+
+.mb-09 {
+    margin-bottom: 0.9rem;
+}
+
+/***************** margin bottom(start) classes end**************/
+/***************** font size classes start**************/
+.fs-1 {
+    font-size: 1px !important;
+}
+
+.fs-2 {
+    font-size: 2px !important;
+}
+
+.fs-3 {
+    font-size: 3px !important;
+}
+
+.fs-4 {
+    font-size: 4px !important;
+}
+
+.fs-5 {
+    font-size: 5px !important;
+}
+
+.fs-6 {
+    font-size: 6px !important;
+}
+
+.fs-7 {
+    font-size: 7px !important;
+}
+
+.fs-8 {
+    font-size: 8px !important;
+}
+
+.fs-9 {
+    font-size: 9px !important;
+}
+
+.fs-10 {
+    font-size: 10px !important;
+}
+
+.fs-11 {
+    font-size: 11px !important;
+}
+
+.fs-12 {
+    font-size: 12px !important;
+}
+
+.fs-13 {
+    font-size: 13px !important;
+}
+
+.fs-14 {
+    font-size: 14px !important;
+}
+
+.fs-15 {
+    font-size: 15px !important;
+}
+
+.fs-16 {
+    font-size: 16px !important;
+}
+
+.fs-17 {
+    font-size: 17px !important;
+}
+
+.fs-18 {
+    font-size: 18px !important;
+}
+
+.fs-19 {
+    font-size: 19px !important;
+}
+
+.fs-20 {
+    font-size: 20px !important;
+}
+
+.fs-21 {
+    font-size: 21px !important;
+}
+
+.fs-22 {
+    font-size: 22px !important;
+}
+
+.fs-23 {
+    font-size: 23px !important;
+}
+
+.fs-24 {
+    font-size: 24px !important;
+}
+
+.fs-25 {
+    font-size: 25px !important;
+}
+
+.fs-35 {
+    font-size: 35px !important;
+}
+/***************** font size classes end**************/
+/***************** width classes start**************/
+.w-13 {
+    width: 13px !important;
+}
+
+.w-14 {
+    width: 14px !important;
+}
+
+.w-15 {
+    width: 15px !important;
+}
+
+.w-16 {
+    width: 16px !important;
+}
+
+.w-17 {
+    width: 17px !important;
+}
+
+.w-18 {
+    width: 18px !important;
+}
+
+.w-19 {
+    width: 19px !important;
+}
+
+.w-20 {
+    width: 20px !important;
+}
+
+.h-30 {
+    height: 30px !important;
+}
+
+/***************** width classes end**************/
+/***************** btn outline with icon classes start**************/
+.btn-outline-with-icon-36 {
+    height: 36px;
+    width: 36px;
+    border-radius: 6px;
+}
+
+.btn-outline-with-icon-37 {
+    height: 37px;
+    width: 37px;
+    border-radius: 6px;
+}
+
+.btn-outline-with-icon-38 {
+    height: 38px;
+    width: 38px;
+    border-radius: 6px;
+}
+
+.sm-btn-sm-icon {
+    width: 18px !important;
+}
+
+/***************** btn outline with icon classes end**************/
+/***************** height classes start**************/
+.h-5 {
+    height: 5px;
+}
+
+.h-6 {
+    height: 6px;
+}
+
+.h-7 {
+    height: 7px;
+}
+
+.h-8 {
+    height: 8px;
+}
+
+.h-9 {
+    height: 9px;
+}
+
+.h-10 {
+    height: 10px;
+}
+
+/***************** height classes end**************/
+/***************** text align classes start**************/
+.text-right {
+    text-align: right;
+}
+
+.text-left {
+    text-align: left;
+}
+
+/***************** text align classes end**************/
+/***************** btn square classes start**************/
+.btn-square-30 {
+    width: 30px !important;
+    height: 30px !important;
+}
+
+.btn-square-32 {
+    width: 32px !important;
+    height: 32px !important;
+}
+
+.btn-square-33 {
+    width: 33px !important;
+    height: 33px !important;
+}
+
+.btn-square-34 {
+    width: 34px !important;
+    height: 34px !important;
+}
+
+/***************** btn square classes end**************/
+/***************** margin top 0.1->0.9rem classes start**************/
+.mt-01 {
+    margin-top: 0.1rem;
+}
+
+.mt-02 {
+    margin-top: 0.2rem;
+}
+
+.mt-03 {
+    margin-top: 0.3rem;
+}
+
+.mt-04 {
+    margin-top: 0.4rem;
+}
+
+.mt-05 {
+    margin-top: 0.5rem;
+}
+
+.mt-06 {
+    margin-top: 0.6rem;
+}
+
+.mt-07 {
+    margin-top: 0.7rem;
+}
+
+.mt-08 {
+    margin-top: 0.8rem;
+}
+
+.mt-09 {
+    margin-top: 0.9rem;
+}
+
+/***************** margin top 0.1->0.9rem classes end**************/
+/***************** color classes start**************/
+.color-info {
+    color: var(--info)
+}
+
+/***************** color classes end**************/
+/***************** font classes start**************/
+.font-pinnacle {
+    font-family: 'Pinnacle' !important;
+}
+
+.font-pinnacle-demibold {
+    font-family: 'Pinnacle-DemiBold' !important;
+}
+
+.font-pinnacle-bold {
+    font-family: 'Pinnacle-Bold' !important;
+}
+
+.font-mulish {
+    font-family: 'Mulish';
+}
+
+/***************** font classes end**************/
+.label-custom {
+    line-height: 38px;
+}
+
+.modal-footer-custom {
+    white-space: nowrap;
+    width: 1%;
+}
+
+/***************** line height classes start**************/
+.lh-15 {
+    line-height: 15px;
+}
+
+.lh-16 {
+    line-height: 16px;
+}
+
+.lh-17 {
+    line-height: 17px;
+}
+
+.lh-18 {
+    line-height: 18px;
+}
+
+.lh-19 {
+    line-height: 19px;
+}
+
+.lh-20 {
+    line-height: 20px;
+}
+
+/***************** line height classes end**************/
+.form-check-input:checked[type="radio"] {
+    background-image: url('../img/system/radio.png');
+}
+
+.react-datepicker-wrapper {
+    display: block !important;
+}
+
+.school-option {
+    cursor: pointer;
+}
+
+.school-option:hover {
+    color: #ff5b1d;
+}
+
+.login-copyright {
+    color: #7c7c7c;
+    font-size: 14px;
+    font-weight: 300;
+    position: absolute;
+}
+
+.react-bootstrap-table table {
+    table-layout: unset !important;
+}
+
+.active>img {
+    filter: invert(33%) sepia(89%) saturate(3004%) hue-rotate(2deg) brightness(103%) contrast(106%);
+}
+
+.disabled-date {
+    pointer-events: none;
+    background-color: #a2a2a2;
+    border-radius: var(--border-radius-sm) !important;
+}
+
+.selected-card {
+    border: solid 1px rgb(255, 91, 29);
+}
+
+.school-search-input {
+    border: 0;
+    border-bottom: 1px solid #ccc;
+    border-radius: 0px !important;
+    height: 31px;
+    background-color: white;
+    width: 95%;
+    background-image: url('../img/system/searchicon.png');
+    background-position: 7px 4px;
+    background-repeat: no-repeat;
+    background-size: 15px 15px;
+    background-position-y: center;
+    padding: 12px 20px 12px 33px;
+    /* transition: width 0.4s ease-in-out; */
+}
+
+input[type=text].school-search-input:focus {
+    border: 0;
+    border-bottom: 1px solid #ccc;
+    border-radius: 0px;
+    height: 31px;
+    width: 95%;
+}
+
+input[type=text].school-search-input:focus-visible {
+    border: 0;
+    border-bottom: 1px solid #ccc;
+    border-radius: 0px;
+    height: 31px;
+    outline: 0;
+}
+
+.dropdown-menu.wide.user-menu.mt-5.dropdown-menu.show {
+    max-height: 300px !important;
+    transform: translate(32px, 29px) !important;
+    position: absolute !important;
+    inset: 0px auto auto 0px !important;
+}
+
+.dropdown-menu.wide.user-menu.school-nav-phone.mt-5.dropdown-menu.show {
+    max-height: 300px !important;
+    transform: translate(-118px, 29px) !important;
+    position: absolute !important;
+    inset: 0px auto auto 0px !important;
+}
+
+.bg-grey {
+    background-color: #EEEEEE;
+}
+
+.color-grey {
+    color: var(--grey-text);
+}
+
+.absolute-black {
+    color: #000;
+}
+
+.border-custom-orange {
+    border: solid 1px rgba(255, 91, 29, 0.1);
+}
+
+.nav-item {
+    /* border-bottom: 1px solid rgba(255, 73, 0, 0.05); */
+    margin: 0 0 -2px;
+}
+
+.fc-daygrid-dot-event:hover {
+    background: none !important;
+}
+
+.fc-v-event {
+    background: none !important;
+}
+
+.fc-timegrid-event-harness-inset .fc-timegrid-event {
+    box-shadow: none !important;
+}
+
+.fc-v-event .fc-event-main {
+    color: #000 !important;
+}
+
+.custom-dropdown {
+    border-radius: 6px;
+    width: 106px;
+    height: 30px;
+    background-color: rgba(54, 163, 247, 0.3);
+    text-align: center;
+    border: aliceblue;
+    color: #36a3f7;
+    font-family: 'Pinnacle-DemiBold';
+    font-size: 12px;
+}
+
+.custom-dropdown:focus-visible {
+    border-radius: 6px;
+    width: 106px;
+    height: 30px;
+    background-color: rgba(54, 163, 247, 0.3);
+    text-align: center;
+    border: aliceblue;
+    color: #36a3f7;
+    font-family: 'Pinnacle-DemiBold';
+    font-size: 12px;
+    outline: white
+}
+
+.calendar-btn {
+    background-color: rgba(54, 163, 247, 0.3);
+    width: 34.2px;
+    height: 30px;
+    padding: 8px 13.1px 7px;
+    margin: 0 10px 0 10px;
+    color: #36a3f7;
+    font-size: 12px;
+}
+
+.calendar-btn:hover {
+    background-color: rgba(54, 163, 247, 0.5);
+    width: 34.2px;
+    height: 30px;
+    padding: 8px 13.1px 7px;
+    margin: 0 10px 0 10px;
+    color: #36a3f7;
+    font-size: 12px;
+}
+
+.calendar-btn:active {
+    background-color: rgba(54, 163, 247, 0.5) !important;
+    width: 34.2px;
+    height: 30px;
+    padding: 8px 13.1px 7px;
+    margin: 0 10px 0 10px;
+    color: #36a3f7;
+    font-size: 12px;
+}
+
+.calendar-btn:focus {
+    background-color: rgba(54, 163, 247, 0.3) !important;
+    width: 34.2px;
+    height: 30px;
+    padding: 8px 13.1px 7px;
+    margin: 0 10px 0 10px;
+    color: #36a3f7;
+    font-size: 12px;
+}
+.fc-event-main {
+    /* background-color: red; */
+    border-radius: 8px;
+    background-color: rgba(223, 226, 234, 0.5);
+}
+
+.fc-v-event {
+    display: block;
+    border-radius: 8px !important;
+    border: 1px solid rgba(223, 226, 234, 0.5);
+    background-color: #3788d8;
+    background-color: var(--fc-event-bg-color, #3788d8);
+}
+
+.fc-v-event .fc-event-main {
+    text-align: center;
+}
+
+.custom-green {
+    color: #3ebfa3;
+}
+
+/* 
+body.modal-open {
+    overflow: auto !important;
+} */
