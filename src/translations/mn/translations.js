@@ -464,6 +464,7 @@ export const TRANSLATIONS_MN = {
         lastPaymentDate: 'Сүүлийн төлөлтийн огноо',
         paidAmount: 'Төлсөн дүн',
         unpaidAmount: 'Үлдэгдэл дүн',
+        survey: "Судалгаа"
     },
     appointment: {
         accept: 'Зөвшөөрөх',
