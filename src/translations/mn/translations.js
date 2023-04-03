@@ -1369,4 +1369,19 @@ export const TRANSLATIONS_MN = {
         play_invoice_type: 'Нэхэмжлэхийн төрлийг эхлүүлэхдээ итгэлтэй байна уу',
         pause_invoice_type: 'Нэхэмжлэхийн төрлийг зогсоохдоо итгэлтэй байна уу'
     },
+    survey: {
+        title: 'Судалгаа',
+        name: 'Судалгааны нэр',
+        category: 'Категори',
+        date: 'Судалгааны хугацаа',
+        participants: 'Оролцогчид',
+        level: "Түвшин",
+        group: "Бүлэг",
+        goal: "Судалгааны зорилго",
+        surveyCategory: 'Судалгааны категори',
+        parentCategory: 'Харъяалах категори',
+        parentCategoryPlaceholder: 'Харъяалах категори сонгоно уу',
+        enterCategory: 'Категори оруулна уу',
+        save: "Асуумж нэмэх",
+    }
 };

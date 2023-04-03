@@ -16,7 +16,7 @@ import {
 } from 'utils/fetchRequest/Urls';
 import DTable from 'modules/DataTable/DTable';
 import DeleteType from 'modules/DeleteModal';
-import AddMedicine from './add';
+import AddSurvey from './AddModal';
 import EditMedicine from './edit';
 import SetInactive from './setInactive';
 import 'css/dashboard.css';
@@ -54,7 +54,6 @@ const SurveyListContainer = () => {
   const [sortOrder, setSortOrder] = useState('');
   const [tableData, setTableData] = useState([]);
   const [selectedRows, setSelectedRows] = useState([]);
-
 
   const config = {
     excelExport: true,
@@ -338,7 +337,6 @@ const SurveyListContainer = () => {
   return (
     <>
       <Row>
-        
         <Row>
           <Col lg={12}>
             <Button type="button" variant="info" size="sm" className="text-uppercase br-8" onClick={onAddMedicineClick}>
@@ -383,7 +381,7 @@ const SurveyListContainer = () => {
           </Col>
         </Row>
       </Row>
-      {showAddMedicine && <AddMedicine show={showAddMedicine} setShow={setShowAddMedicine} onSubmit={onSubmitMedicineHandler} />}
+      {showAddMedicine && <AddSurvey show={showAddMedicine} setShow={setShowAddMedicine} onSubmit={() => {}} />}
       {showEditMedicine && <EditMedicine selectedData={selectedData} show={showEditMedicine} setShow={setShowEditMedicine} onSubmit={onEditMedicineHandler} />}
       {showSetInactiveMedicine && <SetInactive setShow={setShowSetInactiveMedicine} onInactive={onSetInactiveMedicineHandler} />}
       {showDeleteMedicine && selectedData && (
