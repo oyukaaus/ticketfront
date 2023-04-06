@@ -90,32 +90,39 @@ const SurveyListContainer = () => {
 
   const column = [
     {
-      dataField: 'isActive',
-      text: t('foodManagement.status'),
-      colType: 'status',
-      sort: false,
-      headerStyle: () => ({
-        width: 90,
-        textAlign: 'center',
-      }),
-      style: {
-        textAlign: 'center',
-        verticalAlign: 'middle',
-      },
-      formatter: (cell) => {
-        return <i className={`icon-1_5x ${cell ? 'main-green' : 'main-gray'} fa fa-circle`} />;
-      },
-    },
-    {
       dataField: 'code',
       text: t('common.code'),
       sort: true,
     },
     {
       dataField: 'name',
-      text: t('doctorsCorner.medicineName'),
+      text: t('survey.name'),
       sort: true,
-    },
+    },{
+      dataField: 'category',
+      text: t('survey.category'),
+      sort: true,
+    },{
+      dataField: 'participants',
+      text: t('survey.participants'),
+      sort: true,
+    },{
+      dataField: 'startDate',
+      text: t('survey.startDate'),
+      sort: true,
+    },{
+      dataField: 'endDate',
+      text: t('survey.endDate'),
+      sort: true,
+    },{
+      dataField: 'registered',
+      text: t('survey.registered'),
+      sort: true,
+    },{
+      dataField: 'publishedDate',
+      text: t('survey.publishedDate'),
+      sort: true,
+    }
   ];
 
   const onSetActiveMedicineHandler = (id) => {
@@ -334,6 +341,8 @@ const SurveyListContainer = () => {
       });
   }, [pageNumber, sizePerPage, searchValue, sortKey, sortOrder]);
 
+  const [published, setPublished] = useState(true);
+
   return (
     <>
       <Row>
@@ -345,6 +354,36 @@ const SurveyListContainer = () => {
                 &nbsp;{t('common.create')}
               </span>
             </Button>
+
+            <Row className="mb-4">
+              <Col lg={4}>
+                <Card
+                  className={`custom-card rounded-3 border ${published ? 'border-info' : ''}`}
+                  onClick={() => {
+                    setPublished(true);
+                  }}
+                >
+                  <Card.Body className="text-center">
+                    <strong>Нийтэлсэн</strong>
+                    <p className="m-0">{98} судалгаа</p>
+                  </Card.Body>
+                </Card>
+              </Col>
+              <Col lg={4}>
+                <Card
+                  className={`custom-card rounded-3 border ${!published ? 'border-info' : ''}`}
+                  onClick={() => {
+                    setPublished(false);
+                  }}
+                >
+                  <Card.Body className="text-center">
+                    <strong>Нийтлээгүй</strong>
+                    <p className="m-0">{9} судалгаа</p>
+                  </Card.Body>
+                </Card>
+              </Col>
+            </Row>
+
             {selectedRows && selectedRows.length > 0 && (
               <Button type="button" variant="danger" size="sm" className="ms-2 top-btn br-8" onClick={() => onSetInactiveSelectedMedicineHandler()}>
                 <span className="m-0 font-weight-bold d-flex align-items-center">

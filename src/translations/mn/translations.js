@@ -1383,5 +1383,9 @@ export const TRANSLATIONS_MN = {
         parentCategoryPlaceholder: 'Харъяалах категори сонгоно уу',
         enterCategory: 'Категори оруулна уу',
         save: "Асуумж нэмэх",
+        startDate: "Эхлэх",
+        endDate: "Дуусах",
+        registered: "Бүртгэсэн",
+        publishedDate: "Нийтэлсэн огноо",
     }
 };

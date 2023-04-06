@@ -1,0 +1,15 @@
+.custom-card {
+  cursor: pointer;
+}
+
+.custom-card:hover {
+  background-color: #f4f4f4;
+}
+
+.custom-card.border-info {
+    pointer-events: none;
+}
+
+.custom-card strong {
+  font-family: 'Pinnacle-DemiBold';
+}

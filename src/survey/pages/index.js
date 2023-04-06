@@ -4,6 +4,7 @@ import CategoryContainer from 'survey/containers/Category';
 import SurveyListContainer from 'survey/containers/Survey';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import { useTranslation } from 'react-i18next';
+import '../styles/app.css';
 
 const SurveyPage = (props) => {
   const { t } = useTranslation();
