@@ -1,14 +1,15 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Modal, Button, Row, Col } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import Forms from 'modules/Form/Forms';
-import Checkbox from 'modules/Form/Checkbox';
-import 'css/addInvoice.css';
+import { Link } from 'react-router-dom';
 
-const AddModal = ({ show, setShow, onSubmit }) => {
+const CreateSurveyContainer = ({ show, setShow, onSubmit }) => {
   const { t } = useTranslation();
   const formRef = useRef();
   const [registerAgain, setRegisterAgain] = useState(false);
+
+  const [participant, setParticipant] = useState();
 
   const fields = [
     {
@@ -42,6 +43,15 @@ const AddModal = ({ show, setShow, onSubmit }) => {
       labelBold: true,
     },
     {
+      key: 'date',
+      value: '',
+      label: `${t('survey.date')}*`,
+      type: 'daterange',
+      required: true,
+      errorMessage: t('errorMessage.enterName'),
+      labelBold: true,
+    },
+    {
       key: 'participants',
       value: '',
       label: `${t('survey.participants')}*`,
@@ -63,16 +73,33 @@ const AddModal = ({ show, setShow, onSubmit }) => {
           value: 'parents',
         },
       ],
+      onChange: (value) => {
+        setParticipant(value);
+      },
     },
+
     {
-      key: 'date',
+      key: 'systemRole',
       value: '',
-      label: `${t('survey.date')}*`,
-      type: 'daterange',
+      label: `${t('survey.systemRole')}*`,
+      type: 'dropdown',
       required: true,
       errorMessage: t('errorMessage.enterName'),
       labelBold: true,
+      hidden: participant !== 'teachers',
     },
+
+    {
+      key: 'workers',
+      value: '',
+      label: `${t('survey.workers')}*`,
+      type: 'dropdown',
+      required: true,
+      errorMessage: t('errorMessage.enterName'),
+      labelBold: true,
+      hidden: participant !== 'teachers',
+    },
+
     {
       key: 'level',
       value: '',
@@ -81,6 +108,7 @@ const AddModal = ({ show, setShow, onSubmit }) => {
       required: true,
       errorMessage: t('errorMessage.enterName'),
       labelBold: true,
+      hidden: participant === 'teachers',
     },
     {
       key: 'group',
@@ -90,6 +118,7 @@ const AddModal = ({ show, setShow, onSubmit }) => {
       required: true,
       errorMessage: t('errorMessage.enterName'),
       labelBold: true,
+      hidden: participant === 'teachers',
     },
     {
       key: 'goal',
@@ -100,6 +129,11 @@ const AddModal = ({ show, setShow, onSubmit }) => {
       labelBold: true,
     },
   ];
+
+  useEffect(() => {
+    const values = formRef.current.getValues();
+    formRef.current.updateFields(fields?.map((f) => ({ ...f, value: values[f.key] })));
+  }, [participant]);
 
   const handleRegisterAgainChange = (value) => {
     if (value) {
@@ -121,18 +155,27 @@ const AddModal = ({ show, setShow, onSubmit }) => {
   };
 
   return (
-    <Modal centered show={show} onHide={() => setShow(false)} size="xl">
-      <Modal.Header closeButton>
-        <Modal.Title className="fs-16">{t('survey.title')}</Modal.Title>
+    <Modal fullscreen show={true} size="xl" animation={false} backdropClassName="full-page-bg" dialogClassName="custom-full-page-modal">
+      <Modal.Header>
+        <Modal.Title className="fs-16 d-flex justify-content-between w-100 align-items-center">
+          <span>{t('survey.title')}</span>
+          <Link to="/survey/index">
+            <Button size="sm" variant="link">
+              {t('common.back')}
+            </Button>
+          </Link>
+        </Modal.Title>
       </Modal.Header>
       <Modal.Body className="px-0">
         <Forms ref={formRef} fields={fields} />
       </Modal.Body>
       <Modal.Footer>
         <div className="text-center">
-          <Button onClick={() => setShow(false)} size="sm" variant="link">
-            {t('common.back')}
-          </Button>
+          <Link to="/survey/index">
+            <Button size="sm" variant="link">
+              {t('common.back')}
+            </Button>
+          </Link>
           <Button variant="success" className="text-uppercase fs-12 br-8 ps-4 pe-4" size="sm" onClick={onSaveClick}>
             {t('survey.save')}
           </Button>
@@ -142,4 +185,4 @@ const AddModal = ({ show, setShow, onSubmit }) => {
   );
 };
 
-export default AddModal;
+export default CreateSurveyContainer;

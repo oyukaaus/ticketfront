@@ -1,13 +1,13 @@
 import { lazy } from 'react';
 // import { USER_ROLE } from 'constants.js';
 import { DEFAULT_PATHS } from 'config.js';
-
+import { trimEnd } from 'lodash';
 
 const index = {
   home: lazy(() => import('views/general/home')),
   index: lazy(() => import('views/general/index')),
-  survey: lazy(() => import('survey/pages/index')),
 };
+
 const appointment = {
   index: lazy(() => import('views/general/appointment/index')),
 };
@@ -36,6 +36,15 @@ const dashboardStudent = {
 const dashboardAttendance = {
   index: lazy(() => import('views/general/dashboard/attendance/index')),
 };
+
+const survey = {
+  index: lazy(() => import('survey/pages/index')),
+  create: lazy(() => import('survey/pages/Create')),
+  view: lazy(() => import('survey/pages/View')),
+  edit: lazy(() => import('survey/pages/Edit')),
+  report: lazy(() => import('survey/pages/Report')),
+};
+
 const appRoot = DEFAULT_PATHS.APP.endsWith('/') ? DEFAULT_PATHS.APP.slice(1, DEFAULT_PATHS.APP.length) : DEFAULT_PATHS.APP;
 const routesAndMenuItems = {
   defaultMenuItems: [
@@ -81,7 +90,13 @@ const routesAndMenuItems = {
       exact: true,
       redirect: true,
       to: `${appRoot}/survey/index`,
-      subs: [{ path: '/index', label: 'dashboard.survey', icon: 'send', component: index.survey }],
+      subs: [
+        { path: '/index', label: 'dashboard.survey', icon: 'send', component: survey.index },
+        { path: '/create', label: 'dashboard.survey', hideInMenu: true, icon: 'send', component: survey.create },
+        { path: '/view/:id', exact: true, label: 'dashboard.survey', hideInMenu: true, icon: 'send', component: survey.view },
+        { path: '/view/:id/edit', exact: true, label: 'dashboard.survey', hideInMenu: true, icon: 'send', component: survey.edit },
+        { path: '/view/:id/report', exact: true, label: 'dashboard.survey', hideInMenu: true, icon: 'send', component: survey.report },
+      ],
     },
   ],
   doctorSidebarItems: [

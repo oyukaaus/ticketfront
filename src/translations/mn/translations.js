@@ -1370,6 +1370,7 @@ export const TRANSLATIONS_MN = {
         pause_invoice_type: 'Нэхэмжлэхийн төрлийг зогсоохдоо итгэлтэй байна уу'
     },
     survey: {
+        status: "Статус",
         title: 'Судалгаа',
         name: 'Судалгааны нэр',
         category: 'Категори',
@@ -1387,5 +1388,15 @@ export const TRANSLATIONS_MN = {
         endDate: "Дуусах",
         registered: "Бүртгэсэн",
         publishedDate: "Нийтэлсэн огноо",
+        systemRole: "Систем дүр",
+        workers: "Багш ажилтан",
+        general: "Ерөнхий мэдээлэл",
+        questionnaire: "Асуумж",
+        questionnaireDesc: "Асуумжийн тайлбар",
+        answerRequired: "Заавал хариулт сонгоно",
+        questionnaireType: "Асуумжийн төрөл",
+        typeText: "Текст бичих",
+        typeSelect: "Сонголтоос сонгох",
+        selectImage: "Зураг оруулах"
     }
 };

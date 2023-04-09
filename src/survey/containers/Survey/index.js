@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card, Row, Col, Button } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { BorderColorTwoTone, DeleteTwoTone, AddCircleOutline, HighlightOff, PlaylistAddCheckCircleOutlined, HighlightOffRounded } from '@mui/icons-material';
 import { useSelector, useDispatch } from 'react-redux';
@@ -16,9 +17,7 @@ import {
 } from 'utils/fetchRequest/Urls';
 import DTable from 'modules/DataTable/DTable';
 import DeleteType from 'modules/DeleteModal';
-import AddSurvey from './AddModal';
-import EditMedicine from './edit';
-import SetInactive from './setInactive';
+import { format } from 'date-fns';
 import 'css/dashboard.css';
 
 const SurveyListContainer = () => {
@@ -52,7 +51,19 @@ const SurveyListContainer = () => {
   const [searchValue, setSearchValue] = useState('');
   const [sortKey, setSortKey] = useState('');
   const [sortOrder, setSortOrder] = useState('');
-  const [tableData, setTableData] = useState([]);
+  const [tableData, setTableData] = useState([
+    {
+      id: '1',
+      code: 'SU88727',
+      name: 'Судалгаа 1',
+      category: 'Сэтгэл ханамжийн судалгаа',
+      participants: '1a | 2а | 2б',
+      startDate: format(new Date(), 'yyyy-MM-dd HH:mm'),
+      endDate: format(new Date(), 'yyyy-MM-dd HH:mm'),
+      publishedDate: format(new Date(), 'yyyy-MM-dd HH:mm'),
+      registered: format(new Date(), 'yyyy-MM-dd HH:mm'),
+    },
+  ]);
   const [selectedRows, setSelectedRows] = useState([]);
 
   const config = {
@@ -98,31 +109,37 @@ const SurveyListContainer = () => {
       dataField: 'name',
       text: t('survey.name'),
       sort: true,
-    },{
+    },
+    {
       dataField: 'category',
       text: t('survey.category'),
       sort: true,
-    },{
+    },
+    {
       dataField: 'participants',
       text: t('survey.participants'),
       sort: true,
-    },{
+    },
+    {
       dataField: 'startDate',
       text: t('survey.startDate'),
       sort: true,
-    },{
+    },
+    {
       dataField: 'endDate',
       text: t('survey.endDate'),
       sort: true,
-    },{
+    },
+    {
       dataField: 'registered',
       text: t('survey.registered'),
       sort: true,
-    },{
+    },
+    {
       dataField: 'publishedDate',
       text: t('survey.publishedDate'),
       sort: true,
-    }
+    },
   ];
 
   const onSetActiveMedicineHandler = (id) => {
@@ -135,7 +152,7 @@ const SurveyListContainer = () => {
       .then((res) => {
         const { list = [], message = null, success = false } = res;
         if (success) {
-          setTableData(list);
+          // setTableData(list);
           showMessage(message, success);
         } else {
           showMessage(message || t('errorMessage.title'));
@@ -185,7 +202,7 @@ const SurveyListContainer = () => {
       .then((res) => {
         const { list = [], message = null, success = false } = res;
         if (success) {
-          setTableData(list);
+          // setTableData(list);
           if (!params.registerAgain) {
             setShowAddMedicine(false);
           }
@@ -212,7 +229,7 @@ const SurveyListContainer = () => {
       .then((res) => {
         const { list = [], message = null, success = false } = res;
         if (success) {
-          setTableData(list);
+          // setTableData(list);
           setShowEditMedicine(false);
           showMessage(message, success);
         } else {
@@ -236,7 +253,7 @@ const SurveyListContainer = () => {
       .then((res) => {
         const { list = [], message = null, success = false } = res;
         if (res.success) {
-          setTableData(list);
+          // setTableData(list);
           setShowSetInactiveMedicine(false);
           showMessage(message, success);
         } else {
@@ -259,7 +276,7 @@ const SurveyListContainer = () => {
       .then((res) => {
         const { list = [], message = null, success = false } = res;
         if (res.success) {
-          setTableData(list);
+          // setTableData(list);
           setShowSetInactiveMedicine(false);
           showMessage(message, success);
         } else {
@@ -282,7 +299,7 @@ const SurveyListContainer = () => {
       .then((res) => {
         const { list = [], message = null, success = false } = res;
         if (success) {
-          setTableData(list);
+          // setTableData(list);
           setShowDeleteMedicine(false);
           showMessage(message, success);
         } else {
@@ -325,7 +342,7 @@ const SurveyListContainer = () => {
       .then((res) => {
         const { list = [], page = 1, pageSize = 10, query = '', totalCount = 0, success = false, message = null } = res;
         if (success) {
-          setTableData(list);
+          // setTableData(list);
           setPageNumber(page);
           setSizePerPage(pageSize);
           setSearchValue(query);
@@ -348,12 +365,14 @@ const SurveyListContainer = () => {
       <Row>
         <Row>
           <Col lg={12}>
-            <Button type="button" variant="info" size="sm" className="text-uppercase br-8" onClick={onAddMedicineClick}>
-              <span className="m-0 font-weight-bold d-flex align-items-center">
-                <AddCircleOutline className="w-19" />
-                &nbsp;{t('common.create')}
-              </span>
-            </Button>
+            <Link to="/survey/create">
+              <Button type="button" variant="info" size="sm" className="text-uppercase br-8">
+                <span className="m-0 font-weight-bold d-flex align-items-center">
+                  <AddCircleOutline className="w-19" />
+                  &nbsp;{t('common.create')}
+                </span>
+              </Button>
+            </Link>
 
             <Row className="mb-4">
               <Col lg={4}>
@@ -420,15 +439,13 @@ const SurveyListContainer = () => {
           </Col>
         </Row>
       </Row>
-      {showAddMedicine && <AddSurvey show={showAddMedicine} setShow={setShowAddMedicine} onSubmit={() => {}} />}
-      {showEditMedicine && <EditMedicine selectedData={selectedData} show={showEditMedicine} setShow={setShowEditMedicine} onSubmit={onEditMedicineHandler} />}
-      {showSetInactiveMedicine && <SetInactive setShow={setShowSetInactiveMedicine} onInactive={onSetInactiveMedicineHandler} />}
+
+      {/* {showSetInactiveMedicine && <SetInactive setShow={setShowSetInactiveMedicine} onInactive={onSetInactiveMedicineHandler} />} */}
       {showDeleteMedicine && selectedData && (
         <DeleteType onClose={onModalClose} onDelete={onDeleteMedicineHandler} title={t('warning.delete')} modalSize="md">
-          {t('warning.delete_confirmation')}
-          <br />
-          <br />
-          {t('warning.delete_confirmation_description')}
+          <p className="font-pd text-black text-center mb-0">
+            {t('warning.delete_confirmation')} {t('warning.delete_confirmation_description')}
+          </p>
         </DeleteType>
       )}
     </>
