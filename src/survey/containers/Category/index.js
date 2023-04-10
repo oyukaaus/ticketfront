@@ -2,12 +2,51 @@ import * as React from 'react';
 import { Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { AddCircleOutline } from '@mui/icons-material';
-import TreeView from 'survey/components/TreeView';
+// import TreeView from 'survey/components/TreeView';
+import TreeView from 'modules/TreeView'
 import AddModal from './AddModal';
 
 const CategoryContainer = (props) => {
   const { t } = useTranslation();
   const [show, setShow] = React.useState(false);
+  const [selectedTreeId, setSelectedTreeId] = React.useState(null);
+  const [categories, setCategories] = React.useState([
+    {
+      key: 1,
+      title: 'First',
+      children: [
+        {
+          key: '1-1',
+          title: 'First - 1'
+        },
+        {
+          key: '1-2',
+          title: 'First - 2'
+        }
+      ]
+    },
+    {
+      key: 2,
+      title: 'Second',
+      children: [
+        {
+          key: '2-1',
+          title: 'Second - 1'
+        },
+        {
+          key: '2-2',
+          title: 'SEcond - 2'
+        }
+      ]
+    }
+  ])
+
+  const handleTreeClick = (array) => {
+    const [id] = array;
+    setSelectedTreeId(id);
+  };
+
+
   return (
     <>
       <AddModal
@@ -35,7 +74,11 @@ const CategoryContainer = (props) => {
           </Button>
         </div>
         <div className="bg-white">
-          <TreeView />
+          <TreeView
+            defaultExpandAll={true}
+            selectedNodes={[selectedTreeId]}
+            onSelect={(e) => handleTreeClick(e)}
+            treeData={categories} />
         </div>
       </section>
     </>

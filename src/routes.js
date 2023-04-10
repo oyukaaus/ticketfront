@@ -134,6 +134,21 @@ const routesAndMenuItems = {
         { path: '/medicine-registration', label: 'doctorsCorner.medicineRegistration', icon: 'ticket', component: medicine.index },
       ],
     },
+    {
+      path: `${appRoot}/survey`,
+      label: 'dashboard.survey',
+      icon: 'paper-plane',
+      exact: true,
+      redirect: true,
+      to: `${appRoot}/survey/index`,
+      subs: [
+        { path: '/index', label: 'dashboard.survey', icon: 'send', component: survey.index },
+        { path: '/create', label: 'dashboard.survey', hideInMenu: true, icon: 'send', component: survey.create },
+        { path: '/view/:id', exact: true, label: 'dashboard.survey', hideInMenu: true, icon: 'send', component: survey.view },
+        { path: '/view/:id/edit', exact: true, label: 'dashboard.survey', hideInMenu: true, icon: 'send', component: survey.edit },
+        { path: '/view/:id/report', exact: true, label: 'dashboard.survey', hideInMenu: true, icon: 'send', component: survey.report },
+      ],
+    },
   ],
   teacherAndDoctorSidebarItems: [
     {
@@ -170,6 +185,21 @@ const routesAndMenuItems = {
         { path: '/medicine-registration', label: 'doctorsCorner.medicineRegistration', icon: 'ticket', component: medicine.index },
       ],
     },
+    {
+      path: `${appRoot}/survey`,
+      label: 'dashboard.survey',
+      icon: 'paper-plane',
+      exact: true,
+      redirect: true,
+      to: `${appRoot}/survey/index`,
+      subs: [
+        { path: '/index', label: 'dashboard.survey', icon: 'send', component: survey.index },
+        { path: '/create', label: 'dashboard.survey', hideInMenu: true, icon: 'send', component: survey.create },
+        { path: '/view/:id', exact: true, label: 'dashboard.survey', hideInMenu: true, icon: 'send', component: survey.view },
+        { path: '/view/:id/edit', exact: true, label: 'dashboard.survey', hideInMenu: true, icon: 'send', component: survey.edit },
+        { path: '/view/:id/report', exact: true, label: 'dashboard.survey', hideInMenu: true, icon: 'send', component: survey.report },
+      ],
+    },
   ],
   schoolSidebarItems: [
     {
@@ -193,6 +223,21 @@ const routesAndMenuItems = {
         { path: '/student', label: 'managementDashboard.student', icon: 'dashboard', component: dashboardStudent.index },
         { path: '/guardian', label: 'managementDashboard.guardian', icon: 'dashboard', component: dashboardGuardian.index },
         { path: '/attendance', label: 'managementDashboard.attendance', icon: 'dashboard', component: dashboardAttendance.index },
+      ],
+    },
+    {
+      path: `${appRoot}/survey`,
+      label: 'dashboard.survey',
+      icon: 'paper-plane',
+      exact: true,
+      redirect: true,
+      to: `${appRoot}/survey/index`,
+      subs: [
+        { path: '/index', label: 'dashboard.survey', icon: 'send', component: survey.index },
+        { path: '/create', label: 'dashboard.survey', hideInMenu: true, icon: 'send', component: survey.create },
+        { path: '/view/:id', exact: true, label: 'dashboard.survey', hideInMenu: true, icon: 'send', component: survey.view },
+        { path: '/view/:id/edit', exact: true, label: 'dashboard.survey', hideInMenu: true, icon: 'send', component: survey.edit },
+        { path: '/view/:id/report', exact: true, label: 'dashboard.survey', hideInMenu: true, icon: 'send', component: survey.report },
       ],
     },
   ],
