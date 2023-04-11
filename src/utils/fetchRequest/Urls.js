@@ -1,6 +1,6 @@
-﻿export const auth = "auth/login";
-export const authRecover = "auth/recover";
-export const authRecoverSubmit = "auth/recover-submit";
+﻿export const auth = 'auth/login';
+export const authRecover = 'auth/recover';
+export const authRecoverSubmit = 'auth/recover-submit';
 export const mainInit = 'main/init';
 export const systemMain = 'system/main';
 
@@ -35,3 +35,9 @@ export const doctorInspectionStudentSearchCode = 'doctor/inspection/student-sear
 export const doctorInspectionUserSearchName = 'doctor/inspection/user-search-name';
 export const doctorInspectionUserSearchCode = 'doctor/inspection/user-search-code';
 export const doctorInspectionSubmit = 'doctor/inspection/submit';
+
+// ----------survey category-------------
+const tmpApiUrl = 'https://survey.eschool.mn/'; // after backend merged then remove it.
+export const surveyCategoryIndex = tmpApiUrl + 'survey/category/list';
+export const surveyCategoryCreate = tmpApiUrl + 'survey/category/create';
+export const surveyCategoryEdit = tmpApiUrl + 'survey/category/create';

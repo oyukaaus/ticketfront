@@ -4,13 +4,13 @@ import { useTranslation } from 'react-i18next';
 import Forms from 'modules/Form/Forms';
 import 'css/addInvoice.css';
 
-const AddModal = ({ show, setShow, onSubmit }) => {
+const AddModal = ({ show, setShow, onSubmit, categories }) => {
   const { t } = useTranslation();
   const formRef = useRef();
 
   const fields = [
     {
-      key: 'category',
+      key: 'name',
       value: '',
       label: `${t('survey.category')}*`,
       type: 'text',
@@ -20,7 +20,7 @@ const AddModal = ({ show, setShow, onSubmit }) => {
       labelBold: true,
     },
     {
-      key: 'parentCategory',
+      key: 'parent_id',
       value: '',
       label: `${t('survey.parentCategory')}`,
       type: 'dropdown',
@@ -28,20 +28,7 @@ const AddModal = ({ show, setShow, onSubmit }) => {
       placeHolder: t('survey.parentCategoryPlaceholder'),
       labelBold: true,
       searchable: true,
-      options: [
-        {
-          text: 'Сэтгэл ханамжийн судалгаа',
-          value: '1',
-        },
-        {
-          text: 'Сургалтын судалгаа',
-          value: '2',
-        },
-        {
-          text: 'Дэлгэрэнгүй судалгаа',
-          value: '3',
-        },
-      ],
+      options: categories,
     },
   ];
 

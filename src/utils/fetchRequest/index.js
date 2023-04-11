@@ -48,7 +48,7 @@ export function encryptUrlParams(params = {}) {
 export function fetchRequest(url, method, bodyParams, fileUpload = false, formData = false, withEncryption = true) {
     let headerObject = fileUpload ? RequestHeadersFile : RequestHeaders;
 
-    let requestUrl = ROOT_URL + url;
+    let requestUrl = url.includes('http') ? url : ROOT_URL + url; // testing survey api
 
     const {
         auth: { authToken }
