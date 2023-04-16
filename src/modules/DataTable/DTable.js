@@ -581,6 +581,8 @@ const DTable = ({
 			availableContextMenus = contextMenus;
 		}
 
+		console.log('MENUS: ', availableContextMenus);
+
 		if (availableContextMenus.length) {
 			const wrapper = getWrapper();
 			const menu = (

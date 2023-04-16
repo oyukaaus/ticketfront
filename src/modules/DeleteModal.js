@@ -9,7 +9,8 @@ const DeleteModal = ({
     title = '',
     btnText = null,
     btnClass = null,
-    modalSize = "sm"
+    modalSize = "sm",
+    ...rest
 }) => {
     const { t } = useTranslation();
 
@@ -20,6 +21,7 @@ const DeleteModal = ({
             size={modalSize}
             aria-labelledby="contained-modal-title-vcenter"
             centered
+            {...rest}
         >
             <Modal.Header closeButton>
                 <Modal.Title>

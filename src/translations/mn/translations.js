@@ -1397,6 +1397,14 @@ export const TRANSLATIONS_MN = {
         questionnaireType: "Асуумжийн төрөл",
         typeText: "Текст бичих",
         typeSelect: "Сонголтоос сонгох",
-        selectImage: "Зураг оруулах"
+        selectImage: "Зураг оруулах",
+        sentDate: 'Илгээсэн огноо',
+        addAgain: "Дахин асуумж нэмэх",
+        orderAction: 'Дараалал өөрчлөх',
+        report: "Тайлан үзэх",
+        changeDate: "Хугацаа өөрчлөх",
+        copy: "Хуулах",
+        changeQuestionsOrder: "Асуумжийн дараалал өөрчлөх"
+        
     }
 };

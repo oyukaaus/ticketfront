@@ -12,6 +12,7 @@ const SurveyPage = (props) => {
     { to: '', text: t('menu.home') },
     { to: 'survey/index', text: t('dashboard.survey') },
   ];
+  const [category, setCategory] = React.useState('');
   return (
     <div>
       <div className="mb-3">
@@ -20,10 +21,10 @@ const SurveyPage = (props) => {
       </div>
       <Row>
         <Col md={3}>
-          <CategoryContainer />
+          <CategoryContainer setCategory={setCategory} />
         </Col>
         <Col>
-          <SurveyListContainer />
+          <SurveyListContainer category={category} />
         </Col>
       </Row>
     </div>

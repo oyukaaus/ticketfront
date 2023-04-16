@@ -4,76 +4,55 @@ import { useTranslation } from 'react-i18next';
 import { AddCircleOutline } from '@mui/icons-material';
 // import TreeView from 'survey/components/TreeView';
 import TreeView from 'modules/TreeView';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchRequest } from 'utils/fetchRequest';
 import { setLoading } from 'utils/redux/action';
 import { surveyCategoryIndex, surveyCategoryCreate, surveyCategoryEdit } from 'utils/fetchRequest/Urls';
 import showMessage from 'modules/message';
 import AddModal from './AddModal';
 
+export function convertDataToTree(data) {
+  return data.map((item) => {
+    const { name, id } = item;
+    const children = item.sub_categories && item.sub_categories?.length > 0 ? convertDataToTree(item.sub_categories) : [];
+    return { key: id, title: name, children };
+  });
+}
+
+export function convertDataToOptions(data) {
+  return data.reduce((acc, item) => {
+    const { key, title, children } = item;
+    acc.push({ value: key, text: title });
+    if (children) {
+      acc.push(...convertDataToOptions(children));
+    }
+    return acc;
+  }, []);
+}
+
 const CategoryContainer = (props) => {
+  const { setCategory } = props;
   const dispatch = useDispatch();
+  const { selectedSchool } = useSelector((state) => state.schoolData);
   const { t } = useTranslation();
   const [show, setShow] = React.useState(false);
-  const [selectedTreeId, setSelectedTreeId] = React.useState(null);
-  const [categories, setCategories] = React.useState([
-    {
-      key: 1,
-      title: 'First',
-      children: [
-        {
-          key: '1-1',
-          title: 'First - 1',
-        },
-        {
-          key: '1-2',
-          title: 'First - 2',
-        },
-      ],
-    },
-    {
-      key: 2,
-      title: 'Second',
-      children: [
-        {
-          key: '2-1',
-          title: 'Second - 1',
-        },
-        {
-          key: '2-2',
-          title: 'SEcond - 2',
-        },
-      ],
-    },
-  ]);
-
-  function convertDataToTree(data) {
-    return data.map((item) => {
-      const { name, id } = item;
-      const children = item.sub_categories && item.sub_categories?.length > 0 ? convertDataToTree(item.sub_categories) : [];
-      return { key: id, title: name, children };
-    });
-  }
-
-  function convertDataToOptions(data) {
-    return data.reduce((acc, item) => {
-      const { key, title, children } = item;
-      acc.push({ value: key, text: title });
-      if (children) {
-        acc.push(...convertDataToOptions(children));
-      }
-      return acc;
-    }, []);
-  }
+  const [selectedTreeId, setSelectedTreeId] = React.useState('');
+  const [categories, setCategories] = React.useState([]);
 
   const handleTreeClick = (array) => {
     const [id] = array;
     setSelectedTreeId(id);
   };
 
+  React.useEffect(() => {
+    setCategory(selectedTreeId);
+  }, [selectedTreeId]);
+
   const fetch = () => {
     dispatch(setLoading(true));
-    const postData = {};
+    const postData = {
+      school: selectedSchool?.id,
+    };
     fetchRequest(surveyCategoryIndex, 'POST', postData)
       .then((res) => {
         const { success = false, message = null, categories: tmpCategories = [] } = res;
@@ -94,6 +73,7 @@ const CategoryContainer = (props) => {
   const handleSubmit = async (values) => {
     dispatch(setLoading(true));
     const postData = {
+      school: selectedSchool?.id,
       ...values,
       code: values.name?.replaceAll(' ', '').toLowerCase(),
       is_active: 1,
@@ -120,9 +100,6 @@ const CategoryContainer = (props) => {
   React.useEffect(() => {
     fetch();
   }, []);
-
-  console.log('xaxa: ', categories);
-  console.log('wtf: ', convertDataToOptions(categories));
 
   return (
     <>
@@ -151,8 +128,14 @@ const CategoryContainer = (props) => {
             </span>
           </Button>
         </div>
-        <div className="bg-white">
-          <TreeView defaultExpandAll={true} selectedNodes={[selectedTreeId]} onSelect={(e) => handleTreeClick(e)} treeData={categories} />
+        <div className="bg-white p-5">
+          <TreeView
+            defaultExpandAll={true}
+          
+            selectedNodes={[selectedTreeId]}
+            onSelect={(e) => handleTreeClick(e)}
+            treeData={[{ key: '', title: t('common.all'), children: categories }]}
+          />
         </div>
       </section>
     </>

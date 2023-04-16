@@ -52,6 +52,7 @@ const index = () => {
     const [tableData, setTableData] = useState([]);
     const [selectedRows, setSelectedRows] = useState([]);
 
+
     const breadcrumbs = [
         { to: '', text: t('menu.home') },
         { to: 'doctor/medicine-registration', text: t('doctorsCorner.medicineRegistration') },
