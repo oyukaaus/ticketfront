@@ -161,13 +161,12 @@ const SurveyListContainer = (props) => {
   ];
 
   const [totalSurvey, setTotalSurvey] = useState(0);
-  console.log('total: ', totalSurvey);
 
   const fetchSurveyList = async () => {
     const postData = {
       school: selectedSchool?.id,
       page: pageNumber,
-      pageSize: sizePerPage,
+      page_size: sizePerPage,
       query: searchValue,
       sortBy: sortKey,
       order: sortOrder,
@@ -186,12 +185,11 @@ const SurveyListContainer = (props) => {
       }
       fetchRequest(surveyIndex, 'POST', postData)
         .then((res) => {
-          console.log('resss: ', res);
-          const { surveys = [], count, page = 1, pageSize = 10, query = '', totalCount = 0, success = false, message = null } = res;
+          const { surveys = [], count, page = 1, query = '', totalCount = 0, success = false, message = null } = res;
           if (success) {
             setTableData(surveys);
             setPageNumber(page);
-            setSizePerPage(pageSize);
+            setSizePerPage(res?.page_size || 10);
             setSearchValue(query);
             setTableTotalCount(count);
           } else {
@@ -397,7 +395,7 @@ const SurveyListContainer = (props) => {
                   currentPage={pageNumber}
                   // checkable="false"
                   // onCheckable={false}
-                  // remote
+                  remote
                   onInteraction={onInteraction}
                   selectMode="radio"
                   config={config}

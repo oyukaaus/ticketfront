@@ -8,7 +8,7 @@ import { format, formatISO } from 'date-fns';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchRequest } from 'utils/fetchRequest';
 import { setLoading } from 'utils/redux/action';
-import { surveyCategoryIndex, surveyCreate } from 'utils/fetchRequest/Urls';
+import { surveyCategoryIndex, surveyCreate, surveyInfoRoles } from 'utils/fetchRequest/Urls';
 import showMessage from 'modules/message';
 import useData from 'survey/hooks/useData';
 import { convertDataToTree, convertDataToOptions } from '../Category';
@@ -21,13 +21,19 @@ const CreateSurveyContainer = ({ show, setShow, onSubmit }) => {
   const formRef = useRef();
   const { selectedSchool } = useSelector((state) => state.schoolData);
   const [categories, setCategories] = React.useState([]);
-  const [participant, setParticipant] = useState();
+  const [participant, setParticipant] = useState('');
 
   const [refreshId, setRefreshId] = useState(0);
+  const [grades, setGrades] = useState([]);
+  const [systemRoles, setSystemRoles] = useState([]);
+
+  const [roles, setRoles] = useState([]);
 
   const fetch = () => {
     dispatch(setLoading(true));
-    const postData = {};
+    const postData = {
+      school: selectedSchool?.id,
+    };
     fetchRequest(surveyCategoryIndex, 'POST', postData)
       .then((res) => {
         const { success = false, message = null, categories: tmpCategories = [] } = res;
@@ -50,6 +56,12 @@ const CreateSurveyContainer = ({ show, setShow, onSubmit }) => {
     fetch();
   }, []);
 
+  useEffect(() => {
+    setRefreshId((id) => id + 1);
+  }, [data]);
+
+  const TYPE = data?.survey_types?.find((st) => st.id === participant);
+
   const fields = [
     {
       key: 'code',
@@ -69,7 +81,7 @@ const CreateSurveyContainer = ({ show, setShow, onSubmit }) => {
       type: 'text',
       required: true,
       placeHolder: t('errorMessage.enterName'),
-      errorMessage: t('errorMessage.enterName'),
+      errorMessage: t('errorMessage.enterValue'),
       labelBold: true,
     },
     {
@@ -78,7 +90,7 @@ const CreateSurveyContainer = ({ show, setShow, onSubmit }) => {
       label: `${t('survey.category')}*`,
       type: 'dropdown',
       required: true,
-      errorMessage: t('errorMessage.enterName'),
+      errorMessage: t('errorMessage.enterValue'),
       labelBold: true,
       options: convertDataToOptions(categories),
     },
@@ -88,7 +100,7 @@ const CreateSurveyContainer = ({ show, setShow, onSubmit }) => {
       label: `${t('survey.date')}*`,
       type: 'daterange',
       required: true,
-      errorMessage: t('errorMessage.enterName'),
+      errorMessage: t('errorMessage.enterValue'),
       labelBold: true,
     },
     {
@@ -97,7 +109,7 @@ const CreateSurveyContainer = ({ show, setShow, onSubmit }) => {
       label: `${t('survey.participants')}*`,
       type: 'dropdown',
       required: true,
-      errorMessage: t('errorMessage.enterName'),
+      errorMessage: t('errorMessage.enterValue'),
       labelBold: true,
       options: data?.survey_types?.map((type) => ({
         text: type.name,
@@ -109,54 +121,76 @@ const CreateSurveyContainer = ({ show, setShow, onSubmit }) => {
     },
 
     {
-      key: 'systemRole',
+      key: 'system_roles',
       value: '',
       label: `${t('survey.systemRole')}*`,
       type: 'dropdown',
       required: false,
-      errorMessage: t('errorMessage.enterName'),
+      errorMessage: t('errorMessage.enterValue'),
       labelBold: true,
-      hidden: participant !== 'teachers',
+      hidden: TYPE?.code !== 'TEACHER',
       searchable: true,
       multiple: true,
+      options: data?.roles?.map((role) => ({
+        text: role.name,
+        value: role.id,
+      })),
+      onChange: setSystemRoles,
     },
 
     {
-      key: 'workers',
+      key: 'roles',
       value: '',
       label: `${t('survey.workers')}*`,
       type: 'dropdown',
       required: false,
-      errorMessage: t('errorMessage.enterName'),
+      errorMessage: t('errorMessage.enterValue'),
       labelBold: true,
-      hidden: participant !== 'teachers',
+      hidden: TYPE?.code !== 'TEACHER',
       searchable: true,
       multiple: true,
+      options: roles?.map((tmpRole) => ({
+        text: `${tmpRole.lastName} ${tmpRole.firstName}`,
+        value: tmpRole.id,
+      })),
     },
 
     {
-      key: 'level',
+      key: 'grades',
       value: '',
       label: `${t('survey.level')}*`,
       type: 'dropdown',
       required: false,
-      errorMessage: t('errorMessage.enterName'),
+      errorMessage: t('errorMessage.enterValue'),
       labelBold: true,
-      hidden: participant === 'teachers',
+      hidden: TYPE?.code === 'TEACHER',
       searchable: true,
       multiple: true,
+      options: data?.grades?.map((tmpGrade) => ({
+        text: tmpGrade.title,
+        value: tmpGrade.key,
+      })),
+      onChange: setGrades,
     },
     {
-      key: 'group',
+      key: 'classes',
       value: '',
       label: `${t('survey.group')}*`,
       type: 'dropdown',
       required: false,
-      errorMessage: t('errorMessage.enterName'),
+      errorMessage: t('errorMessage.enterValue'),
       labelBold: true,
-      hidden: participant === 'teachers',
+      hidden: TYPE?.code === 'TEACHER',
       searchable: true,
       multiple: true,
+      options: data?.classes?.classes
+        // ?.filter((classes) => {
+        //   return grade.includes(classes?.gradeId);
+        // })
+        ?.map((classes) => ({
+          text: classes.class,
+          value: classes.id,
+        })),
     },
     {
       key: 'purpose',
@@ -171,7 +205,32 @@ const CreateSurveyContainer = ({ show, setShow, onSubmit }) => {
   useEffect(() => {
     const values = formRef.current.getValues();
     formRef.current.updateFields(fields?.map((f) => ({ ...f, value: values[f.key] })));
-  }, [participant]);
+  }, [participant, grades, roles]);
+
+  useEffect(() => {
+    if (systemRoles?.length > 0) {
+      const fetchRoles = async () => {
+        dispatch(setLoading(true));
+        try {
+          const res = await fetchRequest(surveyInfoRoles, 'POST', {
+            school: selectedSchool?.id,
+            roles: systemRoles,
+            role: systemRoles[0],
+          });
+          console.log('res: ', res);
+          if (res?.success) {
+            setRoles(res?.roles);
+          } else {
+            showMessage(res?.message || t('errorMessage.title'));
+          }
+        } catch (e) {
+          showMessage(e?.message || t('errorMessage.title'));
+        }
+        dispatch(setLoading(false));
+      };
+      fetchRoles();
+    }
+  }, [systemRoles]);
 
   const onSaveClick = () => {
     const [isValid, , values] = formRef.current.validate();
@@ -181,13 +240,17 @@ const CreateSurveyContainer = ({ show, setShow, onSubmit }) => {
       const postData = {
         ...{ school: selectedSchool?.id },
         code: values.code,
-        status_id: '2',  // DRAFT ID
+        status_id: '2', // DRAFT ID
         type_id: values?.type_id,
         start_date: formatISO(new Date(startDate)),
         end_date: formatISO(new Date(endDate)),
         name: values?.name,
         purpose: values?.purpose,
         category_id: values?.category_id,
+        system_roles: values?.system_roles,
+        roles: values?.roles,
+        classes: values?.classes,
+        grades: values?.grades,
       };
 
       console.log('postData: ', postData);

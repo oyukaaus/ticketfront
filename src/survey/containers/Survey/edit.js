@@ -8,7 +8,7 @@ import Forms from 'modules/Form/Forms';
 import { Link, useHistory, useParams } from 'react-router-dom';
 import useData from 'survey/hooks/useData';
 import { fetchRequest } from 'utils/fetchRequest';
-import { surveyQuestionsIndex, surveyCategoryIndex, surveyQuestionCreate, surveyCreate, surveyQuestionDelete } from 'utils/fetchRequest/Urls';
+import { surveyQuestionsIndex, surveyCategoryIndex, surveyQuestionCreate, surveyCreate, surveyQuestionDelete, surveyInfoRoles } from 'utils/fetchRequest/Urls';
 import Checkbox from 'modules/Form/Checkbox';
 import showMessage from 'modules/message';
 import { useSelector, useDispatch } from 'react-redux';
@@ -48,6 +48,15 @@ const EditSurveyContainer = () => {
   const [selectedData, setSelectedData] = useState();
 
   const [showOrder, setShowOrder] = useState(false);
+
+  const [grades, setGrades] = useState([]);
+  const [systemRoles, setSystemRoles] = useState([]);
+
+  const [roles, setRoles] = useState([]);
+
+  const TYPE = data?.survey_types?.find((st) => st.id === participant);
+
+
 
   const fetchCategories = () => {
     // dispatch(setLoading(true));
@@ -119,6 +128,8 @@ const EditSurveyContainer = () => {
     fetchCategories();
   }, []);
 
+
+
   const fields = [
     {
       key: 'code',
@@ -180,54 +191,76 @@ const EditSurveyContainer = () => {
     },
 
     {
-      key: 'systemRole',
-      value: '',
+      key: 'system_roles',
+      value: surveyData?.survey?.system_roles,
       label: `${t('survey.systemRole')}*`,
       type: 'dropdown',
       required: false,
-      errorMessage: t('errorMessage.enterName'),
+      errorMessage: t('errorMessage.enterValue'),
       labelBold: true,
-      hidden: participant !== 'teachers',
+      hidden: TYPE?.code !== 'TEACHER',
       searchable: true,
       multiple: true,
+      options: data?.roles?.map((role) => ({
+        text: role.name,
+        value: role.id,
+      })),
+      onChange: setSystemRoles,
     },
 
     {
-      key: 'workers',
-      value: '',
+      key: 'roles',
+      value: surveyData?.survey?.roles,
       label: `${t('survey.workers')}*`,
       type: 'dropdown',
       required: false,
-      errorMessage: t('errorMessage.enterName'),
+      errorMessage: t('errorMessage.enterValue'),
       labelBold: true,
-      hidden: participant !== 'teachers',
+      hidden: TYPE?.code !== 'TEACHER',
       searchable: true,
       multiple: true,
+      options: roles?.map((tmpRole) => ({
+        text: `${tmpRole.lastName} ${tmpRole.firstName}`,
+        value: tmpRole.id,
+      })),
     },
 
     {
-      key: 'level',
-      value: '',
+      key: 'grades',
+      value: surveyData?.survey?.grades,
       label: `${t('survey.level')}*`,
       type: 'dropdown',
       required: false,
-      errorMessage: t('errorMessage.enterName'),
+      errorMessage: t('errorMessage.enterValue'),
       labelBold: true,
-      hidden: participant === 'teachers',
+      hidden: TYPE?.code === 'TEACHER',
       searchable: true,
       multiple: true,
+      options: data?.grades?.map((tmpGrade) => ({
+        text: tmpGrade.title,
+        value: tmpGrade.key,
+      })),
+      onChange: setGrades,
     },
     {
-      key: 'group',
-      value: '',
+      key: 'classes',
+      value: surveyData?.survey?.classes,
       label: `${t('survey.group')}*`,
       type: 'dropdown',
       required: false,
-      errorMessage: t('errorMessage.enterName'),
+      errorMessage: t('errorMessage.enterValue'),
       labelBold: true,
-      hidden: participant === 'teachers',
+      hidden: TYPE?.code === 'TEACHER',
       searchable: true,
       multiple: true,
+      options: data?.classes?.classes
+        // ?.filter((classes) => {
+        //   return grade.includes(classes?.gradeId);
+        // })
+        ?.map((classes) => ({
+          text: classes.class,
+          value: classes.id,
+        })),
     },
     {
       key: 'purpose',
@@ -244,7 +277,7 @@ const EditSurveyContainer = () => {
       const values = formRef.current?.getValues();
       formRef.current.updateFields(fields?.map((f) => ({ ...f, value: values[f.key] })));
     }
-  }, [participant]);
+  }, [participant, grades, roles]);
 
   const [tabKey, setTabKey] = useState('questionnaire');
 
@@ -265,6 +298,10 @@ const EditSurveyContainer = () => {
           name: values?.name,
           purpose: values?.purpose,
           category_id: values?.category_id,
+          system_roles: values?.system_roles,
+          roles: values?.roles,
+          classes: values?.classes,
+          grades: values?.grades,
         };
 
         console.log('postData: ', postData);
@@ -406,6 +443,31 @@ const EditSurveyContainer = () => {
       });
   };
 
+
+  useEffect(() => {
+    if (systemRoles?.length > 0) {
+      const fetchRoles = async () => {
+        dispatch(setLoading(true));
+        try {
+          const res = await fetchRequest(surveyInfoRoles, 'POST', {
+            school: selectedSchool?.id,
+            roles: systemRoles,
+            role: systemRoles[0],
+          });
+          console.log('res: ', res);
+          if (res?.success) {
+            setRoles(res?.roles);
+          } else {
+            showMessage(res?.message || t('errorMessage.title'));
+          }
+        } catch (e) {
+          showMessage(e?.message || t('errorMessage.title'));
+        }
+        dispatch(setLoading(false));
+      };
+      fetchRoles();
+    }
+  }, [systemRoles]);
 
 
   return (

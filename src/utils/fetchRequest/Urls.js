@@ -46,6 +46,7 @@ export const surveyCategoryDelete = tmpApiUrl + 'survey/category/delete';
 // ----------survey-------------
 export const surveyIndex = tmpApiUrl + 'survey/list';
 export const surveyInfo = tmpApiUrl + 'survey/info';
+export const surveyInfoRoles = tmpApiUrl + 'survey/info/role';
 export const surveyCreate = tmpApiUrl + 'survey/create';
 export const surveyEdit = tmpApiUrl + 'survey/create';
 export const surveyDelete = tmpApiUrl + 'survey/delete';
@@ -55,3 +56,8 @@ export const surveyQuestionsIndex = tmpApiUrl + '/survey/question/list';
 export const surveyQuestionCreate = tmpApiUrl + '/survey/question/create';
 export const surveyQuestionUpdate = tmpApiUrl + '/survey/question/create';
 export const surveyQuestionDelete = tmpApiUrl + '/survey/question/delete';
+
+// ----------survey reports-------------
+export const surveyResultReport = tmpApiUrl + '/survey/result/report';
+export const surveyResultList = tmpApiUrl + '/survey/result/list';
+

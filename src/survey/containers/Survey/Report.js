@@ -1,12 +1,17 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Button, Col, Row, Badge } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { useSelector } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { Link, useParams } from 'react-router-dom';
 import DTable from 'modules/DataTable/DTable';
 import TreeView from 'modules/TreeView';
+import { fetchRequest } from 'utils/fetchRequest';
+import { surveyResultList, surveyResultReport } from 'utils/fetchRequest/Urls';
+import { setLoading } from 'utils/redux/action';
+import showMessage from 'modules/message';
 
 const SurveyReportContainer = () => {
+  const { id } = useParams();
   const { t } = useTranslation();
   const { selectedSchool } = useSelector((state) => state.schoolData);
   const current = new Date();
@@ -63,6 +68,36 @@ const SurveyReportContainer = () => {
       sort: true,
     },
   ];
+
+  const dispatch = useDispatch();
+
+  const fetchData = async (surveyId) => {
+    dispatch(setLoading(true));
+    try {
+      const res = await fetchRequest(surveyResultReport, 'POST', {
+        survey_id: surveyId,
+      });
+
+      const res2 = await fetchRequest(surveyResultList, 'POST', {
+        survey_id: surveyId,
+      });
+
+      console.log('RES2: ', res2);
+
+      if (res.success) {
+        console.log('RES: ', res);
+      } else {
+        showMessage(res.message || t('errorMessage.title'));
+      }
+    } catch (e) {
+      showMessage(e.message || t('errorMessage.title'));
+    }
+    dispatch(setLoading(false));
+  };
+
+  useEffect(() => {
+    if (id) fetchData(id);
+  }, [id]);
 
   return (
     <Modal fullscreen show={true} size="xl" animation={false} backdropClassName="full-page-bg" dialogClassName="custom-full-page-modal">
