@@ -139,7 +139,7 @@ const CreateSurveyContainer = ({ show, setShow, onSubmit }) => {
     },
 
     {
-      key: 'roles',
+      key: 'system_users',
       value: '',
       label: `${t('survey.workers')}*`,
       type: 'dropdown',
@@ -168,7 +168,7 @@ const CreateSurveyContainer = ({ show, setShow, onSubmit }) => {
       multiple: true,
       options: data?.grades?.map((tmpGrade) => ({
         text: tmpGrade.title,
-        value: tmpGrade.key,
+        value: tmpGrade.gradeId,
       })),
       onChange: setGrades,
     },
@@ -237,6 +237,7 @@ const CreateSurveyContainer = ({ show, setShow, onSubmit }) => {
     if (isValid) {
       const [{ startDate, endDate }] = values?.date || {};
       dispatch(setLoading(true));
+      console.log('values: ', values);
       const postData = {
         ...{ school: selectedSchool?.id },
         code: values.code,
@@ -248,13 +249,12 @@ const CreateSurveyContainer = ({ show, setShow, onSubmit }) => {
         purpose: values?.purpose,
         category_id: values?.category_id,
         system_roles: values?.system_roles,
-        roles: values?.roles,
+        system_users: values?.system_users,
         classes: values?.classes,
         grades: values?.grades,
       };
-
       console.log('postData: ', postData);
-
+      dispatch(setLoading(false));
       fetchRequest(surveyCreate, 'POST', postData)
         .then((res) => {
           const { success = false, message = null } = res;

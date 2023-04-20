@@ -14,6 +14,7 @@ const EditQuestion = (props, formRef) => {
   const [answers, setAnswers] = React.useState([{ order_number: 1 }]);
   const [file, setFile] = React.useState();
   const [isMulti, setIsMulti] = React.useState(false);
+  const [deleteIds, setDeleteIds] = React.useState([]);
   const questionnaireFields = [
     {
       key: 'question',
@@ -99,7 +100,7 @@ const EditQuestion = (props, formRef) => {
   const tmpType = tmpQt?.find((qt) => qt.id === type);
 
   React.useEffect(() => {
-    save({ answers: tmpType?.code === 'SELECT' ? [...answers] : [], image: file, is_multi_answer: isMulti });
+    save({ answers: tmpType?.code === 'SELECT' ? [...answers] : [], image: file, is_multi_answer: isMulti, delete_ids: deleteIds || [] });
   }, [isMulti, tmpType, answers, file]);
 
   React.useEffect(() => {
@@ -210,6 +211,9 @@ const EditQuestion = (props, formRef) => {
                   size="sm"
                   onClick={() => {
                     const tmp = [...answers];
+                    if (tmp[i].id) {
+                      setDeleteIds([...deleteIds, tmp[i].id]);
+                    }
                     tmp.splice(i, 1);
                     setAnswers(tmp);
                   }}

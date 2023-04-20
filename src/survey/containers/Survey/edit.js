@@ -41,7 +41,6 @@ const EditSurveyContainer = () => {
 
   const [surveyData, setSurveyData] = useState();
   const [categories, setCategories] = React.useState([]);
-  console.log('surveyData: ', surveyData);
 
   const [showDelete, setShowDelete] = useState(false);
 
@@ -55,8 +54,6 @@ const EditSurveyContainer = () => {
   const [roles, setRoles] = useState([]);
 
   const TYPE = data?.survey_types?.find((st) => st.id === participant);
-
-
 
   const fetchCategories = () => {
     // dispatch(setLoading(true));
@@ -128,7 +125,11 @@ const EditSurveyContainer = () => {
     fetchCategories();
   }, []);
 
-
+  console.log('surveyData: ', surveyData);
+  console.log(
+    'ROLES: ',
+    surveyData?.survey?.system_users?.map((role) => role.id)
+  );
 
   const fields = [
     {
@@ -148,8 +149,8 @@ const EditSurveyContainer = () => {
       label: `${t('survey.name')}*`,
       type: 'text',
       required: true,
-      placeHolder: t('errorMessage.enterName'),
-      errorMessage: t('errorMessage.enterName'),
+      placeHolder: t('errorMessage.enterValue'),
+      errorMessage: t('errorMessage.enterValue'),
       labelBold: true,
     },
     {
@@ -158,19 +159,19 @@ const EditSurveyContainer = () => {
       label: `${t('survey.category')}*`,
       type: 'dropdown',
       required: true,
-      errorMessage: t('errorMessage.enterName'),
+      errorMessage: t('errorMessage.enterValue'),
       labelBold: true,
       options: convertDataToOptions(categories),
     },
     {
       key: 'date',
-      value: [{ startDate: surveyData?.survey?.start_date, endDate: surveyData?.survey?.end_date }],
+      value: [{ startDate: surveyData?.survey?.start_date?.date, endDate: surveyData?.survey?.end_date?.date }],
       label: `${t('survey.date')}*`,
       type: 'daterange',
-      selectedStartDate: surveyData?.survey?.start_date,
-      selectedEndDate: surveyData?.survey?.end_date,
+      selectedStartDate: surveyData?.survey?.start_date?.date,
+      selectedEndDate: surveyData?.survey?.end_date?.date,
       required: true,
-      errorMessage: t('errorMessage.enterName'),
+      errorMessage: t('errorMessage.enterValue'),
       labelBold: true,
     },
     {
@@ -179,7 +180,7 @@ const EditSurveyContainer = () => {
       label: `${t('survey.participants')}*`,
       type: 'dropdown',
       required: true,
-      errorMessage: t('errorMessage.enterName'),
+      errorMessage: t('errorMessage.enterValue'),
       labelBold: true,
       options: data?.survey_types?.map((st) => ({
         text: st.name,
@@ -192,7 +193,7 @@ const EditSurveyContainer = () => {
 
     {
       key: 'system_roles',
-      value: surveyData?.survey?.system_roles,
+      value: surveyData?.survey?.roles?.map((role) => role.id),
       label: `${t('survey.systemRole')}*`,
       type: 'dropdown',
       required: false,
@@ -201,16 +202,16 @@ const EditSurveyContainer = () => {
       hidden: TYPE?.code !== 'TEACHER',
       searchable: true,
       multiple: true,
-      options: data?.roles?.map((role) => ({
-        text: role.name,
-        value: role.id,
+      options: data?.roles?.map((role2) => ({
+        text: role2.name,
+        value: role2.id,
       })),
       onChange: setSystemRoles,
     },
 
     {
-      key: 'roles',
-      value: surveyData?.survey?.roles,
+      key: 'system_users',
+      value: surveyData?.survey?.system_users?.map((tmpRole) => tmpRole.id),
       label: `${t('survey.workers')}*`,
       type: 'dropdown',
       required: false,
@@ -219,15 +220,15 @@ const EditSurveyContainer = () => {
       hidden: TYPE?.code !== 'TEACHER',
       searchable: true,
       multiple: true,
-      options: roles?.map((tmpRole) => ({
-        text: `${tmpRole.lastName} ${tmpRole.firstName}`,
-        value: tmpRole.id,
+      options: roles?.map((tmpRole2) => ({
+        text: `${tmpRole2.lastName} ${tmpRole2.firstName}`,
+        value: tmpRole2.id,
       })),
     },
 
     {
       key: 'grades',
-      value: surveyData?.survey?.grades,
+      value: surveyData?.survey?.grades?.map((tmpGrade) => tmpGrade.gradeId),
       label: `${t('survey.level')}*`,
       type: 'dropdown',
       required: false,
@@ -236,15 +237,15 @@ const EditSurveyContainer = () => {
       hidden: TYPE?.code === 'TEACHER',
       searchable: true,
       multiple: true,
-      options: data?.grades?.map((tmpGrade) => ({
-        text: tmpGrade.title,
-        value: tmpGrade.key,
+      options: data?.grades?.map((tmpGrade2) => ({
+        text: tmpGrade2.title,
+        value: tmpGrade2.gradeId,
       })),
       onChange: setGrades,
     },
     {
       key: 'classes',
-      value: surveyData?.survey?.classes,
+      value: surveyData?.survey?.classes?.map((classes) => classes.id),
       label: `${t('survey.group')}*`,
       type: 'dropdown',
       required: false,
@@ -257,9 +258,9 @@ const EditSurveyContainer = () => {
         // ?.filter((classes) => {
         //   return grade.includes(classes?.gradeId);
         // })
-        ?.map((classes) => ({
-          text: classes.class,
-          value: classes.id,
+        ?.map((classes2) => ({
+          text: classes2.class,
+          value: classes2.id,
         })),
     },
     {
@@ -293,39 +294,33 @@ const EditSurveyContainer = () => {
           code: values.code,
           status_id: '2',
           type_id: values?.type_id,
-          start_date: formatISO(new Date(startDate)),
-          end_date: formatISO(new Date(endDate)),
+          start_date: formatISO(new Date(startDate || surveyData?.survey?.start_date?.date)),
+          end_date: formatISO(new Date(endDate || surveyData?.survey?.end_date?.date)),
           name: values?.name,
           purpose: values?.purpose,
           category_id: values?.category_id,
+          system_users: values?.system_users,
           system_roles: values?.system_roles,
-          roles: values?.roles,
           classes: values?.classes,
           grades: values?.grades,
         };
-
-        console.log('postData: ', postData);
 
         fetchRequest(surveyCreate, 'POST', postData)
           .then((res) => {
             const { success = false, message = null } = res;
             if (success) {
-              console.log('res2: ', res);
-              // history.replace(`/survey/view/${res?.survey?.id}/edit`);
               fetchInfo(id);
             } else {
-              console.log('res: ', res);
               showMessage(message || t('errorMessage.title'));
             }
             dispatch(setLoading(false));
           })
           .catch((e) => {
-            console.log('ERROR: ', e);
             dispatch(setLoading(false));
             showMessage(t('errorMessage.title'));
           });
 
-        formRef.current.updateFields(fields);
+        // formRef.current.updateFields(fields);
       }
     } else if (view === 'form-view') {
       const [isValid, , values] = formQuestionnaireRef.current.validate();
@@ -426,7 +421,6 @@ const EditSurveyContainer = () => {
     dispatch(setLoading(true));
     fetchRequest(surveyQuestionCreate, 'POST', postData)
       .then((res) => {
-        console.log('wtf: ', postData, res);
         const { message = null, success = false } = res;
         if (success) {
           setShowOrder(false);
@@ -442,7 +436,6 @@ const EditSurveyContainer = () => {
         showMessage(t('errorMessage.title'));
       });
   };
-
 
   useEffect(() => {
     if (systemRoles?.length > 0) {
@@ -469,6 +462,12 @@ const EditSurveyContainer = () => {
     }
   }, [systemRoles]);
 
+  useEffect(() => {
+    if (surveyData?.survey) {
+      setParticipant(surveyData?.survey?.type_id);
+      setSystemRoles(surveyData?.survey?.roles?.map((role) => role.id));
+    }
+  }, [surveyData]);
 
   return (
     <>
