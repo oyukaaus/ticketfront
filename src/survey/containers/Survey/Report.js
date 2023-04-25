@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 import DTable from 'modules/DataTable/DTable';
 import TreeView from 'modules/TreeView';
 import { fetchRequest } from 'utils/fetchRequest';
-import { surveyResultClassname, surveyResultList, surveyResultReport } from 'utils/fetchRequest/Urls';
+import { surveyResultClassname, surveyResultList, surveyResultReport, surveyQuestionsIndex } from 'utils/fetchRequest/Urls';
 import { setLoading } from 'utils/redux/action';
 import showMessage from 'modules/message';
 import CustomPieChart from 'survey/components/PieChart';
@@ -95,7 +95,7 @@ const SurveyReportContainer = () => {
     dispatch(setLoading(true));
     try {
       // surveyResultClassname
-      const [res, res2, res3] = await Promise.all([
+      const [res, res2, res3, res4] = await Promise.all([
         fetchRequest(surveyResultReport, 'POST', {
           survey_id: surveyId,
         }),
@@ -105,11 +105,15 @@ const SurveyReportContainer = () => {
         fetchRequest(surveyResultClassname, 'POST', {
           survey_id: surveyId,
         }),
+        fetchRequest(surveyQuestionsIndex, 'POST', {
+          survey_id: surveyId,
+        }),
       ]);
       setData({
         report: res?.results,
         results: res2?.results,
         classess: res3?.results,
+        survey: res4,
       });
     } catch (e) {
       showMessage(e.message || t('errorMessage.title'));
@@ -120,8 +124,22 @@ const SurveyReportContainer = () => {
   useEffect(() => {
     if (id) fetchData(id);
   }, [id]);
+  console.log('data: ', data);
 
-  console.log(`data: `, data);
+  const percent =
+    (data?.classess
+      ?.filter((c) => {
+        return !!c.student_classname;
+      })
+      .reduce((sum, next) => {
+        return sum + (next.result_count || 0);
+      }, 0) *
+      100) /
+      (data?.classess?.filter((c) => {
+        return !!c.student_classname;
+      }).length *
+        data?.survey?.count) || 0;
+  console.log('wff: ', percent);
 
   return (
     <Modal fullscreen show={true} size="xl" animation={false} backdropClassName="full-page-bg" dialogClassName="custom-full-page-modal">
@@ -144,11 +162,11 @@ const SurveyReportContainer = () => {
               className="pie animate no-round"
               // style="--p:80;--c:orange;"
               style={{
-                '--p': '0',
+                '--p': percent || 0,
                 '--c': '#47c6ad',
               }}
             >
-              0%
+              {percent || 0}%
             </div>
           </div>
           <div className="custom-container w-25">
@@ -192,12 +210,12 @@ const SurveyReportContainer = () => {
                     <span
                       className="line"
                       style={{
-                        width: `${(100 * c.result_count) / data?.results?.count}%`,
+                        width: `${(100 * c.result_count) / data?.survey?.count}%`,
                       }}
                     ></span>
                   </div>
                   <span>
-                    {c?.result_count || 0} | {data?.results?.count || 0}
+                    {c?.result_count || 0} | {data?.survey?.count || 0}
                   </span>
                 </div>
               ))}
