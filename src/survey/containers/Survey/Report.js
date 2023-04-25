@@ -3,14 +3,24 @@ import { Modal, Button, Col, Row, Badge } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
+import { format } from 'date-fns';
 import DTable from 'modules/DataTable/DTable';
 import TreeView from 'modules/TreeView';
 import { fetchRequest } from 'utils/fetchRequest';
-import { surveyResultList, surveyResultReport } from 'utils/fetchRequest/Urls';
+import { surveyResultClassname, surveyResultList, surveyResultReport } from 'utils/fetchRequest/Urls';
 import { setLoading } from 'utils/redux/action';
 import showMessage from 'modules/message';
+import CustomPieChart from 'survey/components/PieChart';
+
+const STATUS = {
+  SENT: 'Илгээсэн',
+  IN_PROGRESS: 'Бөглөж байгаа',
+  NEW: 'Шинэ',
+  CLOSED: 'Хаагдсан',
+};
 
 const SurveyReportContainer = () => {
+  const [data, setData] = useState();
   const { id } = useParams();
   const { t } = useTranslation();
   const { selectedSchool } = useSelector((state) => state.schoolData);
@@ -38,34 +48,44 @@ const SurveyReportContainer = () => {
     showPagination: true,
     showFilter: true,
     footer: false,
-    excelFileName: t('doctorsCorner.medicineRegistration') + ' ' + dateTimeToday,
+    excelFileName: data?.results?.survey?.name + ' ' + dateTimeToday,
   };
 
   const studentColumn = [
     {
-      dataField: 'code',
+      dataField: 'student_code',
       text: t('dashboard.studentCode'),
       sort: true,
     },
     {
-      dataField: 'lastname',
+      dataField: 'student_lastname',
       text: t('dashboard.studentLastname'),
       sort: true,
     },
     {
-      dataField: 'firstname',
+      dataField: 'student_firstname',
       text: t('dashboard.studentFirstname'),
       sort: true,
     },
     {
-      dataField: 'status',
+      dataField: 'status_code',
       text: t('common.status'),
       sort: true,
+      formatter: (cell, row, rowIndex) => {
+        return (
+          <div className="text-center">
+            <div className={`custom-status ${cell}`}>{STATUS[cell]}</div>
+          </div>
+        );
+      },
     },
     {
-      dataField: 'sent_date',
+      dataField: 'created_date',
       text: t('survey.sentDate'),
       sort: true,
+      formatter: (cell, row, rowIndex) => {
+        return cell ? format(new Date(cell), 'yyyy-MM-dd HH:mm') : '-';
+      },
     },
   ];
 
@@ -74,21 +94,23 @@ const SurveyReportContainer = () => {
   const fetchData = async (surveyId) => {
     dispatch(setLoading(true));
     try {
-      const res = await fetchRequest(surveyResultReport, 'POST', {
-        survey_id: surveyId,
+      // surveyResultClassname
+      const [res, res2, res3] = await Promise.all([
+        fetchRequest(surveyResultReport, 'POST', {
+          survey_id: surveyId,
+        }),
+        fetchRequest(surveyResultList, 'POST', {
+          survey_id: surveyId,
+        }),
+        fetchRequest(surveyResultClassname, 'POST', {
+          survey_id: surveyId,
+        }),
+      ]);
+      setData({
+        report: res?.results,
+        results: res2?.results,
+        classess: res3?.results,
       });
-
-      const res2 = await fetchRequest(surveyResultList, 'POST', {
-        survey_id: surveyId,
-      });
-
-      console.log('RES2: ', res2);
-
-      if (res.success) {
-        console.log('RES: ', res);
-      } else {
-        showMessage(res.message || t('errorMessage.title'));
-      }
     } catch (e) {
       showMessage(e.message || t('errorMessage.title'));
     }
@@ -99,11 +121,15 @@ const SurveyReportContainer = () => {
     if (id) fetchData(id);
   }, [id]);
 
+  console.log(`data: `, data);
+
   return (
     <Modal fullscreen show={true} size="xl" animation={false} backdropClassName="full-page-bg" dialogClassName="custom-full-page-modal">
       <Modal.Header>
         <Modal.Title className="fs-16 d-flex justify-content-between w-100 align-items-center">
-          <span>Судалгааны код & Судалгааны нэр</span>
+          <span>
+            {data?.results?.survey?.code} - {data?.results?.survey?.name}
+          </span>
           <Link to="/survey/index">
             <Button size="sm" variant="link">
               {t('common.back')}
@@ -112,59 +138,112 @@ const SurveyReportContainer = () => {
         </Modal.Title>
       </Modal.Header>
       <Modal.Body className="px-4">
-        <div className="d-flex space-x-4  mb-2">
+        <div className="d-flex gap-3 mb-2">
           <div className="custom-container text-center w-25">
             <div
               className="pie animate no-round"
               // style="--p:80;--c:orange;"
               style={{
-                '--p': '78',
+                '--p': '0',
                 '--c': '#47c6ad',
               }}
             >
-              78%
+              0%
             </div>
           </div>
-          <div className="custom-container w-25"></div>
-          <div className="custom-container w-50"></div>
+          <div className="custom-container w-25">
+            <div className="d-flex gap-3 align-items-center">
+              <div style={{ width: 150 }}>
+                <CustomPieChart
+                  data={data?.report?.map((r) => ({
+                    color: r.status_color,
+                    label: STATUS[r.status_code],
+                    value: r.result_count,
+                  }))}
+                />
+              </div>
+              <div>
+                {data?.report
+                  ?.map((r) => ({
+                    color: r.status_color,
+                    label: STATUS[r.status_code],
+                    value: r.result_count,
+                  }))
+                  .map((r, i) => (
+                    <div key={`r-${i}`} className="fw-bold">
+                      <span style={{ width: 13, height: 13, backgroundColor: r.color, display: 'inline-block', marginRight: 10 }}></span>
+                      <span>
+                        {r.label}: {r.value}
+                      </span>
+                    </div>
+                  ))}
+              </div>
+            </div>
+          </div>
+          <div className="custom-container w-50">
+            {data?.classess
+              ?.filter((c) => {
+                return !!c.student_classname;
+              })
+              .map((c, i) => (
+                <div className="d-flex fw-bold align-items-center gap-3" key={`classes-${i}`}>
+                  <span style={{ minWidth: 30 }}>{c?.student_classname}</span>
+                  <div style={{ width: 125 }}>
+                    <span
+                      className="line"
+                      style={{
+                        width: `${(100 * c.result_count) / data?.results?.count}%`,
+                      }}
+                    ></span>
+                  </div>
+                  <span>
+                    {c?.result_count || 0} | {data?.results?.count || 0}
+                  </span>
+                </div>
+              ))}
+          </div>
         </div>
 
-        <div className="d-flex">
-          <div className="custom-container w-25">
+        <div className="d-flex gap-3">
+          <div className="custom-container" style={{ width: '20%' }}>
             <TreeView
               defaultExpandAll={true}
-              selectedNodes={['1']}
+              selectedNodes={['']}
               onSelect={(e) => {}}
               treeData={[
                 {
-                  title: 'Багш',
-                  value: '1',
+                  title: 'Бүгд',
+                  value: '',
                 },
-                {
-                  title: 'Санхүүч',
-                  value: '2',
-                },
-                {
-                  title: 'Хоолны газар',
-                  value: '3',
-                },
+                // {
+                //   title: 'Багш',
+                //   value: '1',
+                // },
+                // {
+                //   title: 'Санхүүч',
+                //   value: '2',
+                // },
+                // {
+                //   title: 'Хоолны газар',
+                //   value: '3',
+                // },
               ]}
             />
           </div>
-          <div className="custom-container w-75">
+          <div className="custom-container" style={{ flex: 1 }}>
             <DTable
               currentPage={1}
-              checkable="false"
+              // checkable="false"
               // onCheckable={handlerCheckable}
               remote
               // onInteraction={onInteraction}
               // selectMode="radio"
               config={config}
               columns={studentColumn}
-              data={[]}
+              data={data?.results?.results}
               individualContextMenus="true"
               // contextMenus={contextMenuArray}
-              totalDataSize={0}
+              totalDataSize={data?.results?.count}
               // onContextMenuItemClick={handleContextMenuClick}
               excelExportUrl="url"
               exportExportParams={{

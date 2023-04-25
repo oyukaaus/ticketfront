@@ -60,4 +60,4 @@ export const surveyQuestionDelete = tmpApiUrl + '/survey/question/delete';
 // ----------survey reports-------------
 export const surveyResultReport = tmpApiUrl + '/survey/result/report';
 export const surveyResultList = tmpApiUrl + '/survey/result/list';
-
+export const surveyResultClassname = tmpApiUrl + '/survey/result/report/classname';
