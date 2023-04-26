@@ -126,20 +126,9 @@ const SurveyReportContainer = () => {
   }, [id]);
   console.log('data: ', data);
 
-  const percent =
-    (data?.classess
-      ?.filter((c) => {
-        return !!c.student_classname;
-      })
-      .reduce((sum, next) => {
-        return sum + (next.result_count || 0);
-      }, 0) *
-      100) /
-      (data?.classess?.filter((c) => {
-        return !!c.student_classname;
-      }).length *
-        data?.survey?.count) || 0;
-  console.log('wff: ', percent);
+  const percent = 0;
+
+  const total = 22 || data?.survey?.count;
 
   return (
     <Modal fullscreen show={true} size="xl" animation={false} backdropClassName="full-page-bg" dialogClassName="custom-full-page-modal">
@@ -210,12 +199,12 @@ const SurveyReportContainer = () => {
                     <span
                       className="line"
                       style={{
-                        width: `${(100 * c.result_count) / data?.survey?.count}%`,
+                        width: `${(100 * c.result_count) / total}%`,
                       }}
                     ></span>
                   </div>
                   <span>
-                    {c?.result_count || 0} | {data?.survey?.count || 0}
+                    {c?.result_count || 0} | {total || 0}
                   </span>
                 </div>
               ))}

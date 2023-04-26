@@ -288,14 +288,23 @@ const EditSurveyContainer = () => {
       const [isValid, , values] = formRef.current.validate();
       if (isValid) {
         const [{ startDate, endDate }] = values?.date || [];
+
         const postData = {
           ...{ school: selectedSchool?.id },
           id,
           code: values.code,
           status_id: '2',
           type_id: values?.type_id,
-          start_date: formatISO(new Date(startDate || surveyData?.survey?.start_date?.date)),
-          end_date: formatISO(new Date(endDate || surveyData?.survey?.end_date?.date)),
+          start_date: startDate
+            ? formatISO(new Date(startDate || surveyData?.survey?.start_date?.date))
+            : surveyData?.survey?.start_date?.date
+            ? formatISO(new Date(surveyData?.survey?.start_date?.date))
+            : formatISO(new Date()),
+          end_date: endDate
+            ? formatISO(new Date(endDate || surveyData?.survey?.end_date?.date))
+            : surveyData?.survey?.end_date?.date
+            ? formatISO(new Date(surveyData?.survey?.end_date?.date))
+            : formatISO(new Date()),
           name: values?.name,
           purpose: values?.purpose,
           category_id: values?.category_id,

@@ -217,7 +217,6 @@ const CreateSurveyContainer = ({ show, setShow, onSubmit }) => {
             roles: systemRoles,
             role: systemRoles[0],
           });
-          console.log('res: ', res);
           if (res?.success) {
             setRoles(res?.roles);
           } else {
@@ -237,14 +236,13 @@ const CreateSurveyContainer = ({ show, setShow, onSubmit }) => {
     if (isValid) {
       const [{ startDate, endDate }] = values?.date || {};
       dispatch(setLoading(true));
-      console.log('values: ', values);
       const postData = {
         ...{ school: selectedSchool?.id },
         code: values.code,
         status_id: '2', // DRAFT ID
         type_id: values?.type_id,
-        start_date: formatISO(new Date(startDate)),
-        end_date: formatISO(new Date(endDate)),
+        start_date: startDate ? formatISO(new Date(startDate)) : formatISO(new Date()),
+        end_date: endDate ? formatISO(new Date(endDate)) : formatISO(new Date()),
         name: values?.name,
         purpose: values?.purpose,
         category_id: values?.category_id,
