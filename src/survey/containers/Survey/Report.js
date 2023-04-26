@@ -25,6 +25,15 @@ const SurveyReportContainer = () => {
   const { t } = useTranslation();
   const { selectedSchool } = useSelector((state) => state.schoolData);
   const current = new Date();
+
+  const [selectedTreeId, setSelectedTreeId] = React.useState('');
+
+  const handleTreeClick = (array) => {
+    console.log('a:', array);
+    const [itemId] = array;
+    setSelectedTreeId(itemId);
+  };
+
   const dateTimeToday =
     current.getFullYear() +
     '-' +
@@ -91,6 +100,20 @@ const SurveyReportContainer = () => {
 
   const dispatch = useDispatch();
 
+  const fetchTable = () => {
+    dispatch(setLoading(true));
+    fetchRequest(surveyResultList, 'POST', {
+      survey_id: id,
+      class_id: selectedTreeId,
+    })
+      .then((res) => {
+        setData({ ...data, results: res?.results });
+      })
+      .finally(() => {
+        dispatch(setLoading(false));
+      });
+  };
+
   const fetchData = async (surveyId) => {
     dispatch(setLoading(true));
     try {
@@ -113,6 +136,7 @@ const SurveyReportContainer = () => {
         report: res?.results,
         results: res2?.results,
         classess: res3?.results,
+        participant_count: res3?.participant_count,
         survey: res4,
       });
     } catch (e) {
@@ -126,7 +150,16 @@ const SurveyReportContainer = () => {
   }, [id]);
   console.log('data: ', data);
 
-  const percent = 0;
+  useEffect(() => {
+    if (selectedTreeId && selectedTreeId !== '') {
+      fetchTable();
+    }
+  }, [selectedTreeId]);
+
+  const percent =
+    data?.classess?.reduce((sum, next) => {
+      return sum + next.result_count;
+    }, 0) / data?.participant_count;
 
   const total = 22 || data?.survey?.count;
 
@@ -155,7 +188,7 @@ const SurveyReportContainer = () => {
                 '--c': '#47c6ad',
               }}
             >
-              {percent || 0}%
+              {(percent || 0)?.toFixed(2)}%
             </div>
           </div>
           <div className="custom-container w-25">
@@ -215,12 +248,18 @@ const SurveyReportContainer = () => {
           <div className="custom-container" style={{ width: '20%' }}>
             <TreeView
               defaultExpandAll={true}
-              selectedNodes={['']}
-              onSelect={(e) => {}}
+              selectedNodes={[selectedTreeId]}
+              onSelect={(e) => handleTreeClick(e)}
               treeData={[
                 {
                   title: 'Бүгд',
-                  value: '',
+                  key: '',
+                  children: data?.classess
+                    ?.filter((c) => !!c.student_class_id)
+                    .map((c) => ({
+                      title: c?.student_classname,
+                      key: c?.student_class_id,
+                    })),
                 },
                 // {
                 //   title: 'Багш',

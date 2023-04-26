@@ -19,6 +19,7 @@ import useData from 'survey/hooks/useData';
 import ChangeDateModal from './ChangeDateModal';
 
 const SurveyListContainer = (props) => {
+  const [counts, setCounts] = useState({ PUBLISH: 0, DRAFT: 0 });
   const history = useHistory();
   const [currentStatus, setCurrentStatus] = useState();
   const { category } = props;
@@ -39,6 +40,7 @@ const SurveyListContainer = (props) => {
     ':' +
     ('00' + current.getSeconds()).slice(-2);
   const { selectedSchool } = useSelector((state) => state.schoolData);
+  const loading = useSelector((state) => state.loading);
   const [selectedData, setSelectedData] = useState(null);
 
   const [showDelete, setShowDelete] = useState(false);
@@ -177,13 +179,7 @@ const SurveyListContainer = (props) => {
 
     if (currentStatus) {
       dispatch(setLoading(true));
-      try {
-        const countRes = await fetchRequest(surveyIndex, 'POST', { ...postData, status_id: '', page: 1, page_size: 1, query: '', order: '' });
-        setTotalSurvey(countRes.count);
-      } catch (e) {
-        //
-      }
-      fetchRequest(surveyIndex, 'POST', postData)
+      return fetchRequest(surveyIndex, 'POST', postData)
         .then((res) => {
           const { surveys = [], count, page = 1, query = '', totalCount = 0, success = false, message = null } = res;
           if (success) {
@@ -203,6 +199,7 @@ const SurveyListContainer = (props) => {
           showMessage(t('errorMessage.title'));
         });
     }
+    return Promise.resolve();
   };
 
   const actionToDelete = (id) => {
@@ -211,11 +208,12 @@ const SurveyListContainer = (props) => {
       id,
     };
     fetchRequest(surveyDelete, 'POST', postData)
-      .then((res) => {
+      .then(async (res) => {
         setShowDelete(false);
         const { message = null, success = false } = res;
         if (success) {
-          fetchSurveyList();
+          setCounts({ ...counts, [currentStatus.code]: counts[currentStatus.code] - 1 });
+          await fetchSurveyList();
           showMessage(message, success);
         } else {
           showMessage(message || t('errorMessage.title'));
@@ -239,10 +237,14 @@ const SurveyListContainer = (props) => {
       status_id: 2,
     };
     fetchRequest(surveyCreate, 'POST', postData)
-      .then((res) => {
+      .then(async (res) => {
         const { message = null, success = false } = res;
         if (success) {
-          fetchSurveyList();
+          setCounts({
+            DRAFT: counts.DRAFT + 1,
+            PUBLISH: counts.PUBLISH - 1,
+          });
+          await fetchSurveyList();
           showMessage(message, success);
         } else {
           showMessage(message || t('errorMessage.title'));
@@ -258,12 +260,12 @@ const SurveyListContainer = (props) => {
   const actionToChangeDate = (postData) => {
     dispatch(setLoading(true));
     fetchRequest(surveyCreate, 'POST', postData)
-      .then((res) => {
+      .then(async (res) => {
         const { message = null, success = false } = res;
         if (success) {
           setChangeDate(false);
           setSelectedData(null);
-          fetchSurveyList();
+          await fetchSurveyList();
           showMessage(message, success);
         } else {
           showMessage(message || t('errorMessage.title'));
@@ -296,10 +298,11 @@ const SurveyListContainer = (props) => {
               survey_id: newSurvey?.id,
               questions: resQuestions?.questions?.map(({ id: _, ...restQuestion }) => restQuestion),
             });
+            setCounts({ ...counts, DRAFT: counts.DRAFT + 1 });
           } catch (e) {
             showMessage(e?.message || t('errorMessage.title'));
           }
-          fetchSurveyList();
+          await fetchSurveyList();
           showMessage(message, success);
         } else {
           showMessage(message || t('errorMessage.title'));
@@ -354,6 +357,29 @@ const SurveyListContainer = (props) => {
     }
   }, [data]);
 
+  const fetchCounts = async (categoryId) => {
+    const postData = {
+      school: selectedSchool?.id,
+      category_id: categoryId,
+    };
+    try {
+      const [countRes, countRes2] = await Promise.all([
+        fetchRequest(surveyIndex, 'POST', { ...postData, status_id: '1', page: 1, page_size: 1, query: '', order: '' }),
+        fetchRequest(surveyIndex, 'POST', { ...postData, status_id: '2', page: 1, page_size: 1, query: '', order: '' }),
+      ]);
+      setCounts({
+        PUBLISH: countRes.count,
+        DRAFT: countRes2.count,
+      });
+    } catch (e) {
+      //
+    }
+  };
+
+  useEffect(() => {
+    fetchCounts(category);
+  }, [category]);
+
   return (
     <>
       <Row>
@@ -381,7 +407,7 @@ const SurveyListContainer = (props) => {
                     >
                       <Card.Body className="text-center">
                         <strong>{status?.name}</strong>
-                        <p className="m-0">{isActive ? tableTotalCount : totalSurvey - tableTotalCount} судалгаа</p>
+                        <p className="m-0">{counts[status.code]} судалгаа</p>
                       </Card.Body>
                     </Card>
                   </Col>
