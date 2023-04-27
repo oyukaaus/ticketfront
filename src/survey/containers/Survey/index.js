@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Card, Row, Col, Button } from 'react-bootstrap';
 import { Link, useHistory } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
@@ -17,11 +17,17 @@ import { format } from 'date-fns';
 import 'css/dashboard.css';
 import useData from 'survey/hooks/useData';
 import ChangeDateModal from './ChangeDateModal';
+import deepEqual from '../../utils/deep';
 
 const SurveyListContainer = (props) => {
   const [counts, setCounts] = useState({ PUBLISH: 0, DRAFT: 0 });
   const history = useHistory();
-  const [currentStatus, setCurrentStatus] = useState();
+  const [currentStatus, setCurrentStatus] = useState({
+    code: 'PUBLISH',
+    color: '',
+    id: 1,
+    name: 'Нийтэлсэн',
+  });
   const { category } = props;
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -162,6 +168,8 @@ const SurveyListContainer = (props) => {
     },
   ];
 
+  const isFetchedRef = useRef();
+
   const fetchSurveyList = async () => {
     const postData = {
       school: selectedSchool?.id,
@@ -174,25 +182,31 @@ const SurveyListContainer = (props) => {
       status_id: currentStatus?.id || '',
       type_id: '',
     };
+    console.log('postData: ', postData);
 
     if (currentStatus) {
       dispatch(setLoading(true));
       return fetchRequest(surveyIndex, 'POST', postData)
         .then((res) => {
-          const { surveys = [], count, page = 1, query = '', totalCount = 0, success = false, message = null } = res;
+          const { surveys = [], count, page = 1, query = '', success = false, message = null, status_counts: statusCounts } = res;
           if (success) {
             setTableData(surveys);
             setPageNumber(page);
             setSizePerPage(res?.page_size || 10);
             setSearchValue(query);
             setTableTotalCount(count);
+            const P = statusCounts?.find((sc) => sc.code === 'PUBLISH');
+            const D = statusCounts?.find((sc) => sc.code === 'DRAFT');
+            setCounts({
+              PUBLISH: P?.survey_count || 0,
+              DRAFT: D?.survey_count || 0,
+            });
           } else {
             showMessage(message || t('errorMessage.title'));
           }
           dispatch(setLoading(false));
         })
         .catch((e) => {
-          console.log('message: ', e);
           dispatch(setLoading(false));
           showMessage(t('errorMessage.title'));
         });
@@ -276,41 +290,56 @@ const SurveyListContainer = (props) => {
       });
   };
 
-  const actionToCopy = (survey) => {
+  const actionToCopy = async (survey) => {
     const { id, ...rest } = survey;
     dispatch(setLoading(true));
     const postData = {
       ...rest,
       status_id: 2,
+      grades: rest?.grades?.map((g) => g.gradeId),
+      classes: rest?.classes?.map((cl) => cl.id),
+      system_roles: rest?.roles?.map((sro) => sro.id),
     };
-    fetchRequest(surveyCreate, 'POST', postData)
-      .then(async (res) => {
-        const { message = null, success = false, survey: newSurvey } = res;
-        if (success) {
-          try {
-            const resQuestions = await fetchRequest(surveyQuestionsIndex, 'POST', {
-              survey_id: id,
-            });
 
-            await fetchRequest(surveyQuestionCreate, 'POST', {
-              survey_id: newSurvey?.id,
-              questions: resQuestions?.questions?.map(({ id: _, ...restQuestion }) => restQuestion),
-            });
-            setCounts({ ...counts, DRAFT: counts.DRAFT + 1 });
-          } catch (e) {
-            showMessage(e?.message || t('errorMessage.title'));
-          }
-          await fetchSurveyList();
-          showMessage(message, success);
-        } else {
-          showMessage(message || t('errorMessage.title'));
-        }
-        dispatch(setLoading(false));
-      })
-      .catch(() => {
-        dispatch(setLoading(false));
-        showMessage(t('errorMessage.title'));
+    try {
+      const resForUsers = await fetchRequest(surveyQuestionsIndex, 'POST', {
+        survey_id: id,
       });
+      if (resForUsers?.success) {
+        postData.system_users = resForUsers?.survey?.system_users?.map((su) => su.id);
+        fetchRequest(surveyCreate, 'POST', postData)
+          .then(async (res) => {
+            const { message = null, success = false, survey: newSurvey } = res;
+            if (success) {
+              try {
+                const resQuestions = await fetchRequest(surveyQuestionsIndex, 'POST', {
+                  survey_id: id,
+                });
+
+                await fetchRequest(surveyQuestionCreate, 'POST', {
+                  survey_id: newSurvey?.id,
+                  questions: resQuestions?.questions?.map(({ id: _, ...restQuestion }) => restQuestion),
+                });
+                setCounts({ ...counts, DRAFT: counts.DRAFT + 1 });
+              } catch (e) {
+                showMessage(e?.message || t('errorMessage.title'));
+              }
+              await fetchSurveyList();
+              showMessage(message, success);
+            } else {
+              showMessage(message || t('errorMessage.title'));
+            }
+            dispatch(setLoading(false));
+          })
+          .catch(() => {
+            dispatch(setLoading(false));
+            showMessage(t('errorMessage.title'));
+          });
+      }
+    } catch (e) {
+      dispatch(setLoading(false));
+      showMessage(t('errorMessage.title'));
+    }
   };
 
   const handleContextMenuClick = (id, key, row) => {
@@ -344,7 +373,16 @@ const SurveyListContainer = (props) => {
   };
 
   useEffect(() => {
-    fetchSurveyList();
+    if (!isFetchedRef.current) {
+      fetchSurveyList();
+      isFetchedRef.current = { currentStatus, category, pageNumber, sizePerPage, searchValue, sortKey, sortOrder };
+    } else {
+      const KEY = { currentStatus, category, pageNumber, sizePerPage, searchValue, sortKey, sortOrder };
+      if (!deepEqual(KEY, isFetchedRef.current)) {
+        fetchSurveyList();
+        isFetchedRef.current = KEY;
+      }
+    }
   }, [currentStatus, category, pageNumber, sizePerPage, searchValue, sortKey, sortOrder]);
 
   const data = useData();
@@ -355,28 +393,9 @@ const SurveyListContainer = (props) => {
     }
   }, [data]);
 
-  const fetchCounts = async (categoryId) => {
-    const postData = {
-      school: selectedSchool?.id,
-      category_id: categoryId,
-    };
-    try {
-      const [countRes, countRes2] = await Promise.all([
-        fetchRequest(surveyIndex, 'POST', { ...postData, status_id: '1', page: 1, page_size: 1, query: '', order: '' }),
-        fetchRequest(surveyIndex, 'POST', { ...postData, status_id: '2', page: 1, page_size: 1, query: '', order: '' }),
-      ]);
-      setCounts({
-        PUBLISH: countRes.count,
-        DRAFT: countRes2.count,
-      });
-    } catch (e) {
-      //
-    }
-  };
-
   useEffect(() => {
-    fetchCounts(category);
-  }, [category]);
+    setPageNumber(1);
+  }, [currentStatus]);
 
   return (
     <>

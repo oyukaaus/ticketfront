@@ -28,8 +28,8 @@ const ChangeDateModal = ({ show, setShow, onSubmit, survey }) => {
     if (isValid) {
       const [{ startDate, endDate }] = values?.date || {};
       const postData = {
-        start_date: formatISO(new Date(startDate)),
-        end_date: formatISO(new Date(endDate)),
+        start_date: startDate ? formatISO(new Date(startDate)) : formatISO(new Date(survey?.start_date)),
+        end_date: endDate ? formatISO(new Date(endDate)) : formatISO(new Date(survey?.end_date)),
       };
       onSubmit({
         ...postData,

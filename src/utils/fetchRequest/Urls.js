@@ -37,7 +37,7 @@ export const doctorInspectionUserSearchCode = 'doctor/inspection/user-search-cod
 export const doctorInspectionSubmit = 'doctor/inspection/submit';
 
 // ----------survey category-------------
-const tmpApiUrl = 'https://survey-api.eschool.mn/'; // after backend merged then remove it.
+const tmpApiUrl = 'https://survey.eschool.mn/'; // after backend merged then remove it.
 export const surveyCategoryIndex = tmpApiUrl + 'survey/category/list';
 export const surveyCategoryCreate = tmpApiUrl + 'survey/category/create';
 export const surveyCategoryEdit = tmpApiUrl + 'survey/category/create';

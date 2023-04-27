@@ -111,7 +111,9 @@ const EditQuestion = (props, formRef) => {
 
   return (
     <>
-      <Forms key={selectedData ? 'q-edit-form' : props?.question_types?.length > 0 ? 'q-form-data' : 'no-data'} ref={formRef} fields={questionnaireFields} />
+      <div className="custom-forms">
+        <Forms key={selectedData ? 'q-edit-form' : props?.question_types?.length > 0 ? 'q-form-data' : 'no-data'} ref={formRef} fields={questionnaireFields} />
+      </div>
       <br />
       <br />
       {tmpType?.code === 'SELECT' && (
@@ -223,27 +225,29 @@ const EditQuestion = (props, formRef) => {
                 </Button>
               </div>
             ))}
-          <label className="my-3">
-            <input
-              type="checkbox"
-              checked={isMulti}
-              onChange={(e) => {
-                setIsMulti(e.target.checked);
-              }}
-            />{' '}
-            Олон утга сонгоно
-          </label>
-          <div>
-            <Button
-              onClick={() => {
-                setAnswers([...answers, { order_number: answers.length }]);
-              }}
-              variant="outline-alternate"
-              outline
-              className="text-uppercase br-8 py-2"
-            >
-              {t('common.add')}
-            </Button>
+          <div style={{ paddingLeft: 112 }}>
+            <label className="my-3">
+              <input
+                type="checkbox"
+                checked={isMulti}
+                onChange={(e) => {
+                  setIsMulti(e.target.checked);
+                }}
+              />{' '}
+              Олон утга сонгоно
+            </label>
+            <div>
+              <Button
+                onClick={() => {
+                  setAnswers([...answers, { order_number: answers.length }]);
+                }}
+                variant="outline-alternate"
+                outline
+                className="text-uppercase br-8 py-2"
+              >
+                {t('common.add')}
+              </Button>
+            </div>
           </div>
         </div>
       )}
