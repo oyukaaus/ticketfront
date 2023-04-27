@@ -162,8 +162,6 @@ const SurveyListContainer = (props) => {
     },
   ];
 
-  const [totalSurvey, setTotalSurvey] = useState(0);
-
   const fetchSurveyList = async () => {
     const postData = {
       school: selectedSchool?.id,

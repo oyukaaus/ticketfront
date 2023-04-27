@@ -137,6 +137,7 @@ const SurveyReportContainer = () => {
         results: res2?.results,
         classess: res3?.results,
         participant_count: res3?.participant_count,
+        participants: res3?.participants,
         survey: res4,
       });
     } catch (e) {
@@ -160,8 +161,6 @@ const SurveyReportContainer = () => {
     data?.classess?.reduce((sum, next) => {
       return sum + next.result_count;
     }, 0) / data?.participant_count;
-
-  const total = 22 || data?.survey?.count;
 
   return (
     <Modal fullscreen show={true} size="xl" animation={false} backdropClassName="full-page-bg" dialogClassName="custom-full-page-modal">
@@ -225,22 +224,25 @@ const SurveyReportContainer = () => {
               ?.filter((c) => {
                 return !!c.student_classname;
               })
-              .map((c, i) => (
-                <div className="d-flex fw-bold align-items-center gap-3" key={`classes-${i}`}>
-                  <span style={{ minWidth: 30 }}>{c?.student_classname}</span>
-                  <div style={{ width: 125 }}>
-                    <span
-                      className="line"
-                      style={{
-                        width: `${(100 * c.result_count) / total}%`,
-                      }}
-                    ></span>
+              .map((c, i) => {
+                const total = data?.participants?.find((p) => p.class_id === c?.student_class_id)?.participant_count || 0;
+                return (
+                  <div className="d-flex fw-bold align-items-center gap-3" key={`classes-${i}`}>
+                    <span style={{ minWidth: 30 }}>{c?.student_classname}</span>
+                    <div style={{ width: 125 }}>
+                      <span
+                        className="line"
+                        style={{
+                          width: `${(100 * c.result_count) / total}%`,
+                        }}
+                      ></span>
+                    </div>
+                    <span>
+                      {c?.result_count || 0} | {total || 0}
+                    </span>
                   </div>
-                  <span>
-                    {c?.result_count || 0} | {total || 0}
-                  </span>
-                </div>
-              ))}
+                );
+              })}
           </div>
         </div>
 
