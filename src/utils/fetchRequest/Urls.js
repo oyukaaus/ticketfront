@@ -37,7 +37,7 @@ export const doctorInspectionUserSearchCode = 'doctor/inspection/user-search-cod
 export const doctorInspectionSubmit = 'doctor/inspection/submit';
 
 // ----------survey category-------------
-const tmpApiUrl = 'https://survey.eschool.mn/'; // after backend merged then remove it.
+const tmpApiUrl = 'https://survey-api.eschool.mn/'; // after backend merged then remove it.
 export const surveyCategoryIndex = tmpApiUrl + 'survey/category/list';
 export const surveyCategoryCreate = tmpApiUrl + 'survey/category/create';
 export const surveyCategoryEdit = tmpApiUrl + 'survey/category/create';
@@ -52,12 +52,12 @@ export const surveyEdit = tmpApiUrl + 'survey/create';
 export const surveyDelete = tmpApiUrl + 'survey/delete';
 
 // ----------survey questions-------------
-export const surveyQuestionsIndex = tmpApiUrl + '/survey/question/list';
-export const surveyQuestionCreate = tmpApiUrl + '/survey/question/create';
-export const surveyQuestionUpdate = tmpApiUrl + '/survey/question/create';
-export const surveyQuestionDelete = tmpApiUrl + '/survey/question/delete';
+export const surveyQuestionsIndex = tmpApiUrl + 'survey/question/list';
+export const surveyQuestionCreate = tmpApiUrl + 'survey/question/create';
+export const surveyQuestionUpdate = tmpApiUrl + 'survey/question/create';
+export const surveyQuestionDelete = tmpApiUrl + 'survey/question/delete';
 
 // ----------survey reports-------------
-export const surveyResultReport = tmpApiUrl + '/survey/result/report';
-export const surveyResultList = tmpApiUrl + '/survey/result/list';
-export const surveyResultClassname = tmpApiUrl + '/survey/result/report/classname';
+export const surveyResultReport = tmpApiUrl + 'survey/result/report';
+export const surveyResultList = tmpApiUrl + 'survey/result/list';
+export const surveyResultClassname = tmpApiUrl + 'survey/result/report/classname';
