@@ -98,8 +98,8 @@ const SurveyViewContainer = () => {
             </Col>
             <Col md={7}>
               <strong>
-                {data && data?.survey?.start_date && format(new Date(data?.survey?.start_date), 'yyyy-MM-dd hh:mm')} -{' '}
-                {data && data?.survey?.end_date && format(new Date(data?.survey?.end_date), 'yyyy-MM-dd hh:mm')}
+                {data && data?.survey?.start_date && format(new Date(data?.survey?.start_date?.date), 'yyyy-MM-dd hh:mm')} -{' '}
+                {data && data?.survey?.end_date && format(new Date(data?.survey?.end_date?.date), 'yyyy-MM-dd hh:mm')}
               </strong>
             </Col>
           </Row>

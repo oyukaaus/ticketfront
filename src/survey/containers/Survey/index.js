@@ -121,7 +121,7 @@ const SurveyListContainer = (props) => {
       sort: true,
       formatter: (cell, row) => {
         return (
-          <Link to={`/survey/view/${row.id}`} className="underline">
+          <Link to={`/survey/view/${row.id}`} className="underline" style={{ color: '#4037d7' }}>
             {cell}
           </Link>
         );
@@ -417,7 +417,8 @@ const SurveyListContainer = (props) => {
                 return (
                   <Col lg={4} key={status?.code} className="mb-4">
                     <Card
-                      className={`custom-card rounded-3 border ${isActive ? 'border-info' : ''}`}
+                      className={`custom-card border ${isActive ? 'border-info' : 'border-white'}`}
+                      style={{ borderRadius: '8px' }}
                       onClick={() => {
                         setCurrentStatus(status);
                       }}

@@ -195,7 +195,7 @@ const CreateSurveyContainer = ({ show, setShow, onSubmit }) => {
     {
       key: 'purpose',
       value: '',
-      label: `${t('survey.goal')}*`,
+      label: `${t('survey.goal')}`,
       type: 'textArea',
       required: false,
       labelBold: true,

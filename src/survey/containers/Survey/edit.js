@@ -266,7 +266,7 @@ const EditSurveyContainer = () => {
     {
       key: 'purpose',
       value: surveyData?.survey?.purpose || '',
-      label: `${t('survey.goal')}*`,
+      label: `${t('survey.goal')}`,
       type: 'textArea',
       required: false,
       labelBold: true,
@@ -319,6 +319,7 @@ const EditSurveyContainer = () => {
             const { success = false, message = null } = res;
             if (success) {
               fetchInfo(id);
+              setTabKey('questionnaire');
             } else {
               showMessage(message || t('errorMessage.title'));
             }
