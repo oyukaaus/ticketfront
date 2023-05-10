@@ -4,6 +4,7 @@ import CategoryContainer from 'survey/containers/Category';
 import SurveyListContainer from 'survey/containers/Survey';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import { useTranslation } from 'react-i18next';
+import useLocalStorage from '../hooks/useLocalStorage';
 import '../styles/app.css';
 
 const SurveyPage = (props) => {
@@ -12,7 +13,7 @@ const SurveyPage = (props) => {
     { to: '', text: t('menu.home') },
     { to: 'survey/index', text: t('dashboard.survey') },
   ];
-  const [category, setCategory] = React.useState('');
+  const [category, setCategory] = useLocalStorage('category', '');
   return (
     <div>
       <div className="mb-3">

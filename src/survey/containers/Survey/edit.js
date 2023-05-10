@@ -331,6 +331,8 @@ const EditSurveyContainer = () => {
           });
 
         // formRef.current.updateFields(fields);
+      } else {
+        dispatch(setLoading(false));
       }
     } else if (view === 'form-view') {
       const [isValid, , values] = formQuestionnaireRef.current.validate();
@@ -383,7 +385,12 @@ const EditSurveyContainer = () => {
         // onSubmit({
         //   ...values,
         // });
+      } else {
+        dispatch(setLoading(false));
       }
+    } else {
+      dispatch(setLoading(false));
+      history.push('/survey');
     }
   };
 
@@ -508,6 +515,7 @@ const EditSurveyContainer = () => {
                 <>
                   <Button
                     onClick={() => {
+                      setSelectedData(null);
                       setView('form-view');
                     }}
                     type="button"

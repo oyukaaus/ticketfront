@@ -21,7 +21,7 @@ const EditQuestion = (props, formRef) => {
       value: selectedData?.question,
       label: `${t('survey.questionnaire')}`,
       type: 'textArea',
-      required: false,
+      required: true,
       labelBold: true,
     },
     {
@@ -86,7 +86,7 @@ const EditQuestion = (props, formRef) => {
       value: selectedData?.type_id,
       label: `${t('survey.questionnaireType')}`,
       type: 'dropdown',
-      required: false,
+      required: true,
       labelBold: true,
       options: props?.question_types?.map((qt) => ({
         text: qt.name,

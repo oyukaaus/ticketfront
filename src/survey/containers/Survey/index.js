@@ -16,13 +16,14 @@ import DeleteType from 'modules/DeleteModal';
 import { format } from 'date-fns';
 import 'css/dashboard.css';
 import useData from 'survey/hooks/useData';
+import useLocalStorage from 'survey/hooks/useLocalStorage';
 import ChangeDateModal from './ChangeDateModal';
 import deepEqual from '../../utils/deep';
 
 const SurveyListContainer = (props) => {
   const [counts, setCounts] = useState({ PUBLISH: 0, DRAFT: 0 });
   const history = useHistory();
-  const [currentStatus, setCurrentStatus] = useState({
+  const [currentStatus, setCurrentStatus] = useLocalStorage('current-status', {
     code: 'PUBLISH',
     color: '',
     id: 1,
@@ -157,6 +158,14 @@ const SurveyListContainer = (props) => {
       dataField: 'registered',
       text: t('survey.registered'),
       sort: true,
+      formatter: (cell, row, rowU) => {
+        console.log('rows: ', row);
+        return row?.created_user_id
+          ? `${row?.created_user_last_name !== null ? row?.created_user_last_name : ''} ${
+              row?.created_user_first_name !== null ? row?.created_user_first_name : ''
+            }`
+          : '-';
+      },
     },
     {
       dataField: 'publish_date',
@@ -301,6 +310,8 @@ const SurveyListContainer = (props) => {
       system_roles: rest?.roles?.map((sro) => sro.id),
     };
 
+    console.log('actionToCopy: ', JSON.stringify(postData));
+
     try {
       const resForUsers = await fetchRequest(surveyQuestionsIndex, 'POST', {
         survey_id: id,
@@ -322,23 +333,23 @@ const SurveyListContainer = (props) => {
                 });
                 setCounts({ ...counts, DRAFT: counts.DRAFT + 1 });
               } catch (e) {
-                showMessage(e?.message || t('errorMessage.title'));
+                showMessage('336:' + e?.message || t('errorMessage.title'));
               }
               await fetchSurveyList();
               showMessage(message, success);
             } else {
-              showMessage(message || t('errorMessage.title'));
+              showMessage('341:' + message || t('errorMessage.title'));
             }
             dispatch(setLoading(false));
           })
           .catch(() => {
             dispatch(setLoading(false));
-            showMessage(t('errorMessage.title'));
+            showMessage('347:' + t('errorMessage.title'));
           });
       }
     } catch (e) {
       dispatch(setLoading(false));
-      showMessage(t('errorMessage.title'));
+      showMessage('352:' + t('errorMessage.title'));
     }
   };
 
@@ -386,12 +397,6 @@ const SurveyListContainer = (props) => {
   }, [currentStatus, category, pageNumber, sizePerPage, searchValue, sortKey, sortOrder]);
 
   const data = useData();
-
-  useEffect(() => {
-    if (data?.survey_statuses?.length > 0) {
-      setCurrentStatus(data?.survey_statuses?.[0]);
-    }
-  }, [data]);
 
   useEffect(() => {
     setPageNumber(1);

@@ -9,6 +9,7 @@ import { fetchRequest } from 'utils/fetchRequest';
 import { setLoading } from 'utils/redux/action';
 import { surveyCategoryIndex, surveyCategoryCreate, surveyCategoryEdit } from 'utils/fetchRequest/Urls';
 import showMessage from 'modules/message';
+import useLocalStorage from 'survey/hooks/useLocalStorage';
 import AddModal from './AddModal';
 
 export function convertDataToTree(data) {
@@ -36,7 +37,7 @@ const CategoryContainer = (props) => {
   const { selectedSchool } = useSelector((state) => state.schoolData);
   const { t } = useTranslation();
   const [show, setShow] = React.useState(false);
-  const [selectedTreeId, setSelectedTreeId] = React.useState('');
+  const [selectedTreeId, setSelectedTreeId] = useLocalStorage('category', '');
   const [categories, setCategories] = React.useState([]);
 
   const handleTreeClick = (array) => {
@@ -131,7 +132,6 @@ const CategoryContainer = (props) => {
         <div className="bg-white p-5">
           <TreeView
             defaultExpandAll={true}
-          
             selectedNodes={[selectedTreeId]}
             onSelect={(e) => handleTreeClick(e)}
             treeData={[{ key: '', title: t('common.all'), children: categories }]}
