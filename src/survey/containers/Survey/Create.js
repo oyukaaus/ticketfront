@@ -168,7 +168,7 @@ const CreateSurveyContainer = ({ show, setShow, onSubmit }) => {
       multiple: true,
       options: data?.grades?.map((tmpGrade) => ({
         text: tmpGrade.title,
-        value: tmpGrade.gradeId,
+        value: tmpGrade.key,
       })),
       onChange: setGrades,
     },
@@ -184,9 +184,19 @@ const CreateSurveyContainer = ({ show, setShow, onSubmit }) => {
       searchable: true,
       multiple: true,
       options: data?.classes?.classes
-        // ?.filter((classes) => {
-        //   return grade.includes(classes?.gradeId);
-        // })
+        ?.filter((classes) => {
+          const tmpGrades = data?.grades?.filter((g) => {
+            return grades.includes(g.key);
+          });
+          let flag = false;
+          tmpGrades.forEach((tg) => {
+            const childs = tg.children?.map((tgc) => tgc.key);
+            if (childs.includes(classes.gradeId)) {
+              flag = true;
+            }
+          });
+          return flag;
+        })
         ?.map((classes) => ({
           text: classes.class,
           value: classes.id,
@@ -274,6 +284,8 @@ const CreateSurveyContainer = ({ show, setShow, onSubmit }) => {
       formRef.current.updateFields(fields);
     }
   };
+
+  console.log('DATA: ', data);
 
   return (
     <Modal fullscreen show={true} size="xl" animation={false} backdropClassName="full-page-bg" dialogClassName="custom-full-page-modal">

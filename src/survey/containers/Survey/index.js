@@ -13,7 +13,7 @@ import { fetchRequest } from 'utils/fetchRequest';
 import { surveyIndex, surveyCreate, surveyDelete, surveyQuestionsIndex, surveyQuestionCreate } from 'utils/fetchRequest/Urls';
 import DTable from 'modules/DataTable/DTable';
 import DeleteType from 'modules/DeleteModal';
-import { format } from 'date-fns';
+import { format, formatISO } from 'date-fns';
 import 'css/dashboard.css';
 import useData from 'survey/hooks/useData';
 import useLocalStorage from 'survey/hooks/useLocalStorage';
@@ -159,7 +159,6 @@ const SurveyListContainer = (props) => {
       text: t('survey.registered'),
       sort: true,
       formatter: (cell, row, rowU) => {
-        console.log('rows: ', row);
         return row?.created_user_id
           ? `${row?.created_user_last_name !== null ? row?.created_user_last_name : ''} ${
               row?.created_user_first_name !== null ? row?.created_user_first_name : ''
@@ -168,7 +167,7 @@ const SurveyListContainer = (props) => {
       },
     },
     {
-      dataField: 'publish_date',
+      dataField: 'created_date',
       text: t('survey.publishedDate'),
       sort: true,
       formatter: (cell, row, rowIndex) => {
@@ -185,13 +184,17 @@ const SurveyListContainer = (props) => {
       page: pageNumber,
       page_size: sizePerPage,
       query: searchValue,
+     
       sortBy: sortKey,
       order: sortOrder,
+
+      order_field: sortKey,
+      order_direction: sortOrder === 'ASC' ? 1 : 0,
+
       category_id: category,
       status_id: currentStatus?.id || '',
       type_id: '',
     };
-    console.log('postData: ', postData);
 
     if (currentStatus) {
       dispatch(setLoading(true));
@@ -308,9 +311,9 @@ const SurveyListContainer = (props) => {
       grades: rest?.grades?.map((g) => g.gradeId),
       classes: rest?.classes?.map((cl) => cl.id),
       system_roles: rest?.roles?.map((sro) => sro.id),
+      start_date: rest?.start_date ? formatISO(new Date(rest?.start_date)) : formatISO(new Date()),
+      end_date: rest?.end_date ? formatISO(new Date(rest?.end_date)) : formatISO(new Date()),
     };
-
-    console.log('actionToCopy: ', JSON.stringify(postData));
 
     try {
       const resForUsers = await fetchRequest(surveyQuestionsIndex, 'POST', {
