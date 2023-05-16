@@ -57,12 +57,85 @@ const DatePickerRange = ({
       return;
     }
 
+<<<<<<< HEAD
+    return (
+        <div className='date-picker-range-container'>
+            <DatePicker
+                style={{ fontSize: placeHolderFontSize ? undefined : 14 }}
+                locale={mn}
+                selected={startDate ? new Date(startDate) : selectedStartDate ? new Date(selectedStartDate) : null}
+                onChange={(date) => setStartDate(date)}
+                startDate={startDate}
+                maxDate={endDate}
+                dateFormat='yyyy-MM-dd'
+                disabled={isDisabled}
+                className='first-datepicker'
+                onCalendarClose={handleFirstCalendarClose}
+                placeholderText={firstPlaceHolder ? firstPlaceHolder : ''}
+                dayClassName={(thisDay) => disableWithLast ? disableOtherDatesWithLast(thisDay, disableWithLast) : ''}
+                {...rest}
+            />
+            <DatePicker
+                locale={mn}
+                className='react-datepicker-with-icon'
+                onChange={handleDateChange}
+                onSelect={handleSelect}
+                startDate={mainStartDate}
+                endDate={mainEndDate}
+                selectsRange="true"
+                selectsStart="true"
+                selectsEnd="true"
+                customInput={<CustomIcon className={''} />}
+                shouldCloseOnSelect={false}
+                onCalendarOpen={handleCalendarOpen}
+                onCalendarClose={handleMainCalendarClose}
+                disabled={isDisabled || disableWithFirst || disableWithLast ? true : false}
+                {...rest}
+            />
+            <DatePicker
+                locale={mn}
+                selected={endDate ? new Date(endDate) : selectedEndDate ? new Date(selectedEndDate) : null}
+                minDate={startDate}
+                onChange={(date) => setEndDate(date)}
+                endDate={endDate}
+                dateFormat='yyyy-MM-dd'
+                disabled={isDisabled}
+                className='last-datepicker'
+                onCalendarClose={handleLastCalendarClose}
+                shouldCloseOnSelect={false}
+                placeholderText={lastPlaceHolder ? lastPlaceHolder : ''}
+                dayClassName={(thisDay) => disableWithFirst ? disableOtherDatesWithFirst(thisDay, disableWithFirst) : ''}
+                {...rest}
+            />
+            {
+                clearable ?
+                    (startDate && endDate)
+                        ? <IconButton
+                            style={{
+                                padding: '0 8px',
+                                marginLeft: 5
+                            }}
+                            aria-label="Clear"
+                            onClick={() => {
+                                setStartDate(null);
+                                setEndDate(null);
+                            }}
+                        >
+                            <ClearIcon />
+                        </IconButton>
+                        :
+                        <div style={{ marginLeft: 45 }} />
+                    :
+                    null
+            }
+=======
     if (selectionComplete && mainStartDate && mainEndDate) {
       setMainStartDate(date);
       setMainEndDate(undefined);
       toggleSelectionComplete(false);
     }
   };
+>>>>>>> 7b9adffa87c3561940b2f086d21e5c61617fe43f
 
   const handleSelect = (date) => {
     handleDateChange(date);

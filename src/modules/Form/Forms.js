@@ -1609,6 +1609,9 @@ const Forms = (({
                                                 selectedStartDate={field?.selectedStartDate}
                                                 selectedEndDate={field?.selectedEndDate}
                                                 isDisabled={field?.disabled}
+                                                clearable={field?.clearable}
+                                                disableWithFirst={field?.disableWithFirst}
+                                                disableWithLast={field?.disableWithLast}
                                             />
                                             <div className={feedbackClassName} style={{ display: message ? 'block' : undefined }}>
                                                 {message}

@@ -5,7 +5,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import CsLineIcons from 'cs-line-icons/CsLineIcons';
 // import { DashboardOutlined } from "@material-ui/icons";
 // import { USE_MULTI_LANGUAGE } from 'config.js';
-import {useTranslation} from "react-i18next";
+import { useTranslation } from "react-i18next";
 
 const SidebarMenuItems = React.memo(({ menuItems = [] }) =>
   menuItems.map((item, index) => <SidebarMenuItem key={`menu.${item.path}.${index}`} id={item.path} item={item} />)
@@ -23,52 +23,47 @@ const SidebarMenuItem = ({ item, id }) => {
     <>
       {icon && icon == 'dashboard' && (
         <>
-          <img alt='icon' width={18} className='me-3' src='../img/system/dashboard.png'/>
+          <CsLineIcons icon='dashboard-1' className="cs-icon icon" />{' '}
         </>
       )}
-      {icon && icon == 'invoice' && (
+      {icon && icon == 'appointment' && (
         <>
-          <img alt='icon' width={18} className='me-3' src='../img/system/invoice.png'/>
+          <CsLineIcons icon='clock' className="cs-icon icon" />{' '}
         </>
       )}
-      {icon && icon == 'discount' && (
+      {icon && icon == 'doctor' && (
         <>
-          <img alt='icon' width={18} className='me-3' src='../img/system/discount.png'/>
+          <CsLineIcons icon='doctor' className="cs-icon icon" />{' '}
         </>
       )}
-      {icon && icon == 'income' && (
+      {icon && icon == 'duplicate' && (
         <>
-          <img alt='icon' width={18} className='me-3' src='../img/system/income.png'/>
+          <CsLineIcons icon='duplicate' className="cs-icon icon" />{' '}
+        </>
+      )}
+      {icon && icon == 'edit' && (
+        <>
+          <CsLineIcons icon='edit-square' className="cs-icon icon" />{' '}
         </>
       )}
       {icon && icon == 'search' && (
         <>
-          <img alt='icon' width={18} className='me-3' src='../img/system/search.png'/>
-        </>
-      )}
-      {icon && icon == 'ticket' && (
-        <>
-          <img alt='icon' width={18} className='me-3' src='../img/system/ticket.png'/>
+          <img alt='icon' width={18} className='me-3' src='../img/system/search.png' />
         </>
       )}
       {icon && icon == 'settings' && (
         <>
-          <img alt='icon' width={18} className='me-3' src='../img/system/settings.png'/>
-        </>
-      )}
-      {icon && icon == 'shop' && (
-        <>
-          <img alt='icon' width={18} className='me-3' src='../img/system/shop.png'/>
+          <img alt='icon' width={18} className='me-3' src='../img/system/settings.png' />
         </>
       )}
       {icon && icon == 'menu' && (
         <>
-          <img alt='icon' width={18} className='me-3' src='../img/system/menu.png'/>
+          <img alt='icon' width={18} className='me-3' src='../img/system/menu.png' />
         </>
       )}
       {icon && icon == 'service' && (
         <>
-          <img alt='icon' width={18} className='me-3' src='../img/system/service.png'/>
+          <img alt='icon' width={18} className='me-3' src='../img/system/service.png' />
         </>
       )}
       {icon && icon == 'send' && (

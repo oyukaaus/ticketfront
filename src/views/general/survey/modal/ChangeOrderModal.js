@@ -6,13 +6,13 @@ import SouthSharpIcon from '@mui/icons-material/SouthSharp';
 import NorthSharpIcon from '@mui/icons-material/NorthSharp';
 
 const ChangeOrderModal = ({ show, setShow, onSubmit, questions, survey, ...rest }) => {
-  const [qs, setQS] = useState((questions || [])?.map((q, qIndex) => ({ ...q, order_number: qIndex + 1 })));
+  const [qs, setQS] = useState((questions || [])?.map((q, qIndex) => ({ ...q, orderNumber: qIndex + 1 })));
   const { t } = useTranslation();
 
   const onSaveClick = () => {
     onSubmit({
       questions: qs,
-      survey_id: survey?.id,
+      survey
     });
   };
 
@@ -33,10 +33,10 @@ const ChangeOrderModal = ({ show, setShow, onSubmit, questions, survey, ...rest 
       <Modal.Body>
         {qs
           ?.sort((a, b) => {
-            if (a.order_number < b.order_number) {
+            if (a.orderNumber < b.orderNumber) {
               return -1;
             }
-            if (a.order_number > b.order_number) {
+            if (a.orderNumber > b.orderNumber) {
               return 1;
             }
             return 0;
@@ -44,16 +44,16 @@ const ChangeOrderModal = ({ show, setShow, onSubmit, questions, survey, ...rest 
           .map((q, i) => (
             <div key={`q-${q.id}`} className="d-flex mb-1 space-x-4">
               <div style={{ width: 100 }} className="d-flex justify-content-center">
-                {q.order_number !== 1 && (
+                {q.orderNumber !== 1 && (
                   <Button
                     variant="outline-separator"
                     type="button"
                     size="sm"
                     onClick={() => {
                       const tmp = [...qs];
-                      const orderNumber = tmp[i - 1].order_number;
-                      tmp[i - 1].order_number = tmp[i].order_number;
-                      tmp[i].order_number = orderNumber;
+                      const orderNumber = tmp[i - 1].orderNumber;
+                      tmp[i - 1].orderNumber = tmp[i].orderNumber;
+                      tmp[i].orderNumber = orderNumber;
                       setQS(tmp);
                     }}
                   >
@@ -62,16 +62,16 @@ const ChangeOrderModal = ({ show, setShow, onSubmit, questions, survey, ...rest 
                   </Button>
                 )}
 
-                {q.order_number !== qs.length && (
+                {q.orderNumber !== qs.length && (
                   <Button
                     variant="outline-separator"
                     type="button"
                     size="sm"
                     onClick={() => {
                       const tmp = [...qs];
-                      const orderNumber = tmp[i + 1].order_number;
-                      tmp[i + 1].order_number = tmp[i].order_number;
-                      tmp[i].order_number = orderNumber;
+                      const orderNumber = tmp[i + 1].orderNumber;
+                      tmp[i + 1].orderNumber = tmp[i].orderNumber;
+                      tmp[i].orderNumber = orderNumber;
                       setQS(tmp);
                     }}
                   >

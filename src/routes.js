@@ -38,11 +38,11 @@ const dashboardAttendance = {
 };
 
 const survey = {
-  index: lazy(() => import('survey/pages/index')),
-  create: lazy(() => import('survey/pages/Create')),
-  view: lazy(() => import('survey/pages/View')),
-  edit: lazy(() => import('survey/pages/Edit')),
-  report: lazy(() => import('survey/pages/Report')),
+  index: lazy(() => import('views/general/survey/index')),
+  create: lazy(() => import('views/general/survey/create')),
+  edit: lazy(() => import('views/general/survey/edit_1')),
+  view: lazy(() => import('views/general/survey/view')),
+  report: lazy(() => import('views/general/survey/report')),
 };
 
 const appRoot = DEFAULT_PATHS.APP.endsWith('/') ? DEFAULT_PATHS.APP.slice(1, DEFAULT_PATHS.APP.length) : DEFAULT_PATHS.APP;
@@ -80,7 +80,7 @@ const routesAndMenuItems = {
       to: `${appRoot}/appointment/index`,
       subs: [
         // { path: '/dashboard', label: 'dashboard.title', icon: 'dashboard', component: index.index },
-        { path: '/index', label: 'dashboard.appointment', icon: 'ticket', component: appointment.index },
+        { path: '/index', label: 'dashboard.appointment', icon: 'appointment', component: appointment.index },
       ],
     },
     {
@@ -107,7 +107,7 @@ const routesAndMenuItems = {
       exact: true,
       redirect: true,
       to: `${appRoot}/home/index`,
-      subs: [{ path: '/index', label: 'home.title', icon: 'dashboard', component: index.home }],
+      subs: [{ path: '/index', label: 'home.title', icon: 'doctor', component: index.home }],
     },
     {
       path: `${appRoot}/appointment`,
@@ -118,7 +118,7 @@ const routesAndMenuItems = {
       to: `${appRoot}/appointment/index`,
       subs: [
         // { path: '/dashboard', label: 'dashboard.title', icon: 'dashboard', component: index.index },
-        { path: '/index', label: 'dashboard.appointment', icon: 'ticket', component: appointment.index },
+        { path: '/index', label: 'dashboard.appointment', icon: 'appointment', component: appointment.index },
       ],
     },
     {
@@ -130,8 +130,8 @@ const routesAndMenuItems = {
       to: `${appRoot}/doctor/dashboard`,
       subs: [
         { path: '/dashboard', label: 'dashboard.title', icon: 'dashboard', component: doctorDashboard.index },
-        { path: '/inspection', label: 'doctorsCorner.inspection', icon: 'ticket', component: inspection.index },
-        { path: '/medicine-registration', label: 'doctorsCorner.medicineRegistration', icon: 'ticket', component: medicine.index },
+        { path: '/inspection', label: 'doctorsCorner.inspection', icon: 'duplicate', component: inspection.index },
+        { path: '/medicine-registration', label: 'doctorsCorner.medicineRegistration', icon: 'edit', component: medicine.index },
       ],
     },
     {
@@ -169,7 +169,7 @@ const routesAndMenuItems = {
       to: `${appRoot}/appointment/index`,
       subs: [
         // { path: '/dashboard', label: 'dashboard.title', icon: 'dashboard', component: index.index },
-        { path: '/index', label: 'dashboard.appointment', icon: 'ticket', component: appointment.index },
+        { path: '/index', label: 'dashboard.appointment', icon: 'appointment', component: appointment.index },
       ],
     },
     {
@@ -181,8 +181,8 @@ const routesAndMenuItems = {
       to: `${appRoot}/doctor/dashboard`,
       subs: [
         { path: '/dashboard', label: 'dashboard.title', icon: 'dashboard', component: doctorDashboard.index },
-        { path: '/inspection', label: 'doctorsCorner.inspection', icon: 'ticket', component: inspection.index },
-        { path: '/medicine-registration', label: 'doctorsCorner.medicineRegistration', icon: 'ticket', component: medicine.index },
+        { path: '/inspection', label: 'doctorsCorner.inspection', icon: 'duplicate', component: inspection.index },
+        { path: '/medicine-registration', label: 'doctorsCorner.medicineRegistration', icon: 'edit', component: medicine.index },
       ],
     },
     {
