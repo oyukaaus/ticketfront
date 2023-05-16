@@ -106,7 +106,7 @@ const SurveyListContainer = (props) => {
       sort: true,
       formatter: (cell, row) => {
         return (
-          <Link to={`/survey/view/${row.id}`} className="underline">
+          <Link to={`/survey/view/${row.id}`} className="underline" style={{ color: '#4037d7' }}>
             {cell}
           </Link>
         );

@@ -21,17 +21,17 @@ const EditQuestion = (props, formRef) => {
     {
       key: 'question',
       value: selectedData?.question,
-      label: `${t('survey.questionnaire')}*`,
+      label: `${t('survey.questionnaire')}`,
       type: 'textArea',
-      required: true,
+      required: false,
       labelBold: true,
     },
     {
       key: 'description',
       value: selectedData?.description,
-      label: `${t('survey.questionnaireDesc')}*`,
+      label: `${t('survey.questionnaireDesc')}`,
       type: 'textArea',
-      required: true,
+      required: false,
       labelBold: true,
     },
     {
@@ -88,7 +88,7 @@ const EditQuestion = (props, formRef) => {
       value: selectedData?.typeId,
       label: `${t('survey.questionnaireType')}*`,
       type: 'dropdown',
-      required: true,
+      required: false,
       labelBold: true,
       options: props?.question_types?.map((qt) => ({
         text: qt.name,
@@ -260,7 +260,7 @@ const EditQuestion = (props, formRef) => {
                 }}
                 variant="outline-alternate"
                 outline
-                className="text-uppercase br-8 py-2"
+                className="text-uppercase br-8 py-2 custom-blue-btn"
               >
                 {t('common.add')}
               </Button>
@@ -268,6 +268,7 @@ const EditQuestion = (props, formRef) => {
           </div>
         </div>
       )}
+      <div style={{ height: '130px' }}></div>
     </>
   );
 };
