@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Card, Row, Col } from 'react-bootstrap';
-import SurveyListContainer from 'survey/containers/Survey';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import { useTranslation } from 'react-i18next';
 import { AddCircleOutline, BorderColorTwoTone, DeleteTwoTone, HighlightOff, PlaylistAddCheckCircleOutlined } from '@mui/icons-material';
