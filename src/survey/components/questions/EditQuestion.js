@@ -7,14 +7,16 @@ import SouthSharpIcon from '@mui/icons-material/SouthSharp';
 import NorthSharpIcon from '@mui/icons-material/NorthSharp';
 
 const EditQuestion = (props, formRef) => {
+
   const { selectedData } = props;
   const { save } = props;
   const { t } = useTranslation();
-  const [type, setType] = React.useState(selectedData?.type_id);
-  const [answers, setAnswers] = React.useState([{ order_number: 1 }]);
+  const [type, setType] = React.useState(selectedData?.typeId);
+  const [answers, setAnswers] = React.useState([{ ...(selectedData?.answers || []), ...{ orderNumber: 1 } }]);
   const [file, setFile] = React.useState();
   const [isMulti, setIsMulti] = React.useState(false);
   const [deleteIds, setDeleteIds] = React.useState([]);
+  const [updateView, setUpdateView] = React.useState(false)
   const questionnaireFields = [
     {
       key: 'question',
@@ -47,8 +49,8 @@ const EditQuestion = (props, formRef) => {
         </>
       ),
       isExtendedButtonClass: 'btn btn-outline-warning mr-5',
-      altImage: selectedData?.file_path || 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>',
-      altImageClass: selectedData?.file_path ? '' : 'd-none',
+      altImage: selectedData?.filePath || 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>',
+      altImageClass: selectedData?.filePath ? '' : 'd-none',
       accept: 'image/*',
       fileType: 'image',
       clearButton: true,
@@ -74,16 +76,16 @@ const EditQuestion = (props, formRef) => {
       },
     },
     {
-      key: 'is_required',
-      value: selectedData?.is_required,
+      key: 'isRequired',
+      value: selectedData?.isRequired,
       label: `${t('survey.answerRequired')}*`,
       type: 'checkbox',
       required: false,
       labelBold: true,
     },
     {
-      key: 'type_id',
-      value: selectedData?.type_id,
+      key: 'type',
+      value: selectedData?.typeId,
       label: `${t('survey.questionnaireType')}*`,
       type: 'dropdown',
       required: true,
@@ -100,7 +102,8 @@ const EditQuestion = (props, formRef) => {
   const tmpType = tmpQt?.find((qt) => qt.id === type);
 
   React.useEffect(() => {
-    save({ answers: tmpType?.code === 'SELECT' ? [...answers] : [], image: file, is_multi_answer: isMulti, delete_ids: deleteIds || [] });
+    const cloneAnswers = answers;
+    save({ answers: tmpType?.code === 'SELECT' ? cloneAnswers : [], image: file, isMultiAnswer: isMulti, delete_ids: deleteIds || [] });
   }, [isMulti, tmpType, answers, file]);
 
   React.useEffect(() => {
@@ -120,10 +123,10 @@ const EditQuestion = (props, formRef) => {
         <div className="custom-container">
           {answers
             ?.sort((a, b) => {
-              if (a?.order_number < b?.order_number) {
+              if (a?.orderNumber < b?.orderNumber) {
                 return -1;
               }
-              if (a?.order_number > b?.order_number) {
+              if (a?.orderNumber > b?.orderNumber) {
                 return 1;
               }
               return 0;
@@ -138,10 +141,12 @@ const EditQuestion = (props, formRef) => {
                       size="sm"
                       onClick={() => {
                         const tmp = [...answers];
-                        const orderNumber = tmp[i - 1].order_number;
-                        tmp[i - 1].order_number = tmp[i].order_number;
-                        tmp[i].order_number = orderNumber;
+                        const orderNumber = tmp[i - 1].orderNumber;
+                        tmp[i - 1].orderNumber = tmp[i].orderNumber;
+                        tmp[i].orderNumber = orderNumber;
                         setAnswers(tmp);
+
+                        setUpdateView(!updateView)
                       }}
                     >
                       {/* <i className="flaticon2-arrow-up text-black" /> */}
@@ -155,10 +160,12 @@ const EditQuestion = (props, formRef) => {
                       size="sm"
                       onClick={() => {
                         const tmp = [...answers];
-                        const orderNumber = tmp[i + 1].order_number;
-                        tmp[i + 1].order_number = tmp[i].order_number;
-                        tmp[i].order_number = orderNumber;
+                        const orderNumber = tmp[i + 1].orderNumber;
+                        tmp[i + 1].orderNumber = tmp[i].orderNumber;
+                        tmp[i].orderNumber = orderNumber;
                         setAnswers(tmp);
+
+                        setUpdateView(!updateView)
                       }}
                     >
                       {/* <i className="flaticon2-arrow-down text-black" /> */}
@@ -174,8 +181,10 @@ const EditQuestion = (props, formRef) => {
                     const tmp = [...answers];
                     tmp[i].answer = e.target.value;
                     tmp[i].code = e.target.value;
-                    tmp[i].order_number = i + 1;
+                    tmp[i].orderNumber = i + 1;
                     setAnswers(tmp);
+
+                    setUpdateView(!updateView)
                   }}
                 />
                 <label className="btn btn-outline-warning btn-sm">
@@ -218,6 +227,8 @@ const EditQuestion = (props, formRef) => {
                     }
                     tmp.splice(i, 1);
                     setAnswers(tmp);
+
+                    setUpdateView(!updateView)
                   }}
                   className="px-3"
                 >
@@ -239,7 +250,13 @@ const EditQuestion = (props, formRef) => {
             <div>
               <Button
                 onClick={() => {
-                  setAnswers([...answers, { order_number: answers.length }]);
+                  const cloneAnswers = answers || [];
+                  cloneAnswers.push({
+                    orderNumber: (answers || []).length + 1
+                  })
+                  setAnswers(cloneAnswers);
+
+                  setUpdateView(!updateView)
                 }}
                 variant="outline-alternate"
                 outline

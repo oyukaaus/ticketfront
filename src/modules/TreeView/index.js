@@ -1,10 +1,10 @@
 /* eslint-disable */
-import React, {useEffect, useState} from "react";
+import React, { useEffect, useState } from "react";
 import ReactDOM from "react-dom";
 
 import Tree from 'rc-tree';
 import assign from 'object-assign';
-import {ClickAwayListener} from "@material-ui/core";
+import { ClickAwayListener } from "@material-ui/core";
 
 const TreeView = ({
     treeData = [],
@@ -17,26 +17,34 @@ const TreeView = ({
     onContextMenuClick,
     ...rest
 }) => {
-    const [ expandedNodes, setExpandedNodes ] = useState([]);
+    const [expandedNodes, setExpandedNodes] = useState([]);
+    const [updateView, setUpdateView] = useState(false)
 
-    useEffect(() => {
-        for (let i = 0; i < treeData.length; i++) {
-            let nodeObj = treeData[i];
-
-            if (expandedNodes.indexOf(nodeObj.key) < 0) {
-                expandedNodes.push(nodeObj.key);
-            }
-            if (nodeObj.children && nodeObj.children.length > 0) {
-                for (let c = 0; c < nodeObj.children.length; c++) {
-                    let childNode = nodeObj.children[c];
-                    if (expandedNodes.indexOf(childNode.key) < 0) {
-                        expandedNodes.push(childNode.key);
-                    }
+    const recursive = (children = [], resultKeys = []) => {
+        if (children && children.length > 0) {
+            for (let c = 0; c < children.length; c++) {
+                const child = children[c];
+                if (child.children && child.children.length > 0) {
+                    const childKeys = recursive(child.children, resultKeys);
+                    resultKeys.push(child.key)
+                    resultKeys = resultKeys.concat(childKeys)
+                    resultKeys = [...new Set(resultKeys)]
+                } else {
+                    resultKeys.push(child.key);
                 }
             }
         }
+        return resultKeys;
+    }
+
+    useEffect(() => {
+        const keys = recursive(treeData, []);
+        setExpandedNodes(keys);
         getContainer()
-    }, []);
+
+        setUpdateView(!updateView)
+
+    }, [treeData]);
 
     const getContainer = () => {
         const id = 'tree-contextmenu-wrapper';
@@ -59,8 +67,8 @@ const TreeView = ({
     }
 
     const onRightClick = (info, node) => {
-        if(info){
-            if(!info.node?.disableContextMenu){
+        if (info) {
+            if (!info.node?.disableContextMenu) {
                 if (contextMenus && (contextMenus.length > 0 || Object.values(contextMenus).length > 0)) {
                     if (info.node && info.node.key && info.node.key in contextMenus) {
                         contextMenus = contextMenus[info.node.key];
@@ -88,7 +96,7 @@ const TreeView = ({
                                                         unMountContextMenus()
                                                     }}
                                                 >
-                                                    <i className={'m-nav__link-icon ' + menu.iconClassName}/>
+                                                    <i className={'m-nav__link-icon ' + menu.iconClassName} />
                                                     <span className="m-nav__link-text">{menu.text}</span>
                                                 </div>
                                             )
@@ -130,7 +138,7 @@ const TreeView = ({
                 autoExpandParent="true"
                 defaultExpandParent="true"
                 onSelect={onSelect}
-                defaultExpandAll={defaultExpandAll}
+                defaultExpandAll={true}
                 className={className}
                 {...rest}
             />

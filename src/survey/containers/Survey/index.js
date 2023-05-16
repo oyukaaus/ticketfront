@@ -20,35 +20,21 @@ import ChangeDateModal from './ChangeDateModal';
 import deepEqual from '../../utils/deep';
 
 const SurveyListContainer = (props) => {
-  const [counts, setCounts] = useState({ PUBLISH: 0, DRAFT: 0 });
   const history = useHistory();
-  const [currentStatus, setCurrentStatus] = useState({
-    code: 'PUBLISH',
-    color: '',
-    id: 1,
-    name: 'Нийтэлсэн',
-  });
-  const { category } = props;
   const { t } = useTranslation();
   const dispatch = useDispatch();
 
-  const current = new Date();
-  const dateTimeToday =
-    current.getFullYear() +
-    '-' +
-    ('00' + (current.getMonth() + 1)).slice(-2) +
-    '-' +
-    ('00' + current.getDate()).slice(-2) +
-    ' ' +
-    current.getHours() +
-    ':' +
-    ('00' + current.getMinutes()).slice(-2) +
-    ':' +
-    ('00' + current.getSeconds()).slice(-2);
   const { selectedSchool } = useSelector((state) => state.schoolData);
-  const loading = useSelector((state) => state.loading);
-  const [selectedData, setSelectedData] = useState(null);
 
+  const loading = useSelector((state) => state.loading);
+
+
+  const [statuses, setStatuses] = useState([])
+  const [selectedStatus, setSelectedStatus] = useState(null)
+
+  const [categories, setCategories] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState(null)
+  const [selectedData, setSelectedData] = useState(null);
   const [showDelete, setShowDelete] = useState(false);
 
   const [tableTotalCount, setTableTotalCount] = useState(0);
@@ -68,7 +54,6 @@ const SurveyListContainer = (props) => {
     showPagination: true,
     showFilter: true,
     footer: false,
-    excelFileName: t('survey.title') + ' ' + dateTimeToday,
   };
 
   const contextMenuArray = [
@@ -168,50 +153,43 @@ const SurveyListContainer = (props) => {
     },
   ];
 
-  const isFetchedRef = useRef();
-
-  const fetchSurveyList = async () => {
+  const fetchIndex = async (selectedCategoryId = null, selectedStatusId = null, page = 1, pageSize = 10, query = null, sortBy = null, order = null) => {
     const postData = {
       school: selectedSchool?.id,
       page: pageNumber,
-      page_size: sizePerPage,
+      pageSize: sizePerPage,
       query: searchValue,
       sortBy: sortKey,
       order: sortOrder,
-      category_id: category,
-      status_id: currentStatus?.id || '',
-      type_id: '',
+      category: selectedCategoryId,
+      status: selectedStatusId
     };
-    console.log('postData: ', postData);
-
-    if (currentStatus) {
-      dispatch(setLoading(true));
-      return fetchRequest(surveyIndex, 'POST', postData)
-        .then((res) => {
-          const { surveys = [], count, page = 1, query = '', success = false, message = null, status_counts: statusCounts } = res;
-          if (success) {
-            setTableData(surveys);
-            setPageNumber(page);
-            setSizePerPage(res?.page_size || 10);
-            setSearchValue(query);
-            setTableTotalCount(count);
-            const P = statusCounts?.find((sc) => sc.code === 'PUBLISH');
-            const D = statusCounts?.find((sc) => sc.code === 'DRAFT');
-            setCounts({
-              PUBLISH: P?.survey_count || 0,
-              DRAFT: D?.survey_count || 0,
-            });
-          } else {
-            showMessage(message || t('errorMessage.title'));
-          }
-          dispatch(setLoading(false));
-        })
-        .catch((e) => {
-          dispatch(setLoading(false));
-          showMessage(t('errorMessage.title'));
-        });
-    }
-    return Promise.resolve();
+    dispatch(setLoading(true));
+    fetchRequest(surveyIndex, 'POST', postData)
+      .then((res) => {
+        console.log('Res', res)
+        // const { surveys = [], count, page = 1, query = '', success = false, message = null, status_counts: statusCounts } = res;
+        // if (success) {
+        //   setTableData(surveys);
+        //   setPageNumber(page);
+        //   setSizePerPage(res?.page_size || 10);
+        //   setSearchValue(query);
+        //   setTableTotalCount(count);
+        //   const P = statusCounts?.find((sc) => sc.code === 'PUBLISH');
+        //   const D = statusCounts?.find((sc) => sc.code === 'DRAFT');
+        //   setCounts({
+        //     PUBLISH: P?.survey_count || 0,
+        //     DRAFT: D?.survey_count || 0,
+        //   });
+        // } else {
+        //   showMessage(message || t('errorMessage.title'));
+        // }
+        dispatch(setLoading(false));
+      })
+      .catch((e) => {
+        dispatch(setLoading(false));
+        showMessage(t('errorMessage.title'));
+      });
   };
 
   const actionToDelete = (id) => {
@@ -222,14 +200,14 @@ const SurveyListContainer = (props) => {
     fetchRequest(surveyDelete, 'POST', postData)
       .then(async (res) => {
         setShowDelete(false);
-        const { message = null, success = false } = res;
-        if (success) {
-          setCounts({ ...counts, [currentStatus.code]: counts[currentStatus.code] - 1 });
-          await fetchSurveyList();
-          showMessage(message, success);
-        } else {
-          showMessage(message || t('errorMessage.title'));
-        }
+        // const { message = null, success = false } = res;
+        // if (success) {
+        //   setCounts({ ...counts, [currentStatus.code]: counts[currentStatus.code] - 1 });
+        //   await fetchIndex();
+        //   showMessage(message, success);
+        // } else {
+        //   showMessage(message || t('errorMessage.title'));
+        // }
         dispatch(setLoading(false));
       })
       .catch(() => {
@@ -252,11 +230,11 @@ const SurveyListContainer = (props) => {
       .then(async (res) => {
         const { message = null, success = false } = res;
         if (success) {
-          setCounts({
-            DRAFT: counts.DRAFT + 1,
-            PUBLISH: counts.PUBLISH - 1,
-          });
-          await fetchSurveyList();
+          // setCounts({
+          //   DRAFT: counts.DRAFT + 1,
+          //   PUBLISH: counts.PUBLISH - 1,
+          // });
+          await fetchIndex();
           showMessage(message, success);
         } else {
           showMessage(message || t('errorMessage.title'));
@@ -277,7 +255,7 @@ const SurveyListContainer = (props) => {
         if (success) {
           setChangeDate(false);
           setSelectedData(null);
-          await fetchSurveyList();
+          await fetchIndex();
           showMessage(message, success);
         } else {
           showMessage(message || t('errorMessage.title'));
@@ -316,15 +294,14 @@ const SurveyListContainer = (props) => {
                   survey_id: id,
                 });
 
-                await fetchRequest(surveyQuestionCreate, 'POST', {
-                  survey_id: newSurvey?.id,
-                  questions: resQuestions?.questions?.map(({ id: _, ...restQuestion }) => restQuestion),
-                });
-                setCounts({ ...counts, DRAFT: counts.DRAFT + 1 });
+                // await fetchRequest(surveyQuestionCreate, 'POST', {
+                //   survey_id: newSurvey?.id,
+                //   questions: resQuestions?.questions?.map(({ id: _, ...restQuestion }) => restQuestion),
+                // });
               } catch (e) {
                 showMessage(e?.message || t('errorMessage.title'));
               }
-              await fetchSurveyList();
+              await fetchIndex();
               showMessage(message, success);
             } else {
               showMessage(message || t('errorMessage.title'));
@@ -373,95 +350,99 @@ const SurveyListContainer = (props) => {
   };
 
   useEffect(() => {
-    if (!isFetchedRef.current) {
-      fetchSurveyList();
-      isFetchedRef.current = { currentStatus, category, pageNumber, sizePerPage, searchValue, sortKey, sortOrder };
-    } else {
-      const KEY = { currentStatus, category, pageNumber, sizePerPage, searchValue, sortKey, sortOrder };
-      if (!deepEqual(KEY, isFetchedRef.current)) {
-        fetchSurveyList();
-        isFetchedRef.current = KEY;
-      }
-    }
-  }, [currentStatus, category, pageNumber, sizePerPage, searchValue, sortKey, sortOrder]);
+    fetchIndex()
+  }, [])
 
-  const data = useData();
+  // useEffect(() => {
+  //   if (!isFetchedRef.current) {
+  //     fetchIndex();
+  //     isFetchedRef.current = { currentStatus, category, pageNumber, sizePerPage, searchValue, sortKey, sortOrder };
+  //   } else {
+  //     const KEY = { currentStatus, category, pageNumber, sizePerPage, searchValue, sortKey, sortOrder };
+  //     if (!deepEqual(KEY, isFetchedRef.current)) {
+  //       fetchIndex();
+  //       isFetchedRef.current = KEY;
+  //     }
+  //   }
+  // }, [currentStatus, category, pageNumber, sizePerPage, searchValue, sortKey, sortOrder]);
 
-  useEffect(() => {
-    if (data?.survey_statuses?.length > 0) {
-      setCurrentStatus(data?.survey_statuses?.[0]);
-    }
-  }, [data]);
+  // const data = useData();
 
-  useEffect(() => {
-    setPageNumber(1);
-  }, [currentStatus]);
+  // useEffect(() => {
+  //   if (data?.survey_statuses?.length > 0) {
+  //     setCurrentStatus(data?.survey_statuses?.[0]);
+  //   }
+  // }, [data]);
+
+  // useEffect(() => {
+  //   setPageNumber(1);
+  // }, [currentStatus]);
 
   return (
     <>
       <Row>
-        <Row>
-          <Col lg={12}>
-            <Link to="/survey/create">
-              <Button type="button" variant="info" size="sm" className="text-uppercase br-8">
-                <span className="m-0 font-weight-bold d-flex align-items-center">
-                  <AddCircleOutline className="w-19" />
-                  &nbsp;{t('common.create')}
-                </span>
-              </Button>
-            </Link>
+        <Col lg={12}>
+          <Link to="/survey/create">
+            <Button type="button" variant="info" size="sm" className="text-uppercase br-8">
+              <span className="m-0 font-weight-bold d-flex align-items-center">
+                <AddCircleOutline className="w-19" />
+                &nbsp;{t('common.create')}
+              </span>
+            </Button>
+          </Link>
 
-            <Row>
-              {data?.survey_statuses?.map((status) => {
-                const isActive = status?.code === currentStatus?.code;
-                return (
-                  <Col lg={4} key={status?.code} className="mb-4">
-                    <Card
-                      className={`custom-card rounded-3 border ${isActive ? 'border-info' : ''}`}
-                      onClick={() => {
-                        setCurrentStatus(status);
-                      }}
-                    >
-                      <Card.Body className="text-center">
-                        <strong>{status?.name}</strong>
-                        <p className="m-0">{counts[status.code]} судалгаа</p>
-                      </Card.Body>
-                    </Card>
-                  </Col>
-                );
-              })}
-            </Row>
+          <Row>
+            {statuses?.map((status) => {
+              const isActive = status?.id === selectedStatus;
+              return (
+                <Col lg={4}
+                  key={status?.code}
+                  className="mb-4">
+                  <Card
+                    className={`custom-card rounded-3 border ${isActive ? 'border-info' : ''}`}
+                    onClick={() => {
+                      setSelectedStatus(status?.id);
+                    }}
+                  >
+                    <Card.Body className="text-center">
+                      <strong>{status?.name}</strong>
+                      <p className="m-0">{status.count} судалгаа</p>
+                    </Card.Body>
+                  </Card>
+                </Col>
+              );
+            })}
+          </Row>
 
-            <Card className="mb-3 no-border-radius">
-              <Card.Body className="">
-                <DTable
-                  currentPage={pageNumber}
-                  // checkable="false"
-                  // onCheckable={false}
-                  remote
-                  onInteraction={onInteraction}
-                  selectMode="radio"
-                  config={config}
-                  columns={column}
-                  data={tableData?.map((td) => ({
-                    ...td,
-                    contextMenuKeys: currentStatus.code === 'DRAFT' ? ['edit', 'copy', 'delete'] : ['report', 'date', 'copy', 'inactive'],
-                  }))}
-                  individualContextMenus="true"
-                  contextMenus={contextMenuArray}
-                  totalDataSize={tableTotalCount}
-                  onContextMenuItemClick={handleContextMenuClick}
-                  excelExportUrl="url"
-                  exportExportParams={{
-                    school: selectedSchool?.id,
-                    sortBy: sortKey,
-                    order: sortOrder,
-                  }}
-                />
-              </Card.Body>
-            </Card>
-          </Col>
-        </Row>
+          <Card className="mb-3 no-border-radius">
+            <Card.Body className="">
+              <DTable
+                currentPage={pageNumber}
+                // checkable="false"
+                // onCheckable={false}
+                remote
+                onInteraction={onInteraction}
+                selectMode="radio"
+                config={config}
+                columns={column}
+                data={tableData?.map((td) => ({
+                  ...td,
+                  contextMenuKeys: selectedStatus?.code === 'DRAFT' ? ['edit', 'copy', 'delete'] : ['report', 'date', 'copy', 'inactive'],
+                }))}
+                individualContextMenus="true"
+                contextMenus={contextMenuArray}
+                totalDataSize={tableTotalCount}
+                onContextMenuItemClick={handleContextMenuClick}
+                excelExportUrl="url"
+                exportExportParams={{
+                  school: selectedSchool?.id,
+                  sortBy: sortKey,
+                  order: sortOrder,
+                }}
+              />
+            </Card.Body>
+          </Card>
+        </Col>
       </Row>
 
       {changeDate && selectedData && <ChangeDateModal show={changeDate} setShow={setChangeDate} onSubmit={actionToChangeDate} survey={selectedData} />}

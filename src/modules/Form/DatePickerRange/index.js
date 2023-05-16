@@ -184,6 +184,7 @@ const DatePickerRange = ({
                 selected={startDate ? new Date(startDate) : selectedStartDate ? new Date(selectedStartDate) : null}
                 onChange={(date) => setStartDate(date)}
                 startDate={startDate}
+                maxDate={endDate}
                 dateFormat='yyyy-MM-dd'
                 disabled={isDisabled}
                 className='first-datepicker'
@@ -212,6 +213,7 @@ const DatePickerRange = ({
             <DatePicker
                 locale={mn}
                 selected={endDate ? new Date(endDate) : selectedEndDate ? new Date(selectedEndDate) : null}
+                minDate={startDate}
                 onChange={(date) => setEndDate(date)}
                 endDate={endDate}
                 dateFormat='yyyy-MM-dd'
