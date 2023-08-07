@@ -264,3 +264,7 @@
 .custom-forms label + div {
   /* flex: 0 !important; */
 }
+
+.react-contextmenu .react-contextmenu-item:hover {
+  color: #f4516b !important;
+}

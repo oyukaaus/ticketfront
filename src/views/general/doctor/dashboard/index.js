@@ -29,14 +29,12 @@ const index = () => {
     const [tabIndex] = useState('ate_food_students_tab_index')
     const [tabKey, setTabKey] = useState('INSPECTION');
 
-    const [inspectionStartDate, setInspectionStartDate] = useState('');
-    const [inspectionEndDate, setInspectionEndDate] = useState('');
+    const [startDate, setStartDate] = useState('');
+    const [endDate, setEndDate] = useState('');
     const [inspectionTableCount, setInspectionTableCount] = useState(0);
     const [inspectionTableData, setInspectionTableData] = useState([]);
     const [inspectionCurrentPage, setInspectionCurrentPage] = useState(1);
 
-    const [medicineStartDate, setMedicineStartDate] = useState('');
-    const [medicineEndDate, setMedicineEndDate] = useState('');
     const [medicineCurrentPage, setMedicineCurrentPage] = useState(1);
     const [medicineTableCount, setMedicineTableCount] = useState(0);
     const [medicineTableData, setMedicineTableData] = useState([]);
@@ -221,13 +219,13 @@ const index = () => {
             });
     }
 
-    const loadDetails = (type = null, startDate = null, endDate = null, page = 1, pageSize = 10, query = null, sortBy = null, order = null) => {
+    const loadDetails = (type = null, start = null, end = null, page = 1, pageSize = 10, query = null, sortBy = null, order = null) => {
         dispatch(setLoading(true));
         const postData = {
             school: selectedSchool?.id,
             type,
-            startDate,
-            endDate,
+            startDate: start,
+            endDate: end,
             page,
             pageSize,
             query,
@@ -338,19 +336,18 @@ const index = () => {
     ];
 
     const onStudentSeeClick = () => {
-        if (medicineStartDate && medicineEndDate) {
+        if (startDate && endDate) {
             setErrorDueDate(false);
-            loadDetails('MEDICINE', medicineStartDate, medicineEndDate);
+            loadDetails('MEDICINE', startDate, endDate);
         } else {
             setErrorDueDate(true);
         }
     }
 
     const onSeeClick = () => {
-        console.log('See', inspectionStartDate)
-        if (inspectionStartDate && inspectionEndDate) {
+        if (startDate && endDate) {
             setErrorDueDate(false);
-            loadDetails('INSPECTION', inspectionStartDate, inspectionEndDate);
+            loadDetails('INSPECTION', startDate, endDate);
         } else {
             setErrorDueDate(true);
         }
@@ -366,15 +363,15 @@ const index = () => {
 
     const handleInspectionDateChange = (value) => {
         if (value && value.length > 0) {
-            setInspectionStartDate(value[0]?.startDate || '')
-            setInspectionEndDate(value[0]?.endDate || '')
+            setStartDate(value[0]?.startDate || '')
+            setEndDate(value[0]?.endDate || '')
         }
     }
 
     const handleMedicineDateChange = (value) => {
         if (value && value.length > 0) {
-            setMedicineStartDate(value[0]?.startDate || '')
-            setMedicineEndDate(value[0]?.endDate || '')
+            setStartDate(value[0]?.startDate || '')
+            setEndDate(value[0]?.endDate || '')
         }
     };
 
@@ -382,12 +379,12 @@ const index = () => {
         if (tabKey === 'INSPECTION') {
             setSortKey(obj?.sort)
             setSortOrder(obj?.order)
-            loadDetails('INSPECTION', inspectionStartDate, inspectionEndDate, obj?.page, obj?.pageSize, obj?.search, obj?.sort, obj?.order);
+            loadDetails('INSPECTION', startDate, endDate, obj?.page, obj?.pageSize, obj?.search, obj?.sort, obj?.order);
         }
         if (tabKey === 'MEDICINE') {
             setSortKey(obj?.sort)
             setSortOrder(obj?.order)
-            loadDetails('MEDICINE', medicineStartDate, medicineEndDate, obj?.page, obj?.pageSize, obj?.search, obj?.sort, obj?.order);
+            loadDetails('MEDICINE', startDate, endDate, obj?.page, obj?.pageSize, obj?.search, obj?.sort, obj?.order);
         }
     }
 
@@ -407,8 +404,8 @@ const index = () => {
                                         onChange={(val) => handleInspectionDateChange(val)}
                                         firstPlaceHolder={t('common.startDate')}
                                         lastPlaceHolder={t('common.endDate')}
-                                        selectedStartDate={inspectionStartDate}
-                                        selectedEndDate={inspectionEndDate}
+                                        selectedStartDate={startDate}
+                                        selectedEndDate={endDate}
                                         isDisabled={false}
                                         clearable={true}
                                         disableWithFirst={true}
@@ -456,8 +453,8 @@ const index = () => {
                                 exportExportParams={{
                                     school: selectedSchool?.id,
                                     type: 'INSPECTION',
-                                    startDate: inspectionStartDate,
-                                    endDate: inspectionEndDate,
+                                    startDate: startDate,
+                                    endDate: endDate,
                                     sortBy: sortKey,
                                     order: sortOrder
                                 }}
@@ -479,8 +476,8 @@ const index = () => {
                                         onChange={(val) => handleMedicineDateChange(val)}
                                         firstPlaceHolder={t('common.startDate')}
                                         lastPlaceHolder={t('common.endDate')}
-                                        selectedStartDate={medicineStartDate}
-                                        selectedEndDate={medicineEndDate}
+                                        selectedStartDate={startDate}
+                                        selectedEndDate={endDate}
                                         isDisabled={false}
                                         clearable={true}
                                         disableWithFirst={true}
@@ -528,8 +525,8 @@ const index = () => {
                                 exportExportParams={{
                                     school: selectedSchool?.id,
                                     type: 'MEDICINE',
-                                    startDate: medicineStartDate,
-                                    endDate: medicineEndDate,
+                                    startDate: startDate,
+                                    endDate: endDate,
                                     sortBy: sortKey,
                                     order: sortOrder
                                 }}

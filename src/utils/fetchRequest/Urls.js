@@ -39,6 +39,8 @@ export const doctorInspectionSubmit = 'doctor/inspection/submit';
 export const surveyIndex = 'survey/index';
 
 export const surveyCategorySubmit = 'survey/category/create';
+export const surveyCategoryEditSubmit = 'survey/category/edit';
+export const surveyCategoryDelete = 'survey/category/delete'
 
 export const surveyInit = 'survey/init';
 export const surveyCreate = 'survey/create';
@@ -60,7 +62,6 @@ const tmpApiUrl = 'https://survey.eschool.mn/'; // after backend merged then rem
 export const surveyCategoryIndex = tmpApiUrl + 'survey/category/list';
 export const surveyCategoryCreate = tmpApiUrl + 'survey/category/create';
 export const surveyCategoryEdit = tmpApiUrl + 'survey/category/create';
-export const surveyCategoryDelete = tmpApiUrl + 'survey/category/delete';
 
 // ----------survey-------------
 // export const surveyIndex = tmpApiUrl + 'survey/list';

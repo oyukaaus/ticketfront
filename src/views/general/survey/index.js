@@ -15,13 +15,14 @@ import 'css/dashboard.css';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from 'utils/redux/action';
 import { fetchRequest } from 'utils/fetchRequest';
-import { surveyIndex, surveyCategorySubmit, surveyUnpublish, surveyChangeDate, surveyDelete, surveyDuplicate } from 'utils/fetchRequest/Urls';
+import { surveyIndex, surveyCategorySubmit, surveyCategoryEditSubmit, surveyCategoryDelete, surveyUnpublish, surveyChangeDate, surveyDelete, surveyDuplicate } from 'utils/fetchRequest/Urls';
 
 import DTable from 'modules/DataTable/DTable';
-import DeleteModal from 'modules/DeleteModal';
 
 import showMessage from 'modules/message';
+import DeleteModal from 'modules/DeleteModal';
 import AddCategory from './modal/AddCategory'
+import EditCategory from './modal/EditCategory'
 import ChangeDateModal from './modal/ChangeDate';
 
 const SurveyPage = (props) => {
@@ -41,8 +42,22 @@ const SurveyPage = (props) => {
     const [categories, setCategories] = useState([]);
     const [flatCategories, setFlatCategories] = useState([])
     const [showAddCategory, setShowAddCategory] = useState(false)
+    const [showEditCategory, setShowEditCategory] = useState(false)
+    const [showDeleteCategory, setShowDeleteCategory] = useState(false)
+    const [selectedCategory, setSelectedCategory] = useState(null)
 
-    const categoryContextMenus = []
+    const categoryContextMenus = [
+        {
+            key: 'edit',
+            text: t('action.edit'),
+            iconClassName: 'la la-edit',
+        },
+        {
+            key: 'delete',
+            text: t('action.delete'),
+            iconClassName: 'la la-trash',
+        }
+    ]
 
     const [questionTypes, setQuestionTypes] = useState([])
     const [userTypes, setUserTypes] = useState([])
@@ -194,7 +209,8 @@ const SurveyPage = (props) => {
                     setFlatCategories(res?.flatCategories.map(obj => {
                         return {
                             value: obj?.id,
-                            text: obj?.name
+                            text: obj?.name,
+                            parent: obj?.parent
                         }
                     }))
                     setQuestionTypes(res?.questionTypes)
@@ -242,6 +258,66 @@ const SurveyPage = (props) => {
                     }))
 
                     setShowAddCategory(false)
+                } else {
+                    showMessage(message || t('errorMessage.title'));
+                }
+                dispatch(setLoading(false));
+            })
+            .catch(() => {
+                dispatch(setLoading(false));
+                showMessage(t('errorMessage.title'));
+            });
+    }
+
+    const categoryEditSubmit = (params) => {
+        dispatch(setLoading(true));
+        const postData = {
+            school: selectedSchool?.id,
+            ...params
+        };
+        fetchRequest(surveyCategoryEditSubmit, 'POST', postData)
+            .then((res) => {
+                const { success = false, message = null } = res;
+                if (success) {
+                    setCategories(res?.categories)
+                    setFlatCategories(res?.flatCategories.map(obj => {
+                        return {
+                            value: obj?.id,
+                            text: obj?.name
+                        }
+                    }))
+                    setSelectedCategory(null)
+                    setShowEditCategory(false)
+                } else {
+                    showMessage(message || t('errorMessage.title'));
+                }
+                dispatch(setLoading(false));
+            })
+            .catch(() => {
+                dispatch(setLoading(false));
+                showMessage(t('errorMessage.title'));
+            });
+    }
+
+    const categoryDelete = (params) => {
+        dispatch(setLoading(true));
+        const postData = {
+            school: selectedSchool?.id,
+            ...params
+        };
+        fetchRequest(surveyCategoryDelete, 'POST', postData)
+            .then((res) => {
+                const { success = false, message = null } = res;
+                if (success) {
+                    setCategories(res?.categories)
+                    setFlatCategories(res?.flatCategories.map(obj => {
+                        return {
+                            value: obj?.id,
+                            text: obj?.name
+                        }
+                    }))
+                    setSelectedCategory(null)
+                    setShowDeleteCategory(false)
                 } else {
                     showMessage(message || t('errorMessage.title'));
                 }
@@ -398,6 +474,34 @@ const SurveyPage = (props) => {
         setSortOrder(obj.order);
     };
 
+    const handleTreeContextMenuClick = (id, key) => {
+        if (id) {
+            const selectedObj = flatCategories.find(obj => {
+                return obj?.value?.toString() === id?.toString()
+            });
+            setSelectedCategory(selectedObj)
+            if (key === 'edit') {                
+                setShowEditCategory(true)
+            } else if (key === 'delete') {
+                setShowDeleteCategory(true)
+            }
+        }
+    }
+
+    const filterFlatCategories = (filterCategory = null, categoryList = []) => {
+        if (categoryList && categoryList.length > 0) {
+            const list = [];
+            for (let c = 0; c < categoryList.length; c++) {
+                if (categoryList[c]?.value?.toString() !== filterCategory?.value?.toString()) {
+                    list.push(categoryList[c])
+                }
+            }
+            return list
+        } else {
+            return []
+        }
+    }
+
     return (
         <div>
             <div className="mb-3">
@@ -426,9 +530,12 @@ const SurveyPage = (props) => {
                         {
                             categories && categories.length > 0 && <TreeView
                                 selectedNodes={[selectedTreeId]}
+                                defaultExpandAll
+                                contextMenuKey='treeKey'
                                 onSelect={(e) => handleTreeClick(e)}
                                 treeData={categories}
-                                contextMenus={categoryContextMenus}
+                                contextMenus={{ treeKey: categoryContextMenus }}
+                                onContextMenuClick={handleTreeContextMenuClick}
                             />
                         }
                     </div>
@@ -505,14 +612,51 @@ const SurveyPage = (props) => {
                 </Col>
             </Row>
 
-            <AddCategory
-                show={showAddCategory}
-                categories={flatCategories}
-                setShow={setShowAddCategory}
-                onSubmit={(values) => {
-                    categorySubmit(values);
-                }}
-            />
+            {
+                showAddCategory && <AddCategory
+                    show={showAddCategory}
+                    categories={flatCategories}
+                    setShow={setShowAddCategory}
+                    onSubmit={(values) => {
+                        categorySubmit(values);
+                    }}
+                />
+            }
+
+            {
+                showEditCategory && selectedCategory && <EditCategory
+                    show={showEditCategory}
+                    categories={filterFlatCategories(selectedCategory, flatCategories)}
+                    setShow={setShowEditCategory}
+                    categoryData={selectedCategory}
+                    onSubmit={(values) => {
+                        categoryEditSubmit(values);
+                    }}
+                />
+            }
+
+            {showDeleteCategory && selectedCategory && (
+                <DeleteModal
+                    onClose={() => {
+                        setShowDeleteCategory(false);
+                        setSelectedCategory(null);
+                    }}
+                    onDelete={() => {
+                        setShowDeleteCategory(false);
+                        setSelectedCategory(null);
+                        categoryDelete({category: selectedCategory?.value})
+                    }}
+                    title={t('warning.delete')}
+                    modalSize="md"
+                    backdropClassName="custom-nested-modal"
+                    dialogClassName="custom-nested-modal"
+                    className="custom-nested-modal"
+                >
+                    <p className="font-pd text-black text-center mb-0">
+                        {t('warning.delete_confirmation')} {t('warning.delete_confirmation_description')}
+                    </p>
+                </DeleteModal>
+            )}
 
             {showDelete && selectedData && (
                 <DeleteModal
