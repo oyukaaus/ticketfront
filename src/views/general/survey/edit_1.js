@@ -142,52 +142,6 @@ const Edit = () => {
         })
     }
 
-    const loadInfo = () => {
-        dispatch(setLoading(true));
-        fetchRequest(surveyInfo, 'POST', {
-            school: selectedSchool?.id,
-            survey: id
-        }).then((res) => {
-            if (res?.success) {
-                setUserTypes(res?.userTypes || [])
-                setSelectedGrade((res?.survey?.grades || []))
-                setSelectedCategory(res?.survey?.category)
-                setSurveyData(res?.survey)
-                setCategories((res?.categories || []).map(obj => {
-                    return {
-                        value: obj?.key,
-                        text: obj?.title
-                    }
-                }))
-                setQuestionTypes(res?.questionTypes)
-                setSelectedUserType(res?.survey?.type)
-                setSelectedDate({
-                    startDate: res?.survey?.startDate,
-                    endDate: res?.survey?.endDate
-                })
-
-                setQuestions(res?.survey?.questions)
-
-                const type = res?.survey?.userTypes?.find(obj => {
-                    return obj.value === res?.survey?.type
-                });
-
-                loadInit(type, res?.survey?.roles)
-                setIsInitial(false)
-            } else {
-                showMessage(res?.message || t('errorMessage.title'));
-            }
-            dispatch(setLoading(false));
-        }).catch(() => {
-            dispatch(setLoading(false));
-            showMessage(t('errorMessage.title'));
-        })
-    }
-
-    useEffect(() => {
-        loadInfo()
-    }, []);
-
     const onRoleChange = (e) => {
         setSelectedRole(e)
         loadInit(selectedUserType, e)
@@ -380,6 +334,53 @@ const Edit = () => {
             }));
         }
     }
+    
+    const loadInfo = () => {
+        dispatch(setLoading(true));
+        fetchRequest(surveyInfo, 'POST', {
+            school: selectedSchool?.id,
+            survey: id
+        }).then((res) => {
+            if (res?.success) {
+                setUserTypes(res?.userTypes || [])
+                setSelectedGrade((res?.survey?.grades || []))
+                setSelectedCategory(res?.survey?.category)
+                setSurveyData(res?.survey)
+                setCategories((res?.flatCategories || []).map(obj => {
+                    return {
+                        value: obj?.id,
+                        text: obj?.name
+                    }
+                }))
+                setQuestionTypes(res?.questionTypes)
+                setSelectedUserType(res?.survey?.type)
+                setSelectedDate({
+                    startDate: res?.survey?.startDate,
+                    endDate: res?.survey?.endDate
+                })
+
+                setQuestions(res?.survey?.questions)
+
+                const type = res?.survey?.userTypes?.find(obj => {
+                    return obj.value === res?.survey?.type
+                });
+
+                updateFields();
+                loadInit(type, res?.survey?.roles)
+                setIsInitial(false)
+            } else {
+                showMessage(res?.message || t('errorMessage.title'));
+            }
+            dispatch(setLoading(false));
+        }).catch(() => {
+            dispatch(setLoading(false));
+            showMessage(t('errorMessage.title'));
+        })
+    }
+
+    useEffect(() => {
+        loadInfo()
+    }, []);
 
     useEffect(() => {
         updateFields()
@@ -434,7 +435,6 @@ const Edit = () => {
         } else if (view === 'form-view') {
             const [isValid, , values] = formQuestionnaireRef.current.validate();
             if (isValid) {
-                console.log('Valu', values)
                 const postData = {
                     school: selectedSchool?.id,
                     survey: id,

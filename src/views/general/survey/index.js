@@ -480,7 +480,7 @@ const SurveyPage = (props) => {
                 return obj?.value?.toString() === id?.toString()
             });
             setSelectedCategory(selectedObj)
-            if (key === 'edit') {                
+            if (key === 'edit') {
                 setShowEditCategory(true)
             } else if (key === 'delete') {
                 setShowDeleteCategory(true)
@@ -644,7 +644,7 @@ const SurveyPage = (props) => {
                     onDelete={() => {
                         setShowDeleteCategory(false);
                         setSelectedCategory(null);
-                        categoryDelete({category: selectedCategory?.value})
+                        categoryDelete({ category: selectedCategory?.value })
                     }}
                     title={t('warning.delete')}
                     modalSize="md"
