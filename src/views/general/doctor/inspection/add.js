@@ -47,12 +47,12 @@ const addInspection = ({
     const [studentIdErrorMsg, setStudentIdErrorMsg] = useState(false);
     const [studentNameErrorMessage, setStudentNameErrorMessage] = useState(false);
     const [studentCodeErrorMsg, setStudentCodeErrorMsg] = useState(false);
-    
+
     const [inspectionDateErrorMsg, setInspectionDateErrorMsg] = useState(false);
     const [diagnosisErrorMsg, setDiagnosisErrorMsg] = useState(false);
     const [painErrorMsg, setPainErrorMsg] = useState(false);
     const [treatmentErrorMsg, setTreatmentErrorMsg] = useState(false);
-    
+
     const [staffId, setStaffId] = useState(null);
     const [staffCode, setStaffCode] = useState('');
     const [staffName, setStaffName] = useState('');
@@ -514,7 +514,7 @@ const addInspection = ({
         const postData = { school: selectedSchool?.id }
         fetchRequest(doctorInspectionClassInit, 'POST', postData)
             .then(response => {
-                const { classes = [], medicines = [] } = response.data
+                const { classes = [], medicines = [], today = '' } = response.data
                 const classOption = classes?.map(e => {
                     const returnVal = {
                         value: e.id,
@@ -529,6 +529,7 @@ const addInspection = ({
                     };
                     return returnVal;
                 })
+                setInspectionDate(today)
                 setClassOptions(classOption)
                 setMedicineOptions(medicineOption)
                 dispatch(setLoading(false));

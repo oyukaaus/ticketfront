@@ -44,7 +44,7 @@ const addMedicine = ({
             key: 'isActive',
             label: t('action.active'),
             labelBold: true,
-            value: false,
+            value: true,
             type: 'checkbox',
             required: false,
             controlVisible: false,

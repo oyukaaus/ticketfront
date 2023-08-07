@@ -15,6 +15,7 @@ import { fetchRequest } from 'utils/fetchRequest';
 import { doctorDashboardIndex, doctorDashboardDetails } from 'utils/fetchRequest/Urls';
 import DTable from 'modules/DataTable/DTable';
 import DatePicker from "modules/Form/DatePicker";
+import DatePickerRange from "modules/Form/DatePickerRange";
 import 'css/food.css';
 
 const index = () => {
@@ -28,12 +29,14 @@ const index = () => {
     const [tabIndex] = useState('ate_food_students_tab_index')
     const [tabKey, setTabKey] = useState('INSPECTION');
 
-    const [inspectionDueDate, setInspectionDueDate] = useState('');
+    const [inspectionStartDate, setInspectionStartDate] = useState('');
+    const [inspectionEndDate, setInspectionEndDate] = useState('');
     const [inspectionTableCount, setInspectionTableCount] = useState(0);
     const [inspectionTableData, setInspectionTableData] = useState([]);
     const [inspectionCurrentPage, setInspectionCurrentPage] = useState(1);
 
-    const [medicineDueDate, setMedicineDueDate] = useState('');
+    const [medicineStartDate, setMedicineStartDate] = useState('');
+    const [medicineEndDate, setMedicineEndDate] = useState('');
     const [medicineCurrentPage, setMedicineCurrentPage] = useState(1);
     const [medicineTableCount, setMedicineTableCount] = useState(0);
     const [medicineTableData, setMedicineTableData] = useState([]);
@@ -218,12 +221,13 @@ const index = () => {
             });
     }
 
-    const loadDetails = (type = null, date = null, page = 1, pageSize = 10, query = null, sortBy = null, order = null) => {
+    const loadDetails = (type = null, startDate = null, endDate = null, page = 1, pageSize = 10, query = null, sortBy = null, order = null) => {
         dispatch(setLoading(true));
         const postData = {
             school: selectedSchool?.id,
             type,
-            date,
+            startDate,
+            endDate,
             page,
             pageSize,
             query,
@@ -334,18 +338,19 @@ const index = () => {
     ];
 
     const onStudentSeeClick = () => {
-        if (medicineDueDate) {
+        if (medicineStartDate && medicineEndDate) {
             setErrorDueDate(false);
-            loadDetails('MEDICINE', medicineDueDate);
+            loadDetails('MEDICINE', medicineStartDate, medicineEndDate);
         } else {
             setErrorDueDate(true);
         }
     }
 
     const onSeeClick = () => {
-        if (inspectionDueDate) {
+        console.log('See', inspectionStartDate)
+        if (inspectionStartDate && inspectionEndDate) {
             setErrorDueDate(false);
-            loadDetails('INSPECTION', inspectionDueDate);
+            loadDetails('INSPECTION', inspectionStartDate, inspectionEndDate);
         } else {
             setErrorDueDate(true);
         }
@@ -360,23 +365,29 @@ const index = () => {
     };
 
     const handleInspectionDateChange = (value) => {
-        setInspectionDueDate(value)
+        if (value && value.length > 0) {
+            setInspectionStartDate(value[0]?.startDate || '')
+            setInspectionEndDate(value[0]?.endDate || '')
+        }
     }
 
     const handleMedicineDateChange = (value) => {
-        setMedicineDueDate(value)
+        if (value && value.length > 0) {
+            setMedicineStartDate(value[0]?.startDate || '')
+            setMedicineEndDate(value[0]?.endDate || '')
+        }
     };
 
     const onInteraction = (obj = null) => {
         if (tabKey === 'INSPECTION') {
             setSortKey(obj?.sort)
             setSortOrder(obj?.order)
-            loadDetails('INSPECTION', inspectionDueDate, obj?.page, obj?.pageSize, obj?.search, obj?.sort, obj?.order);
+            loadDetails('INSPECTION', inspectionStartDate, inspectionEndDate, obj?.page, obj?.pageSize, obj?.search, obj?.sort, obj?.order);
         }
         if (tabKey === 'MEDICINE') {
             setSortKey(obj?.sort)
             setSortOrder(obj?.order)
-            loadDetails('MEDICINE', medicineDueDate, obj?.page, obj?.pageSize, obj?.search, obj?.sort, obj?.order);
+            loadDetails('MEDICINE', medicineStartDate, medicineEndDate, obj?.page, obj?.pageSize, obj?.search, obj?.sort, obj?.order);
         }
     }
 
@@ -392,12 +403,16 @@ const index = () => {
                                     <label className='modal-label'>
                                         {t('common.date')}
                                     </label>
-                                    <DatePicker
-                                        className={errorDueDate ? 'fs-14 is-invalid form-control' : 'form-control fs-14'}
-                                        placeholderText={t('common.date')}
-                                        isCustomButton={false}
-                                        value={inspectionDueDate}
-                                        onChange={(date) => handleInspectionDateChange(date)}
+                                    <DatePickerRange
+                                        onChange={(val) => handleInspectionDateChange(val)}
+                                        firstPlaceHolder={t('common.startDate')}
+                                        lastPlaceHolder={t('common.endDate')}
+                                        selectedStartDate={inspectionStartDate}
+                                        selectedEndDate={inspectionEndDate}
+                                        isDisabled={false}
+                                        clearable={true}
+                                        disableWithFirst={true}
+                                        disableWithLast={true}
                                     />
                                 </Col>
                                 <Col sm={4}>
@@ -441,7 +456,8 @@ const index = () => {
                                 exportExportParams={{
                                     school: selectedSchool?.id,
                                     type: 'INSPECTION',
-                                    date: inspectionDueDate,
+                                    startDate: inspectionStartDate,
+                                    endDate: inspectionEndDate,
                                     sortBy: sortKey,
                                     order: sortOrder
                                 }}
@@ -459,20 +475,17 @@ const index = () => {
                                     <label className='modal-label'>
                                         {t('common.date')}
                                     </label>
-                                    <DatePicker
-                                        className={errorDueDate ? 'fs-14 is-invalid form-control' : 'form-control fs-14'}
-                                        placeholderText={t('common.date')}
-                                        isCustomButton={false}
-                                        value={medicineDueDate}
-                                        onChange={(date) => handleMedicineDateChange(date)}
+                                    <DatePickerRange
+                                        onChange={(val) => handleMedicineDateChange(val)}
+                                        firstPlaceHolder={t('common.startDate')}
+                                        lastPlaceHolder={t('common.endDate')}
+                                        selectedStartDate={medicineStartDate}
+                                        selectedEndDate={medicineEndDate}
+                                        isDisabled={false}
+                                        clearable={true}
+                                        disableWithFirst={true}
+                                        disableWithLast={true}
                                     />
-
-                                    {
-                                        errorDueDate &&
-                                        <div className='invalid-feedback d-block'>
-                                            {t('errorMessage.enterPayDate')}
-                                        </div>
-                                    }
                                 </Col>
                                 <Col sm={4}>
                                     <Button
@@ -485,6 +498,19 @@ const index = () => {
                                     </Button>
                                 </Col>
                             </Row>
+                            {
+                                errorDueDate &&
+                                <Row>
+                                    <Col sm={3}></Col>
+                                    <Col sm={3} className='d-flex p-0 text-center'>
+                                        <div className='invalid-feedback d-block'>
+                                            {t('errorMessage.selectDate')}
+                                        </div>
+                                    </Col>
+                                    <Col sm={4}>
+                                    </Col>
+                                </Row>
+                            }
                         </Card.Body>
                     </Card>
                     <Card className="mb-3 no-border-radius">
@@ -502,7 +528,8 @@ const index = () => {
                                 exportExportParams={{
                                     school: selectedSchool?.id,
                                     type: 'MEDICINE',
-                                    date: medicineDueDate,
+                                    startDate: medicineStartDate,
+                                    endDate: medicineEndDate,
                                     sortBy: sortKey,
                                     order: sortOrder
                                 }}
