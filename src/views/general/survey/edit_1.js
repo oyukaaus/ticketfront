@@ -791,7 +791,7 @@ const Edit = () => {
                     className="custom-nested-modal"
                     show={showOrder}
                     setShow={setShowOrder}
-                    questions={surveyData?.questions || []}
+                    questions={questions || []}
                     survey={surveyData?.id}
                     onSubmit={actionToOrder}
                 />

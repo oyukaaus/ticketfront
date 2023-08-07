@@ -375,6 +375,7 @@ const SurveyPage = (props) => {
         fetchRequest(surveyDelete, 'POST', postData)
             .then(async (res) => {
                 if (res?.success) {
+                    showMessage(res?.message, true);
                     setSelectedData(null)
                     setShowDelete(false);
 
@@ -401,7 +402,7 @@ const SurveyPage = (props) => {
         fetchRequest(surveyDuplicate, 'POST', postData)
             .then(async (res) => {
                 if (res?.success) {
-                    showMessage(res?.message);
+                    showMessage(res?.message, true);
                     history.replace(`/survey/view/${res?.id}/edit`, {
                         userTypes,
                         categories
