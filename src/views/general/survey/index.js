@@ -147,19 +147,19 @@ const SurveyPage = (props) => {
             sort: true,
         },
         {
-            dataField: 'startDate',
+            dataField: 'startDate.date',
             text: t('survey.startDate'),
             sort: true,
             formatter: (cell, row, rowIndex) => {
-                return cell ? cell?.date?.substring(0, 10) : '';
+                return cell?.substring(0, 10);
             },
         },
         {
-            dataField: 'endDate',
+            dataField: 'endDate.date',
             text: t('survey.endDate'),
             sort: true,
             formatter: (cell, row, rowIndex) => {
-                return cell ? cell?.date?.substring(0, 10) : '';
+                return cell ? cell?.substring(0, 10) : '';
             },
         },
         {
@@ -168,11 +168,11 @@ const SurveyPage = (props) => {
             sort: true,
         },
         {
-            dataField: 'publishDate',
+            dataField: 'publishDate.date',
             text: t('survey.publishedDate'),
             sort: true,
             formatter: (cell, row, rowIndex) => {
-                return cell ? cell?.date?.substring(0, 10) : '';
+                return cell ? cell?.substring(0, 10) : '';
             },
         },
     ];
@@ -184,6 +184,7 @@ const SurveyPage = (props) => {
         showPagination: true,
         showFilter: true,
         footer: false,
+        excelFileName: t('dashboard.survey')
     };
 
     const fetchIndex = async (selectedCategoryId = null, selectedStatusId = null, page = 1, pageSize = 10, query = null, sortBy = null, order = null) => {
@@ -473,6 +474,8 @@ const SurveyPage = (props) => {
         setSearchValue(obj.search);
         setSortKey(obj.sort);
         setSortOrder(obj.order);
+
+        fetchIndex(selectedTreeId, selectedStatus, obj?.page, obj?.pageSize, obj?.search, obj?.sort, obj?.order)
     };
 
     const handleTreeContextMenuClick = (id, key) => {
@@ -601,11 +604,14 @@ const SurveyPage = (props) => {
                                 contextMenus={contextMenuArray}
                                 totalDataSize={tableTotalCount}
                                 onContextMenuItemClick={handleContextMenuClick}
-                                excelExportUrl="url"
+                                excelExportUrl={surveyIndex}
                                 exportExportParams={{
                                     school: selectedSchool?.id,
                                     sortBy: sortKey,
                                     order: sortOrder,
+                                    query: searchValue,
+                                    category: selectedTreeId,
+                                    status: selectedStatus
                                 }}
                             />
                         </Card.Body>
