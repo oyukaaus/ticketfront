@@ -16,8 +16,8 @@ let RequestHeadersFile = {
     'charset': 'UTF-8',
 };
 
-// export const ROOT_URL = 'http://localhost:9001/';
-export const ROOT_URL = 'https://school-api.eschool.mn/';
+export const ROOT_URL = 'http://localhost:9009/';
+// export const ROOT_URL = 'https://school-api.eschool.mn/';
 
 const decrypt = (passphrase, encrypted) => {
     const salt = CryptoJS.enc.Hex.parse("3536373334653339353535373731373635363466");

@@ -273,6 +273,15 @@ const index = () => {
             formatter: (cell) => cell || '-'
         },
         {
+            dataField: 'visitDate.date',
+            text: t('doctorsCorner.inspectionDate'),
+            sort: true,
+            formatter: (cell, row, rowIndex) => {
+                return cell ? cell?.substring(0, 10) : '';
+            },
+            footer: '',
+        },
+        {
             dataField: 'code',
             text: t('common.code'),
             sort: true,
