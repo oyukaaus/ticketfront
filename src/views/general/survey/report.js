@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 import DTable from 'modules/DataTable/DTable';
 import TreeView from 'modules/TreeView';
 import { fetchRequest } from 'utils/fetchRequest';
-import { surveyResultClassname, surveyResultList, surveyResultReport, surveyQuestionsIndex } from 'utils/fetchRequest/Urls';
+import { surveyResultClassname, surveyResultList, surveyResultReport } from 'utils/fetchRequest/Urls';
 import { setLoading } from 'utils/redux/action';
 import showMessage from 'modules/message';
 import CustomPieChart from 'survey/components/PieChart';
@@ -57,7 +57,7 @@ const Report = () => {
         showPagination: true,
         showFilter: true,
         footer: false,
-        excelFileName: data?.results?.survey?.name + ' ' + dateTimeToday,
+        excelFileName: data?.survey?.name + ' ' + dateTimeToday,
     };
 
     const studentColumn = [
@@ -118,7 +118,7 @@ const Report = () => {
         dispatch(setLoading(true));
         try {
             // surveyResultClassname
-            const [res, res2, res3, res4] = await Promise.all([
+            const [res, res2, res3] = await Promise.all([
                 fetchRequest(surveyResultReport, 'POST', {
                     survey_id: surveyId,
                 }),
@@ -128,9 +128,6 @@ const Report = () => {
                 fetchRequest(surveyResultClassname, 'POST', {
                     survey_id: surveyId,
                 }),
-                fetchRequest(surveyQuestionsIndex, 'POST', {
-                    survey_id: surveyId,
-                }),
             ]);
             setData({
                 report: res?.results,
@@ -138,7 +135,7 @@ const Report = () => {
                 classess: res3?.results,
                 participant_count: res3?.participant_count,
                 participants: res3?.participants,
-                survey: res4,
+                survey: res?.survey,
             });
         } catch (e) {
             showMessage(e.message || t('errorMessage.title'));
@@ -149,7 +146,6 @@ const Report = () => {
     useEffect(() => {
         if (id) fetchData(id);
     }, [id]);
-    console.log('data: ', data);
 
     useEffect(() => {
         if (selectedTreeId && selectedTreeId !== '') {
@@ -167,7 +163,7 @@ const Report = () => {
             <Modal.Header>
                 <Modal.Title className="fs-16 d-flex justify-content-between w-100 align-items-center">
                     <span>
-                        {data?.results?.survey?.code} - {data?.results?.survey?.name}
+                        {data?.survey?.code} - {data?.survey?.name}
                     </span>
                     <Link to="/survey/index">
                         <Button size="sm" variant="link">

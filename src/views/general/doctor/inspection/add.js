@@ -11,8 +11,7 @@ import {
     doctorInspectionStudentInit,
     doctorInspectionStudentSearchName,
     doctorInspectionStudentSearchCode,
-    doctorInspectionUserSearchName,
-    doctorInspectionUserSearchCode,
+    doctorInspectionUserSearchName
 } from 'utils/fetchRequest/Urls';
 import Select from 'modules/Form/Select';
 import DatePicker from "modules/Form/DatePicker";
@@ -219,25 +218,26 @@ const addInspection = ({
     };
 
     const handleSearchStaffWithCode = () => {
+
+        setStaffCodeErrorMsg(false)
         dispatch(setLoading(true));
-        fetchRequest(doctorInspectionUserSearchCode, 'POST', { school: selectedSchool?.id, code: staffCode })
+        fetchRequest(doctorInspectionUserSearchName, 'POST', { school: selectedSchool?.id, code: staffCode })
             .then(res => {
-                const { user = null, message = '', success = false } = res
-                if (success && user) {
-                    setStaffName(user.firstName || null)
-                    setStudentNameOptions([{
-                        value: user.id,
-                        text: user?.firstName + ' - ' + user?.lastName + " (" + user?.code + ")",
-                        data: user
-                    }])
-                    setStaffId(user.id || null)
-                    setStaffNameErrorMessage(false)
-                    setStaffCodeErrorMsg(false)
+                const { users = [], message = '', success = false } = res
+                if (success) {
+                    console.log('Users', users)
+                    if (users && users.length > 0) {
+                        if (users.length === 1) {
+                            setStaffId(users[0]?.value)
+                        }
+                        setStaffNameOptions(users)
+                    } else {
+                        setStaffId(null)
+                        setStaffCodeErrorMsg(true)
+                    }
                 } else {
-                    setStaffName('')
-                    setStaffNameOptions([])
+                    setStaffCode('')
                     setStaffId(null)
-                    setStaffNameErrorMessage(false)
                     setStaffCodeErrorMsg(true)
                     showMessage(message || t('errorMessage.title'))
                 }
@@ -316,42 +316,11 @@ const addInspection = ({
 
     const handleStaffNameDropdownChange = (value) => {
         if (value == null) {
-            setClassId(null);
-            setStudentCode('');
-            setStudentName('');
-            setStudentNameOptions([]);
+            setStaffId(null);
+            setStaffName('')
+            setStaffNameOptions([]);
         } else {
-            const selectedStudent = studentNameOptions?.find(p => p.value == value)?.data
-            if (selectedStudent?.classId != classId) {
-                dispatch(setLoading(true));
-                fetchRequest(doctorInspectionStudentInit, 'POST', { school: selectedSchool?.id, selectedClassId: selectedStudent?.classId })
-                    .then(resp => {
-                        const { students = [] } = resp
-
-                        const studentOption = [];
-                        students.map((param) =>
-                            studentOption.push({
-                                value: param.id,
-                                text: param.firstName + " - " + param.lastName + " (" + param?.code + ")",
-                                student: param
-                            })
-                        )
-                        setStudentId(value);
-                        setClassId(selectedStudent?.classId);
-                        setStudentCode(selectedStudent?.code);
-                        setStudentName(selectedStudent?.firstName);
-                        setStudentOptions(studentOption)
-                    })
-                    .catch(() => {
-                        showMessage(t('errorMessage.title'))
-                    });
-                dispatch(setLoading(false));
-            } else {
-                setStudentId(value);
-                setClassId(selectedStudent?.classId);
-                setStudentCode(selectedStudent?.code);
-                setStudentName(selectedStudent?.firstName);
-            }
+            setStaffId(value)
         }
     };
 
@@ -472,29 +441,39 @@ const addInspection = ({
 
     const handlerSearchStaffWithName = () => {
         dispatch(setLoading(true));
+        setStaffNameErrorMessage(false)
         fetchRequest(doctorInspectionUserSearchName, 'POST', { school: selectedSchool?.id, name: staffName })
             .then(res => {
-                const { list = [], message = '', success = false } = res
+                const { users = [], message = '', success = false } = res
                 if (success) {
-                    if (list && list.length == 0) {
-                        setStaffCode('')
+                    if (users && users.length > 0) {
+                        if (users.length === 1) {
+                            setStaffId(users[0]?.value)
+                        }
+                        setStaffNameOptions(users)
+                    } else {
                         setStaffId(null)
                         setStaffNameErrorMessage(true)
-                    } else {
-                        const staffNameOption = []
-                        list.map((param) => (
-                            staffNameOption.push({
-                                value: param.id,
-                                text: param.firstName + " - " + param.lastName + " (" + param?.code + ")",
-                                data: param
-                            })
-                        ))
-                        setStaffCode(list[0]?.code || null)
-                        setStaffId(list[0]?.id || null)
-                        setStaffNameOptions(staffNameOption)
-                        setStaffNameErrorMessage(false)
-                        setStaffCodeErrorMsg(false)
                     }
+                    // if (list && list.length == 0) {
+                    //     setStaffCode('')
+                    //     setStaffId(null)
+                    //     setStaffNameErrorMessage(true)
+                    // } else {
+                    //     const staffNameOption = []
+                    //     list.map((param) => (
+                    //         staffNameOption.push({
+                    //             value: param.id,
+                    //             text: param.firstName + " - " + param.lastName + " (" + param?.code + ")",
+                    //             data: param
+                    //         })
+                    //     ))
+                    //     setStaffCode(list[0]?.code || null)
+                    //     setStaffId(list[0]?.id || null)
+                    //     setStaffNameOptions(staffNameOption)
+                    //     setStaffNameErrorMessage(false)
+                    //     setStaffCodeErrorMsg(false)
+                    // }
                 } else {
                     setStaffCode('')
                     setStaffId(null)
@@ -864,11 +843,12 @@ const addInspection = ({
                         <Row className='gx-0'>
                             <Col md='6' className='pe-2'>
                                 {
-                                    staffNameOptions && staffNameOptions.length > 1
+                                    staffNameOptions && staffNameOptions.length > 0
                                         ?
                                         <Select
                                             value={staffId}
                                             searchable="true"
+                                            clearable={true}
                                             options={staffNameOptions}
                                             placeholder={t('errorMessage.enterName')}
                                             className={staffNameErrorMessage || staffIdErrorMessage ? 'is-invalid' : null}

@@ -33,7 +33,6 @@ export const doctorInspectionStudentInit = 'doctor/inspection/student-init';
 export const doctorInspectionStudentSearchName = 'doctor/inspection/student-search-name';
 export const doctorInspectionStudentSearchCode = 'doctor/inspection/student-search-code';
 export const doctorInspectionUserSearchName = 'doctor/inspection/user-search-name';
-export const doctorInspectionUserSearchCode = 'doctor/inspection/user-search-code';
 export const doctorInspectionSubmit = 'doctor/inspection/submit';
 
 export const surveyIndex = 'survey/index';
@@ -54,27 +53,7 @@ export const surveyChangeDate = 'survey/change-date'
 export const surveyQuestionCreate = 'survey/question/create';
 export const surveyQuestionDelete = 'survey/question/delete';
 export const surveyQuestionOrder = 'survey/question/order';
+export const surveyResultReport = 'survey/result/report';
+export const surveyResultList = 'survey/result/list';
+export const surveyResultClassname = 'survey/result/report/classname';
 
-
-
-// ----------survey category-------------
-const tmpApiUrl = 'https://survey.eschool.mn/'; // after backend merged then remove it.
-export const surveyCategoryIndex = tmpApiUrl + 'survey/category/list';
-export const surveyCategoryCreate = tmpApiUrl + 'survey/category/create';
-export const surveyCategoryEdit = tmpApiUrl + 'survey/category/create';
-
-// ----------survey-------------
-// export const surveyIndex = tmpApiUrl + 'survey/list';
-// export const surveyInfo = tmpApiUrl + 'survey/info';
-export const surveyInfoRoles = tmpApiUrl + 'survey/info/role';
-
-// ----------survey questions-------------
-export const surveyQuestionsIndex = tmpApiUrl + 'survey/question/list';
-// export const surveyQuestionCreate = tmpApiUrl + 'survey/question/create';
-export const surveyQuestionUpdate = tmpApiUrl + 'survey/question/create';
-
-
-// ----------survey reports-------------
-export const surveyResultReport = tmpApiUrl + 'survey/result/report';
-export const surveyResultList = tmpApiUrl + 'survey/result/list';
-export const surveyResultClassname = tmpApiUrl + 'survey/result/report/classname';

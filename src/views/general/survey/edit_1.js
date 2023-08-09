@@ -477,52 +477,7 @@ const Edit = () => {
                         dispatch(setLoading(false));
                         showMessage(t('errorMessage.title'));
                     });
-                // onSubmit({
-                //     ...values,
-                // });
             }
-        }
-
-
-
-        const [isValid, , values] = formRef.current.validate();
-        if (isValid) {
-            console.log('values ! *', values)
-            // const [{ startDate, endDate }] = values?.date || {};
-            // dispatch(setLoading(true));
-            // const postData = {
-            //     school: selectedSchool?.id,
-            //     code: values.code,
-            //     type: values?.type,
-            //     startDate: startDate ? formatISO(new Date(startDate)) : formatISO(new Date()),
-            //     endDate: endDate ? formatISO(new Date(endDate)) : formatISO(new Date()),
-            //     name: values?.name,
-            //     purpose: values?.purpose,
-            //     category: values?.category,
-            //     roles: values?.role,
-            //     users: values?.users,
-            //     classes: values?.classes,
-            //     grades: values?.grades,
-            // };
-
-            // fetchRequest(surveyCreate, 'POST', postData)
-            //     .then((res) => {
-            //         const { success = false, message = null } = res;
-            //         if (success) {
-            //             history.replace(`/survey/view/${res?.id}/edit`);
-
-            //             showMessage(message, true);
-            //         } else {
-            //             console.log('res: ', res);
-            //             showMessage(message || t('errorMessage.title'));
-            //         }
-            //         dispatch(setLoading(false));
-            //     })
-            //     .catch((e) => {
-            //         console.log('e', e)
-            //         dispatch(setLoading(false));
-            //         showMessage(t('errorMessage.title'));
-            //     });
         }
     };
 

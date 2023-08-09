@@ -378,7 +378,7 @@ const Forms = (({
         <div>
             <form ref={ref} onSubmit={handleSubmit}>
                 {
-                    fields.map((field, index) => {
+                    fields?.map((field, index) => {
                         let className = field.type === 'dropdown' ? '' : 'form-control';
                         if (field.inputClassName) {
                             className += ' ' + field.inputClassName

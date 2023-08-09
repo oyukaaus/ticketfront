@@ -20,7 +20,7 @@ const EditQuestion = (props, formRef) => {
   const questionnaireFields = [
     {
       key: 'question',
-      value: selectedData?.question,
+      value: selectedData?.question || '',
       label: `${t('survey.questionnaire')}`,
       type: 'textArea',
       required: true,
@@ -28,7 +28,7 @@ const EditQuestion = (props, formRef) => {
     },
     {
       key: 'description',
-      value: selectedData?.description,
+      value: selectedData?.description || '',
       label: `${t('survey.questionnaireDesc')}`,
       type: 'textArea',
       required: false,
@@ -110,6 +110,8 @@ const EditQuestion = (props, formRef) => {
     if (selectedData) {
       setAnswers(selectedData?.answers?.map((sd) => ({ ...sd, image: sd.file_path })));
     }
+    formRef?.current?.updateFields(questionnaireFields)
+    setUpdateView(!updateView)
   }, [selectedData]);
 
   return (
