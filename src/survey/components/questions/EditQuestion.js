@@ -109,6 +109,11 @@ const EditQuestion = (props, formRef) => {
   React.useEffect(() => {
     if (selectedData) {
       setAnswers(selectedData?.answers?.map((sd) => ({ ...sd, image: sd.file_path })));
+    } else {
+      setIsMulti(false)
+      setType(null)
+      setFile()
+      setAnswers([{ orderNumber: 1 }])
     }
     formRef?.current?.updateFields(questionnaireFields)
     setUpdateView(!updateView)
@@ -261,7 +266,6 @@ const EditQuestion = (props, formRef) => {
                   setUpdateView(!updateView)
                 }}
                 variant="outline-alternate"
-                outline
                 className="text-uppercase br-8 py-2 custom-blue-btn"
               >
                 {t('common.add')}

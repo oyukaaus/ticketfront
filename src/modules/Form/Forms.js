@@ -1124,7 +1124,7 @@ const Forms = (({
                                             {
                                                 field?.fileType == 'image'
                                                     ?
-                                                    <img src={field?.files && field?.fileData ? field?.fileData ? URL?.createObjectURL(field?.fileData) : field?.altImage : field?.altImage} width='100' className={!(field?.files && field?.fileData) && field?.altImageClass} alt={field?.fileNames || 'empty'} />
+                                                    <img src={field?.files && field?.fileData ? field?.fileData ? URL?.createObjectURL(field?.fileData) : field?.altImage : field?.altImage} width='100' className={field?.files && field?.fileData ? "" : field?.altImageClass} alt={field?.fileNames || 'empty'} />
                                                     :
                                                     field.fileNames
                                             }
