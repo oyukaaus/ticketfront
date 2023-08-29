@@ -1,5 +1,5 @@
 import { React, useEffect, useState } from 'react';
-import { NavLink, useHistory } from 'react-router-dom';
+import { NavLink, useHistory, useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { Form } from 'react-bootstrap';
 import * as Yup from 'yup';
@@ -10,13 +10,13 @@ import styled from 'styled-components';
 import { useTranslation } from 'react-i18next';
 import LockOpenOutlinedIcon from '@material-ui/icons/LockOpenOutlined';
 import PhoneIphoneIcon from '@material-ui/icons/PhoneIphone';
-import { setAuth, setPersonInfo, setLoading, setSchools } from '../../utils/redux/action';
+import { setAuth, setPersonInfo, setLoading, setSchools, setSelectedSchool } from '../../utils/redux/action';
 import showMessage from "../../modules/message";
 
 // import { store } from '../../store';
 import RecoverPassword from './RecoverPassword';
 
-import { auth } from '../../utils/fetchRequest/Urls';
+import { auth, systemAuth } from '../../utils/fetchRequest/Urls';
 import { fetchRequest } from '../../utils/fetchRequest'
 
 // const Img = styled.img`
@@ -48,7 +48,7 @@ const CheckboxDiv = styled.div`
     }
 }`;
 
-const Login = () => {
+const SystemAuth = () => {
 
     const handleResize = () => {
         const image = document.getElementById('image')
@@ -57,19 +57,114 @@ const Login = () => {
         copyright.style.top = document.getElementById('container').clientHeight - 40 + 'px'
     }
 
+    const { t } = useTranslation();
+    const dispatch = useDispatch();
+    const history = useHistory();
+
+    const queryParameters = new URLSearchParams(window.location.search)
+
+    const loadInit = () => {
+        const params = {
+            token: queryParameters?.get('t'),
+            school: queryParameters?.get('s'),
+            page: queryParameters?.get('p'),
+        }
+        dispatch(setLoading(true))
+        fetchRequest(systemAuth, 'POST', params)
+            .then((res) => {
+                if (res.success) {
+                    const { selectedSchool = null, userFound = false, token, schools, person, pageType } = res;
+
+                    if (userFound) {                        
+                        setTimeout(() => {
+                            if (pageType === 'APPOINTMENT') {
+                                window.location.href = "/appointment/index";
+                            } else if (pageType === 'DOCTOR') {
+                                window.location.href = "/doctor/inspection";
+                            } else if (pageType === 'SURVEY') {
+                                window.location.href = "/survey/index";
+                            } else {
+                                window.location.href = "/";
+                            }
+                        }, 100)
+                    } else {
+                        dispatch(setAuth(token));
+                        dispatch(setPersonInfo(person))
+                        dispatch(setSchools(schools));
+                        if (selectedSchool) {
+                            if (schools && schools.length > 0) {
+                                let schoolObj = null;
+                                for (let s = 0; s < schools.length; s++) {
+                                    if (schools[s].id == selectedSchool) {
+                                        schoolObj = schools[s]
+                                        break;
+                                    }
+                                }
+                                if (schoolObj) {
+                                    dispatch(setSelectedSchool(schoolObj))
+                                }
+
+                                setTimeout(() => {
+                                    if (pageType === 'APPOINTMENT') {
+                                        window.location.href = "/appointment/index";
+                                    } else if (pageType === 'DOCTOR') {
+                                        window.location.href = "/doctor/inspection";
+                                    } else if (pageType === 'SURVEY') {
+                                        window.location.href = "/survey/index";
+                                    } else {
+                                        window.location.href = "/";
+                                    }
+                                }, 100)
+                            } else {
+                                setTimeout(() => {
+                                    if (pageType === 'APPOINTMENT') {
+                                        window.location.href = "/appointment/index";
+                                    } else if (pageType === 'DOCTOR') {
+                                        window.location.href = "/doctor/inspection";
+                                    } else if (pageType === 'SURVEY') {
+                                        window.location.href = "/survey/index";
+                                    } else {
+                                        window.location.href = "/";
+                                    }
+                                }, 100)
+                            }
+                        } else {
+                            setTimeout(() => {
+                                if (pageType === 'APPOINTMENT') {
+                                    window.location.href = "/appointment/index";
+                                } else if (pageType === 'DOCTOR') {
+                                    window.location.href = "/doctor/inspection";
+                                } else if (pageType === 'SURVEY') {
+                                    window.location.href = "/survey/index";
+                                } else {
+                                    window.location.href = "/";
+                                }
+                            }, 100)
+                        }                        
+                    }
+                }
+                else {
+                    showMessage(res.message, res.success)
+                }
+                dispatch(setLoading(false))
+            }).catch(() => {
+                showMessage(t('errorMessage.title'))
+                dispatch(setLoading(false))
+            })
+    }
+
     useEffect(() => {
         handleResize()
         window.addEventListener('resize', handleResize)
         window.removeEventListener('resize', handleResize)
-    })
 
-    const { t } = useTranslation();
-    const dispatch = useDispatch();
-    const history = useHistory();
+        loadInit()
+    }, [])
+
     // const { selectedSchool } = useSelector(state => state.schoolData);
     const [showForgotPassword, setShowForgotPassword] = useState(false);
     const { currentLang } = useSelector((state) => state.lang);
-    console.log('currentLang', currentLang);
+
     const title = t('auth.login');
     const description = t('auth.loginPage');
 
@@ -90,6 +185,7 @@ const Login = () => {
         fetchRequest(auth, 'POST', values)
             .then((res) => {
                 if (res.success) {
+                    console.log('Res', res)
                     const { token, schools, person } = res;
                     dispatch(setAuth(token));
                     dispatch(setPersonInfo(person))
@@ -207,4 +303,4 @@ const Login = () => {
     );
 };
 
-export default Login;
+export default SystemAuth;

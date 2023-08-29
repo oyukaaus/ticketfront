@@ -5,6 +5,7 @@ import { useSelector } from "react-redux";
 import RouteItem from './RouteItem';
 import Loader from "../../modules/loader";
 import Login from "../../views/default/Login";
+import SystemAuth from "../../views/default/SystemAuth";
 import { LogoutPage } from '../../modules/Auth';
 
 const RouteIdentifier = ({ routes, fallback = <div className="loading" />, notFoundPath = DEFAULT_PATHS.NOTFOUND }) => {
@@ -21,13 +22,13 @@ const RouteIdentifier = ({ routes, fallback = <div className="loading" />, notFo
                 loading && (<Loader />)
             }
             <Switch>
+                <Route path="/sys-auth" component={SystemAuth} />
                 {!authToken && (
                     /*Render auth page when user at `/auth` and not authorized.*/
                     <Route>
                         <Login />
                     </Route>
                 )}
-
                 <Route path="/logout" component={LogoutPage} />
 
                 {routes.map((route, rIndex) => (

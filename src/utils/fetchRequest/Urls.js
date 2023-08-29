@@ -1,4 +1,5 @@
 ﻿export const auth = 'auth/login';
+export const systemAuth = 'system/auth';
 export const authRecover = 'auth/recover';
 export const authRecoverSubmit = 'auth/recover-submit';
 export const mainInit = 'main/init';
@@ -54,6 +55,7 @@ export const surveyQuestionCreate = 'survey/question/create';
 export const surveyQuestionDelete = 'survey/question/delete';
 export const surveyQuestionOrder = 'survey/question/order';
 export const surveyResultReport = 'survey/result/report';
+export const surveyResultDashboard = 'survey/result/dashboard';
 export const surveyResultList = 'survey/result/list';
 export const surveyResultClassname = 'survey/result/report/classname';
 

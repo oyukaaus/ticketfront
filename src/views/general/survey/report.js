@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 import DTable from 'modules/DataTable/DTable';
 import TreeView from 'modules/TreeView';
 import { fetchRequest } from 'utils/fetchRequest';
-import { surveyResultClassname, surveyResultList, surveyResultReport } from 'utils/fetchRequest/Urls';
+import { surveyResultClassname, surveyResultList, surveyResultReport, surveyResultDashboard } from 'utils/fetchRequest/Urls';
 import { setLoading } from 'utils/redux/action';
 import showMessage from 'modules/message';
 import CustomPieChart from 'survey/components/PieChart';
@@ -114,6 +114,23 @@ const Report = () => {
             });
     };
 
+    const loadData = (surveyId = null) => {
+        dispatch(setLoading(true));
+
+        fetchRequest(surveyResultDashboard, 'POST', {
+            survey_id: surveyId,
+        }).then(res => {
+            if (res?.success) {
+                console.log('Res', res)
+            } else {
+                console.log('Res', res)
+            }
+            dispatch(setLoading(false));
+        }).catch(e => {
+            showMessage(e.message || t('errorMessage.title'));
+        })
+    }
+
     const fetchData = async (surveyId) => {
         dispatch(setLoading(true));
         try {
@@ -144,7 +161,7 @@ const Report = () => {
     };
 
     useEffect(() => {
-        if (id) fetchData(id);
+        if (id) loadData(id);
     }, [id]);
 
     useEffect(() => {
@@ -258,23 +275,14 @@ const Report = () => {
                                             title: c?.student_classname,
                                             key: c?.student_class_id,
                                         })),
-                                },
-                                // {
-                                //   title: 'Багш',
-                                //   value: '1',
-                                // },
-                                // {
-                                //   title: 'Санхүүч',
-                                //   value: '2',
-                                // },
-                                // {
-                                //   title: 'Хоолны газар',
-                                //   value: '3',
-                                // },
+                                }
                             ]}
                         />
                     </div>
                     <div className="custom-container" style={{ flex: 1 }}>
+                        {
+                            console.log('Data', data)
+                        }
                         <DTable
                             currentPage={1}
                             // checkable="false"
