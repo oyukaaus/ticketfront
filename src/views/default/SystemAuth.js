@@ -60,6 +60,7 @@ const SystemAuth = () => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const history = useHistory();
+    const [menuIndex] = useState('menu_list_index');
 
     const queryParameters = new URLSearchParams(window.location.search)
 
@@ -73,9 +74,17 @@ const SystemAuth = () => {
         fetchRequest(systemAuth, 'POST', params)
             .then((res) => {
                 if (res.success) {
-                    const { selectedSchool = null, userFound = false, token, schools, person, pageType } = res;
+                    const { selectedSchool = null, userFound = false, logout = false, token, schools, person, pageType } = res;
 
-                    if (userFound) {                        
+                    if (logout) {
+                        dispatch(setAuth(null));
+                        dispatch(setPersonInfo([]));
+                        dispatch(setSchools([]));
+                        dispatch(setSelectedSchool(null));
+                        localStorage.removeItem(menuIndex);
+
+                        window.location.reload()
+                    } else if (userFound) {
                         setTimeout(() => {
                             if (pageType === 'APPOINTMENT') {
                                 window.location.href = "/appointment/index";
@@ -140,8 +149,9 @@ const SystemAuth = () => {
                                     window.location.href = "/";
                                 }
                             }, 100)
-                        }                        
+                        }
                     }
+
                 }
                 else {
                     showMessage(res.message, res.success)
