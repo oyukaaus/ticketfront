@@ -391,7 +391,7 @@ const addInspection = ({
         setStudentCodeErrorMsg(false);
         setStudentNameErrorMessage(false);
         dispatch(setLoading(true));
-        fetchRequest(doctorInspectionStudentInit, 'POST', { selectedClassId: value })
+        fetchRequest(doctorInspectionStudentInit, 'POST', { school: selectedSchool?.id, selectedClassId: value })
             .then(res => {
                 const { students = [] } = res
 
