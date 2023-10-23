@@ -1,25 +1,21 @@
-FROM node:16.14.0 AS build-step
+FROM 132112697915.dkr.ecr.eu-central-1.amazonaws.com/node:16.17.1 as builder
 
+COPY . /app
 
-
-WORKDIR /build
-
-COPY package* ./
+WORKDIR /app
 
 RUN npm install --legacy-peer-deps
 
-COPY . .
-
 RUN npm run build
 
-FROM nginx:alpine
-# Set working directory to nginx asset directory
-WORKDIR /usr/share/nginx/html
-# Remove default nginx static assets
-RUN rm -rf ./*
-# Copy static assets from builder stage
-COPY  --from=build-step /build/build/ ./build
-COPY  nginx.conf /etc/nginx/conf.d/default.conf
+FROM nginx as production
 
-# Containers run nginx with global directives and daemon off
-ENTRYPOINT ["nginx", "-g", "daemon off;"]
+ENV NODE_ENV production
+
+COPY --from=builder /app/build /usr/share/nginx/admin
+
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]
