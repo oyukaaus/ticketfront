@@ -87,6 +87,7 @@ const Schools = () => {
                         </div>
                     </div>
                 </div>
+                
             </a>
         ))
     );
@@ -147,24 +148,6 @@ const Schools = () => {
                     className={window.innerWidth < 768 ? 'school-nav-phone mt-5' : 'mt-5'}
                     style={{ maxHeight: 300, transform: 'translate(209px, 54px) !important' }}
                     as={SchoolsDropdownMenu}
-                // popperConfig={{
-                //     modifiers: [
-                //         {
-                //             name: 'offset',
-                //             options: {
-                //                 offset: () => {
-                //                     if (placement === MENU_PLACEMENT.Horizontal) {
-                //                         return [0, 7];
-                //                     }
-                //                     if (window.innerWidth < 768) {
-                //                         return [-168, 7];
-                //                     }
-                //                     return [-162, 7];
-                //                 },
-                //             },
-                //         },
-                //     ],
-                // }}
                 />
             </Dropdown>
         );

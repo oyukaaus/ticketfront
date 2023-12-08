@@ -56,6 +56,7 @@ const Create = () => {
             school: selectedSchool?.id,
             roles: roleIds
         }).then((res) => {
+            console.log('response --- ', res)
             if (res?.success) {
                 setRoles(res?.roles.map(obj => {
                     return {

@@ -7,9 +7,10 @@ import NavUserMenu from './NavUserMenu';
 import NavIconMenu from './NavIconMenu';
 import MainMenu from './main-menu/MainMenu';
 import NavLogo from './NavLogo';
-import NavSchoolSwitcher from './schools/schools';
+import NavTicketSwitcher from './tickets/tickets';
 import NavMobileButtons from './NavMobileButtons';
 import { menuChangeAttrMenuAnimate, menuChangeCollapseAll } from './main-menu/menuSlice';
+import NavLanguageSwitcher from './NavLanguageSwitcher';
 // import NavLanguageSwitcher from './NavLanguageSwitcher';
 
 const DELAY = 80;
@@ -54,18 +55,22 @@ const Nav = () => {
     };
 
     return (
-        <div id="nav" className={classNames('nav-container d-flex', navClasses)} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave}>
+        <div id="nav" className={classNames('nav-container d-flex', navClasses)} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} style={{ background: '#FD7845' }}>
             <div
                 className="nav-content d-flex"
                 style={placementStatus.placementHtmlData === MENU_PLACEMENT.Horizontal && menuPadding ? { paddingRight: menuPadding } : {}}
             >
                 <NavLogo />
-                {navClasses['mobile-side-in'] == true ? null : <NavSchoolSwitcher />}
+                <NavTicketSwitcher></NavTicketSwitcher>
+                <NavIconMenu />
+                {/* <MainMenu /> */}
                 {/* <NavLanguageSwitcher /> */}
                 <NavUserMenu />
-                <NavIconMenu />
-                <MainMenu />
-                <NavMobileButtons />
+                {/* {navClasses['mobile-side-in'] == true ? null : <NavTicketSwitcher />} */}
+                {/* */}
+                {/* 
+
+                <NavMobileButtons /> */}
             </div>
             <div className="nav-shadow" />
         </div>

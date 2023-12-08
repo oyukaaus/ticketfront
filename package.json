@@ -2,7 +2,6 @@
   "name": "eschool-dashboard",
   "version": "1.0.1",
   "private": true,
-  "proxy": "https://school.eschool.mn",
   "dependencies": {
     "@emotion/react": "^11.9.0",
     "@emotion/styled": "^11.8.1",

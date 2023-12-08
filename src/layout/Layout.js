@@ -9,7 +9,7 @@ import routesAndMenuItems from "../routes";
 
 const Layout = ({ children }) => {
   useLayout();
-
+console.log('child: ', children)
   const { isLogin } = useSelector((state) => state.auth);
   const { selectedSchool } = useSelector(state => state.schoolData);
 
@@ -98,20 +98,18 @@ const Layout = ({ children }) => {
           <>
             <Nav />
             <main>
-              {/* <Container> */}
               <Row className="h-100">
-                {
+                {/* {
                   hideSideMenu
                     ?
                     <></>
                     :
                     <SidebarMenu />
-                }
+                } */}
                 <Col className="h-100" id="contentArea">
                   {children}
                 </Col>
               </Row>
-              {/* </Container> */}
             </main>
           </>
       }

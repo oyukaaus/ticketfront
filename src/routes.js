@@ -4,12 +4,18 @@ import { DEFAULT_PATHS } from 'config.js';
 import { trimEnd } from 'lodash';
 
 const index = {
-  home: lazy(() => import('views/general/home')),
-  index: lazy(() => import('views/general/index')),
+  home: lazy(() => import('views/general/ticket/index')),
+  index: lazy(() => import('views/general/ticket/index')),
+  // home: lazy(() => import('views/general/home')),
+  // index: lazy(() => import('views/general/index')),
+};
+
+const ticket = {
+  index: lazy(() => import('views/general/ticket/index')),
 };
 
 const appointment = {
-  index: lazy(() => import('views/general/appointment/index')),
+  index: lazy(() => import('views/general/doctor/inspection/index')),
 };
 const doctorDashboard = {
   index: lazy(() => import('views/general/doctor/dashboard/index')),
@@ -68,9 +74,22 @@ const routesAndMenuItems = {
       icon: 'send-1',
       exact: true,
       redirect: true,
-      to: `${appRoot}/home/index`,
+      to: `${appRoot}/ticket/index`,
       subs: [{ path: '/index', label: 'home.title', icon: 'dashboard', component: index.home }],
     },
+    {
+      path: `${appRoot}/ticket`,
+      label: 'home.ticket',
+      icon: 'send-1',
+      exact: true,
+      redirect: true,
+      to: `${appRoot}/ticket/index`,
+      subs: [
+        { path: '/index', label: 'home.ticket', icon: 'ticket', component: ticket.index },
+      ],
+    },
+
+
     {
       path: `${appRoot}/appointment`,
       label: 'dashboard.appointment',

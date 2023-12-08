@@ -3,7 +3,7 @@ export const systemAuth = 'system/auth';
 export const authRecover = 'auth/recover';
 export const authRecoverSubmit = 'auth/recover-submit';
 export const mainInit = 'main/init';
-export const systemMain = 'system/main';
+export const systemMain = 'ticket/index';
 
 export const userChangeAvatar = 'user/change-avatar';
 export const userChangePassword = 'user/change-password';
@@ -11,6 +11,8 @@ export const userChangePassword = 'user/change-password';
 // will remove in the future
 export const homeFacts = '';
 
+//-----------ticket----------------
+export const ticketIndex = 'ticket/index';
 // ----------appointment-------------
 export const appointmentRequestIndex = 'appointment/request/index';
 export const appointmentRequestSubmit = 'appointment/request/submit';

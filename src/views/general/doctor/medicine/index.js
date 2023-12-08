@@ -129,6 +129,7 @@ const index = () => {
         }
         fetchRequest(doctorMedicineSetActive, 'POST', postData)
             .then(res => {
+                console.log('list data: ', res)
                 const { list = [], message = null, success = false } = res
                 if (success) {
                     setTableData(list)
@@ -319,6 +320,7 @@ const index = () => {
         }
         fetchRequest(doctorMedicineIndex, 'POST', postData)
             .then(res => {
+                console.log('response: ', res)
                 const { list = [], page = 1, pageSize = 10, query = '', totalCount = 0, success = false, message = null } = res
                 if (success) {
                     setTableData(list)

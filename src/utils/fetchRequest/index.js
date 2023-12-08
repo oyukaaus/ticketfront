@@ -16,8 +16,8 @@ let RequestHeadersFile = {
     'charset': 'UTF-8',
 };
 
-// export const ROOT_URL = 'http://localhost:9009/';
-export const ROOT_URL = 'https://schoolapi-test.eschool.mn/';
+export const ROOT_URL = 'http://127.0.0.1:8000/';
+// export const ROOT_URL = 'https://schoolapi-test.eschool.mn/';
 
 const decrypt = (passphrase, encrypted) => {
     const salt = CryptoJS.enc.Hex.parse("3536373334653339353535373731373635363466");
@@ -119,6 +119,7 @@ export function fetchRequest(url, method, bodyParams, fileUpload = false, formDa
             .then((responseData) => {
                 const data = responseData?.data || null;
                 const decrypted = decrypt("ESCHOOL_SCHOOL", data);
+                console.log('**decrypted**: ', decrypted)
                 let result = JSON.parse(decrypted);
                 result['success'] = responseData?.success || false;
                 resolve(result);
