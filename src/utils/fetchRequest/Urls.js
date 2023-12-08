@@ -13,6 +13,7 @@ export const homeFacts = '';
 
 //-----------ticket----------------
 export const ticketIndex = 'ticket/index';
+export const ticketCreate = 'ticket/submit';
 // ----------appointment-------------
 export const appointmentRequestIndex = 'appointment/request/index';
 export const appointmentRequestSubmit = 'appointment/request/submit';

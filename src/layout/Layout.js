@@ -9,7 +9,6 @@ import routesAndMenuItems from "../routes";
 
 const Layout = ({ children }) => {
   useLayout();
-console.log('child: ', children)
   const { isLogin } = useSelector((state) => state.auth);
   const { selectedSchool } = useSelector(state => state.schoolData);
 

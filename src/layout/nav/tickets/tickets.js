@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { Col} from 'react-bootstrap';
+import { Button, Col} from 'react-bootstrap';
 import { layoutShowingNavMenu } from 'layout/layoutSlice';
 import showMessage from "../../../modules/message";
 import { setLoading, setSelectedSchool } from '../../../utils/redux/action';
@@ -77,12 +77,12 @@ const Tickets = () => {
                     onClick(e);
                 }}
             > */}
-                <div className="position-relative d-inline-flex" style={{ marginLeft: '10px', color:'white' }}>
+                <div className="position-relative d-inline-flex" style={{ marginLeft: '20px', color:'white' }}>
                     <div className='d-flex align-items-center'>
                         <img src='../img/system/dashboard-light-icon.png' alt='school-icon' width={20} className='color-info me-1' />
-                        <a className='pt-1' onClick={showMessage} >
+                        <Button className='pt-1' style={{ color:'white'  }} onClick={showMessage} >
                            Санал хүсэлт
-                        </a>
+                        </Button>
                     </div>
                 </div>
                 <div className="position-relative d-inline-flex" style={{ marginLeft: '20px', color:'white'  }}>

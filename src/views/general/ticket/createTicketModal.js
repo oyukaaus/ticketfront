@@ -4,6 +4,12 @@ import { useTranslation } from 'react-i18next';
 import Forms from 'modules/Form/Forms';
 // import { userChangeAvatar } from '../../utils/fetchRequest/Urls';
 import CollectionsIcon from '@mui/icons-material/Collections';
+import { setLoading } from 'utils/redux/action';
+import { useDispatch } from 'react-redux';
+import { fetchRequest } from 'utils/fetchRequest';
+import { ticketCreate } from 'utils/fetchRequest/Urls';
+import showMessage from 'modules/message';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom';
 
 const createTicketModal = ({
     show,
@@ -13,60 +19,65 @@ const createTicketModal = ({
 }) => {
     const { t } = useTranslation();
     const formRef = useRef();
-    const [isStudent, setIsStudent] = useState(true);
-    const [selectedType, setSelectedType] = useState(null);
-    // const [types, setTypes] = useState([]);
-    const types = [{id:1, value: 'АЛДАА'}, {id:2, value:'САНАЛ ХҮСЭЛТ'}];
-    const [selectedSystem, setSelectedSystem] = useState(null);
-    const [systems, setSystems] = useState([]);
-    const [selectedMenu, setSelectedMenu] = useState(null);
-    const [menus, setMenu] = useState([]);
-    const [selectedSubMenu, setSelectedSubMenu] = useState(null);
-    const [subMenus, setSubMenus] = useState([]);
-    const [file, setFile] = React.useState();
-    // const { selectedData } = props;
+    const dispatch = useDispatch();
+    const history = useHistory();
 
+    const [isError, setIsError] = useState(true);
+    const [selectedSystem, setSelectedSystem] = useState(null);
+    // const [systems, setSystems] = useState([]);
+    const systems = [{value: 1, text:'ERP'}, { value: 2, text:'d'}];
+    const [selectedMenu, setSelectedMenu] = useState(null);
+    // const [menus, setMenu] = useState([]);
+    const menus = [{value: 1, text:'Нүүр хуудас'}, { value: 2, text:'Санал хүсэлт'}];
+    const [selectedSubMenu, setSelectedSubMenu] = useState(null);
+    // const [subMenus, setSubMenus] = useState([]);
+    const subMenus = [{value: 1, text:'Нүүр хуудас'}, { value: 2, text:'Санал хүсэлт'}];
+    const [file, setFile] = React.useState();
+
+    const onSystemChange = (e) => {
+        console.log('e: ', e)
+        setSelectedSystem(e)
+    }
     const fields = [
         {
-            key: 'systems',
+            key: 'system',
             value: selectedSystem,
-            label: 'Систем*',
+            label: `${t('ticket.system')}*`,
             type: 'dropdown',
             required: true,
             errorMessage: t('errorMessage.enterValue'),
             labelBold: true,
-            searchable: true,
-            multiple: true,
             options: systems,
+            onChange: onSystemChange,
         },
         {
             key: 'menus',
             value: selectedMenu,
-            label: 'Үндсэн меню*',
+            label: `${t('ticket.menu')}*`,
             type: 'dropdown',
             required: true,
             errorMessage: t('errorMessage.enterValue'),
             labelBold: true,
             searchable: true,
-            multiple: true,
+            multiple: false,
             options: menus,
         },
         {
             key: 'subMenu',
             value: selectedSubMenu,
-            label: 'Туслах меню',
+            label: `${t('ticket.subMenu')}*`,
             type: 'dropdown',
             required: true,
             errorMessage: t('errorMessage.enterValue'),
             labelBold: true,
             searchable: true,
-            multiple: true,
+            multiple: false,
             options: subMenus,
         },
         {
-            key: 'issue',
+            key: 'description',
             value: '',
-            label: 'Гарч байгаа асуудал*',
+            label: `${t('ticket.issue')}*`,
             type: 'textArea',
             required: true,
             labelBold: true,
@@ -74,7 +85,7 @@ const createTicketModal = ({
         {
             key: 'example',
             value: '',
-            label:'Жишээ*',
+            label: `${t('ticket.example')}*`,
             type: 'text',
             required: true,
             labelBold: true,
@@ -122,14 +133,41 @@ const createTicketModal = ({
             },
           },
     ];
-
+    
     const onSaveClick = () => {
         const [isValid, , values] = formRef.current.validate();
         if (isValid) {
-            const params = {
-                ...values,
+            dispatch(setLoading(true));
+            const postData = {
+                systemId: values.system,
+                menuId: values.menus,
+                submenuId: values.subMenu,
+                title: 'sadas',
+                description: values.description,
+                typeId: 1,
+                statusId: 1,
+                example: values.example
             };
-            onSubmit(params);
+            console.log('postData: ', postData)
+            fetchRequest(ticketCreate, 'POST', postData)
+                .then((res) => {
+                    console.log('response: ', res)
+                    const { success = false, message = null } = res;
+                    if (success) {
+                        history.replace(`/ticket/index`);                 
+                        showMessage(message, true);
+                        
+                    } else {
+                        console.log('res: ', res);
+                        showMessage(message || t('errorMessage.title'));
+                    }
+                    dispatch(setLoading(false));
+                })
+                .catch((e) => {
+                    console.log('e', e)
+                    dispatch(setLoading(false));
+                    showMessage(t('errorMessage.title'));
+                });
         }
     };
 
@@ -150,20 +188,18 @@ const createTicketModal = ({
                     <Col className='d-flex justify-content-center'>
                         <ListGroup horizontal>
                             <ListGroup.Item
-                                className={isStudent ? 'active text-uppercase' : 'text-uppercase'}
+                                className={isError ? 'active text-uppercase' : 'text-uppercase'}
                                 style={{ cursor: 'pointer' }}
-                                onClick={() => setIsStudent(true)}
+                                onClick={() => setIsError(true)}
                             >
-                                АЛДАА
-                                {/* {t('student.title')} */}
+                                {t('ticket.ticket')}
                             </ListGroup.Item>
                             <ListGroup.Item
-                                className={!isStudent ? 'active text-uppercase' : 'text-uppercase'}
+                                className={!isError ? 'active text-uppercase' : 'text-uppercase'}
                                 style={{ cursor: 'pointer' }}
-                                onClick={() => setIsStudent(false)}
+                                onClick={() => setIsError(false)}
                             >
-                                САНАЛ ХҮСЭЛТ
-                                {/* {t('menu.teacherStaff')} */}
+                                {t('ticket.ticket')}
                             </ListGroup.Item>
                         </ListGroup>
                     </Col>

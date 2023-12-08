@@ -428,5 +428,5 @@ export const TRANSLATIONS_EN = {
     delete_confirmation: 'Are you sure you want to delete it?',
     delete_confirmation_description: 'Please note that one deleted information will not be restored!',
     invalid_parameter: 'There was an error during transmission the information.',
-  },
+  }
 };

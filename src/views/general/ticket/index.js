@@ -9,7 +9,7 @@ import { fetchRequest } from 'utils/fetchRequest';
 import { userChangePassword, ticketIndex } from 'utils/fetchRequest/Urls';
 import 'css/dashboard.css';
 import 'css/fullcalendar-custom.css'
-import CreateTicketModal from './creataTicketModal'
+import CreateTicketModal from './createTicketModal'
 
 const index = (onChange) => {
     const [data, setData] = useState([]);

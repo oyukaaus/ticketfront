@@ -1238,5 +1238,14 @@ export const TRANSLATIONS_MN = {
         copy: "Хуулах",
         changeQuestionsOrder: "Асуумжийн дараалал өөрчлөх"
         
+    },
+    ticket:{
+      ticket: 'Санал хүсэлт',
+      system: 'Систем',
+      menu: 'Үндсэн меню',
+      subMenu: 'Туслах меню',
+      issue: 'Гарч байгаа асуудал',
+      example: 'Жишээ',
+      error: 'Алдаа'
     }
 };
