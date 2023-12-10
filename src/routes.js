@@ -4,7 +4,7 @@ import { DEFAULT_PATHS } from 'config.js';
 import { trimEnd } from 'lodash';
 
 const index = {
-  home: lazy(() => import('views/general/ticket/index')),
+  home: lazy(() => import('views/general/dashboard/student/index')),
   index: lazy(() => import('views/general/ticket/index')),
   // home: lazy(() => import('views/general/home')),
   // index: lazy(() => import('views/general/index')),
@@ -12,6 +12,12 @@ const index = {
 
 const ticket = {
   index: lazy(() => import('views/general/ticket/index')),
+  view: lazy(() => import('views/general/ticket/view')),
+};
+
+const admin = {
+  index: lazy(() => import('views/general/admin-request/index')),
+  view: lazy(() => import('views/general/admin-request/view')),
 };
 
 const appointment = {
@@ -86,6 +92,19 @@ const routesAndMenuItems = {
       to: `${appRoot}/ticket/index`,
       subs: [
         { path: '/index', label: 'home.ticket', icon: 'ticket', component: ticket.index },
+        { path: '/view/:id', exact: true, label: 'home.ticket', hideInMenu: true, icon: 'send', component: ticket.view },
+      ],
+    },
+    {
+      path: `${appRoot}/admin`,
+      label: 'home.admin',
+      icon: 'send-1',
+      exact: true,
+      redirect: true,
+      to: `${appRoot}/admin/index`,
+      subs: [
+        { path: '/index', label: 'home.admin', icon: 'admin', component: admin.index },
+        { path: '/view/:id', exact: true, label: 'home.admin', hideInMenu: true, icon: 'send', component: admin.view },
       ],
     },
 

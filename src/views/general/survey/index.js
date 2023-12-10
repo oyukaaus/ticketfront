@@ -8,7 +8,7 @@ import PreviewTwoToneIcon from '@mui/icons-material/PreviewTwoTone';
 import ManageHistoryTwoToneIcon from '@mui/icons-material/ManageHistoryTwoTone';
 import { Link, useHistory } from 'react-router-dom';
 import TreeView from 'modules/TreeView';
-import './css/app.css'
+// import './css/app.css'
 
 import 'css/dashboard.css';
 

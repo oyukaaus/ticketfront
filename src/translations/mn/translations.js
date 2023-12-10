@@ -1246,6 +1246,12 @@ export const TRANSLATIONS_MN = {
       subMenu: 'Туслах меню',
       issue: 'Гарч байгаа асуудал',
       example: 'Жишээ',
-      error: 'Алдаа'
+      error: 'Алдаа',
+      idea: 'Санал',
+      reply: 'Хүсэлтэнд хариу илгээх',
+      close: 'Хүсэлт хаах',
+      tReply: 'Хариу',
+      sender: 'Илгээгч',
+      assignee: 'Хүлээн авагч'
     }
 };

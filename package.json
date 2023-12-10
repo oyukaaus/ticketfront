@@ -54,6 +54,7 @@
     "overlayscrollbars-react": "^0.2.3",
     "pigeon-maps": "^0.21.0",
     "plyr-react": "^3.0.8",
+    "prop-types": "^15.8.1",
     "qs": "^6.11.0",
     "quill": "^1.3.7",
     "rc-slider": "^9.7.2",

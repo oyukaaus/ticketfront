@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Send,QuestionMark , FilePresent} from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
-import { Button, Col} from 'react-bootstrap';
+import { Col } from 'react-bootstrap';
 import { layoutShowingNavMenu } from 'layout/layoutSlice';
 import showMessage from "../../../modules/message";
 import { setLoading, setSelectedSchool } from '../../../utils/redux/action';
@@ -20,15 +22,15 @@ const Tickets = () => {
     // const { tickets, selectedSchool } = useSelector((state) => state.schoolData);
     const { tickets, selectedSchool } = useSelector((state) => ({
         tickets: [
-          // Sample ticket data
-          { id: 1, title: 'Ticket 1', description: 'Description for Ticket 1' },
-          { id: 2, title: 'Ticket 2', description: 'Description for Ticket 2' },
+            // Sample ticket data
+            { id: 1, title: 'Ticket 1', description: 'Description for Ticket 1' },
+            { id: 2, title: 'Ticket 2', description: 'Description for Ticket 2' },
         ],
         selectedSchool: {
-          id: 1,
-          name: 'Selected School Name',
+            id: 1,
+            name: 'Selected School Name',
         },
-      }));
+    }));
     const [searchValue, setSearchValue] = useState('');
     useEffect(() => {
         dispatch(layoutShowingNavMenu(''));
@@ -65,7 +67,7 @@ const Tickets = () => {
     if (tickets && tickets.length > 0) {
         return (
             <Col>
-                 {/* <a
+                {/* <a
                 ref={ref}
                 href="#/"
                 className="notification-button ms-5"
@@ -77,34 +79,40 @@ const Tickets = () => {
                     onClick(e);
                 }}
             > */}
-                <div className="position-relative d-inline-flex" style={{ marginLeft: '20px', color:'white' }}>
+                <div className="position-relative d-inline-flex" >
                     <div className='d-flex align-items-center'>
-                        <img src='../img/system/dashboard-light-icon.png' alt='school-icon' width={20} className='color-info me-1' />
-                        <Button className='pt-1' style={{ color:'white'  }} onClick={showMessage} >
-                           Санал хүсэлт
-                        </Button>
+                        <Link to={{
+                            pathname: `/ticket/index`,
+                        }}
+                        >
+                            <Send className="w-19" style={{ marginLeft: '20px', color: 'white' }} /><span  style={{color: 'white' , fontFamily: 'Mulish'}}> Санал хүсэлт &gt;</span>
+                        </Link>
                     </div>
                 </div>
-                <div className="position-relative d-inline-flex" style={{ marginLeft: '20px', color:'white'  }}>
+                <div className="position-relative d-inline-flex">
                     <div className='d-flex align-items-center'>
-                        <img src='../img/system/shop-light-icon.png' alt='school-icon' width={20} className='color-info me-1' />
-                        <div className='pt-1'>
-                           Гарын авлага
-                        </div>
+                        <Link to={{
+                            pathname: `/ticket/view/1`,
+                        }}
+                        >
+                            <FilePresent className="w-19" style={{ marginLeft: '20px', color: 'white' }} /><span  style={{color: 'white', fontFamily: 'Mulish' }}> Гарын авлага &gt;</span>
+                        </Link>
                     </div>
                 </div>
-                <div className="position-relative d-inline-flex" style={{ marginLeft: '20px' , color:'white' }}>
+                <div className="position-relative d-inline-flex">
                     <div className='d-flex align-items-center'>
-                        <img src='../img/system/shop-light-icon.png' alt='school-icon' width={20} className='color-info me-1' />
-                        <div className='pt-1'>
-                           Түгээмэл асуулт
-                        </div>
+                    <Link to={{
+                            pathname: `/ticket/index`,
+                        }}
+                        >
+                            <QuestionMark className="w-19" style={{ marginLeft: '20px', color: 'white' }} /><span  style={{color: 'white', fontFamily: 'Mulish' }}>Түгээмэл асуулт &gt;</span>
+                        </Link>
                     </div>
                 </div>
-            {/* </a> */}
+                {/* </a> */}
             </Col>
 
-    
+
             // <Dropdown
             //     as="li"
             //     bsPrefix="list-inline-item"

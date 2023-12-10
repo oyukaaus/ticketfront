@@ -7,8 +7,6 @@ import { setLoading } from 'utils/redux/action';
 import showMessage from "modules/message";
 import { fetchRequest } from 'utils/fetchRequest';
 import { ticketIndex } from 'utils/fetchRequest/Urls';
-import ReplyRequest from './modal/replyRequest';
-import CloseTicket from './modal/CloseTicket'
 
 const view = (props) => {
     const [data, setData] = useState([]);
@@ -52,7 +50,7 @@ const view = (props) => {
     const ticketClose = () => {
         setShowCloseTicket(true);
     };
-
+    
     const fetchInfo = async () => {
         dispatch(setLoading(true));
         fetchRequest(ticketIndex, 'POST', {
@@ -90,7 +88,7 @@ const view = (props) => {
                                         <Col xs={1} className="text-center">
                                             <Row style={{ display: 'flex' }}>
                                                 <div style={{ textAlign: 'center' }}>
-                                                    <img src="../../img/system/default-profile.png" alt="school-icon" className="color-info me-1" style={{ maxWidth: '65%', maxHeight: '65%' }} />
+                                                    <img src="../../img/system/default-profile.png" alt="school-icon" className="color-info me-1" style={{ maxWidth: '55%', maxHeight: '55%' }} />
                                                 </div>
                                             </Row>
                                         </Col>
@@ -107,15 +105,15 @@ const view = (props) => {
                                                 {item.createdUser} | {item.createdDate?.date} | {item.type} | {item.systemId}
                                             </div>
                                         </Col>
-                                        <Col lg={2} align="end">
-                                            <Link to={{ pathname: `/ticket/index` }} style={{ textAlign: 'center', color: '#FD7845', fontSize: 12, fontWeight: 'bold', fontFamily: 'Mulish' }}>
+                                        <Col lg={1}>
+                                            <Link to={{ pathname: `/ticket/index` }} style={{ textAlign: 'center', color: '#FD7845', fontSize: 12, fontWeight: 'bold' }}>
                                                 Жагсаалт руу буцах
                                             </Link>
                                         </Col>
                                     </Row>
                                     <Row >
                                         <div style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold', marginLeft: 40 }}>
-                                            #{item.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}> {item.description}</span>
+                                            #{item.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {item.description}</span>
                                         </div>
                                     </Row>
                                 </Col>
@@ -132,17 +130,16 @@ const view = (props) => {
                     <Col key={i} lg={11}>
                         <Card className="mb-3">
                             <Card.Body className="d-flex flex-row align-content-center align-items-center position-relative mb-3">
-                                <Col xs={12}>
+                                <Col xs={11}>
                                     <Row>
                                         <Col xs={1} className="text-center">
                                             <Row style={{ display: 'flex' }}>
                                                 <div style={{ textAlign: 'center' }}>
-                                                    <img src="../../img/system/default-profile.png" alt="school-icon" className="color-info me-1" style={{ maxWidth: '65%', maxHeight: '65%' }} />
+                                                    <img src="../../img/system/default-profile.png" alt="school-icon" className="color-info me-1" style={{ maxWidth: '55%', maxHeight: '55%' }} />
                                                 </div>
                                             </Row>
-
                                         </Col>
-                                        <Col xs={10}>
+                                        <Col>
                                             <Row>
                                                 <Col>
                                                     <Button
@@ -153,60 +150,27 @@ const view = (props) => {
                                                     >
                                                         {item.status}
                                                     </Button>
-                                                    <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold', fontFamily: 'Mulish' }}>
-                                                        {item.createdUser} | {item.createdDate?.date} | {item.type} | {item.systemId}
-                                                    </div>
+                                                    <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold' }}>
+                                                {item.createdUser} | {item.createdDate?.date} | {item.type} | {item.systemId}
+                                            </div>
                                                 </Col>
 
                                             </Row>
                                         </Col>
-                                        <Col xs="1" className="d-flex align-items-end justify-content-end mb-2 mb-sm-0 order-sm-3">
-                                            {/* <div className="btn-group ms-1 check-all-container"> */}
-                                            <Dropdown align="end">
-                                                <Dropdown.Toggle className="dropdown-toggle dropdown-toggle-split" size="sm" onClick={() => handleDropdownToggle(i)} style={{ color: '#FD7845', border: '1px solid' }}>
-                                                    {/* <CsLineIcons icon="more-vertical" /> */}
-                                                </Dropdown.Toggle>
-                                                <Dropdown.Menu show={dropdownStates[i]}>
-                                                    <Dropdown.Item onClick={ticketReply}>Хариу бичих
-                                                    </Dropdown.Item>
-                                                    <Dropdown.Item onClick={ticketClose}> Хүсэлтийг хаах
-                                                    </Dropdown.Item>
-                                                </Dropdown.Menu>
-                                            </Dropdown>
-                                            {/* </div> */}
-                                        </Col>
                                     </Row>
-                                    <Row xs={11} style={{width:"100%"}}>
-                                        <div style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold', maxWidth: '100%', fontFamily: 'Mulish' }}>
-                                            Хариу тайлбар. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}> {comment}</span>
+                                    <Row >
+                                        <div style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold', maxWidth: '100%' }}>
+                                            Хариу тайлбар. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {comment}</span>
                                         </div>
                                     </Row>
                                 </Col>
-
                             </Card.Body>
                         </Card>
                     </Col>
                 ))}
             </Row>
 
-            <Row>
-                {
-                    showReplyTicket &&
-                    <ReplyRequest
-                        show={showReplyTicket}
-                        setShow={setShowReplyTicket}
-                    />
-                }
-            </Row>
-            <Row>
-                {
-                    showCloseTicket &&
-                    <CloseTicket
-                        show={showCloseTicket}
-                        setShow={setShowCloseTicket}
-                    />
-                }
-            </Row>
+            
         </>
     );
 };

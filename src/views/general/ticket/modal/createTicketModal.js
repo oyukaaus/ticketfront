@@ -18,27 +18,29 @@ const createTicketModal = ({
     // props
 }) => {
     const { t } = useTranslation();
-    const formRef = useRef();
     const dispatch = useDispatch();
     const history = useHistory();
+    const formRefIssue = useRef();
+    const formRefRequest = useRef();
 
-    const [isError, setIsError] = useState(true);
+    const [isIssue, setIsIssue] = useState(true);
+    console.log('issuess: ', isIssue)
     const [selectedSystem, setSelectedSystem] = useState(null);
     // const [systems, setSystems] = useState([]);
-    const systems = [{value: 1, text:'ERP'}, { value: 2, text:'d'}];
+    const systems = [{ value: 1, text: 'ERP' }, { value: 2, text: 'd' }];
     const [selectedMenu, setSelectedMenu] = useState(null);
     // const [menus, setMenu] = useState([]);
-    const menus = [{value: 1, text:'Нүүр хуудас'}, { value: 2, text:'Санал хүсэлт'}];
+    const menus = [{ value: 1, text: 'Нүүр хуудас' }, { value: 2, text: 'Санал хүсэлт' }];
     const [selectedSubMenu, setSelectedSubMenu] = useState(null);
     // const [subMenus, setSubMenus] = useState([]);
-    const subMenus = [{value: 1, text:'Нүүр хуудас'}, { value: 2, text:'Санал хүсэлт'}];
+    const subMenus = [{ value: 1, text: 'Нүүр хуудас' }, { value: 2, text: 'Санал хүсэлт' }];
     const [file, setFile] = React.useState();
-
     const onSystemChange = (e) => {
         console.log('e: ', e)
         setSelectedSystem(e)
     }
-    const fields = [
+
+    const issueFields = [
         {
             key: 'system',
             value: selectedSystem,
@@ -101,40 +103,103 @@ const createTicketModal = ({
             multiple: false,
             isExtendedButton: true,
             isExtendedButtonText: (
-              <>
-                <CollectionsIcon /> {t('survey.selectImage')}
-              </>
+                <>
+                    <CollectionsIcon /> {t('survey.selectImage')}
+                </>
             ),
             isExtendedButtonClass: 'btn btn-outline-warning mr-5',
             altImage: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>',
-            altImageClass:'d-none',
+            altImageClass: 'd-none',
             accept: 'image/*',
             fileType: 'image',
             clearButton: true,
             isClearButtonText: (
-              <>
-                <CollectionsIcon style={{ opacity: 0, width: 0 }} /> {t('foodManagement.deletePhoto')}
-              </>
+                <>
+                    <CollectionsIcon style={{ opacity: 0, width: 0 }} /> {t('foodManagement.deletePhoto')}
+                </>
             ),
             isClearButtonClass: 'btn btn-outline-danger m-btn m-btn--icon m-btn--icon-only m-btn--circle-28',
             onChange: (files) => {
-              const [image] = !files ? [] : files;
-              if (image) {
-                const reader = new FileReader();
-                reader.addEventListener(
-                  'load',
-                  () => {
-                    setFile(reader.result);
-                  },
-                  false
-                );
-                reader.readAsDataURL(image);
-              }
+                const [image] = !files ? [] : files;
+                if (image) {
+                    const reader = new FileReader();
+                    reader.addEventListener(
+                        'load',
+                        () => {
+                            setFile(reader.result);
+                        },
+                        false
+                    );
+                    reader.readAsDataURL(image);
+                }
             },
-          },
+        },
     ];
-    
+    const requestFields = [
+        {
+            key: 'system',
+            value: selectedSystem,
+            label: `${t('ticket.system')}*`,
+            type: 'dropdown',
+            required: true,
+            errorMessage: t('errorMessage.enterValue'),
+            labelBold: true,
+            options: systems,
+            onChange: onSystemChange,
+        },
+        {
+            key: 'description',
+            value: '',
+            label: `${t('ticket.idea')}*`,
+            type: 'textArea',
+            required: true,
+            labelBold: true,
+        },
+        {
+            key: 'image',
+            label: 'Файл хавсаргах',
+            value: '',
+            type: 'fileUpload',
+            required: false,
+            fileName: '',
+            multiple: false,
+            isExtendedButton: true,
+            isExtendedButtonText: (
+                <>
+                    <CollectionsIcon /> {t('survey.selectImage')}
+                </>
+            ),
+            isExtendedButtonClass: 'btn btn-outline-warning mr-5',
+            altImage: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>',
+            altImageClass: 'd-none',
+            accept: 'image/*',
+            fileType: 'image',
+            clearButton: true,
+            isClearButtonText: (
+                <>
+                    <CollectionsIcon style={{ opacity: 0, width: 0 }} /> {t('foodManagement.deletePhoto')}
+                </>
+            ),
+            isClearButtonClass: 'btn btn-outline-danger m-btn m-btn--icon m-btn--icon-only m-btn--circle-28',
+            onChange: (files) => {
+                const [image] = !files ? [] : files;
+                if (image) {
+                    const reader = new FileReader();
+                    reader.addEventListener(
+                        'load',
+                        () => {
+                            setFile(reader.result);
+                        },
+                        false
+                    );
+                    reader.readAsDataURL(image);
+                }
+            },
+        },
+    ];
+
     const onSaveClick = () => {
+        const formRef = isIssue ? formRefIssue : formRefRequest;
         const [isValid, , values] = formRef.current.validate();
         if (isValid) {
             dispatch(setLoading(true));
@@ -142,9 +207,9 @@ const createTicketModal = ({
                 systemId: values.system,
                 menuId: values.menus,
                 submenuId: values.subMenu,
-                title: 'sadas',
+                title: 'Title',
                 description: values.description,
-                typeId: 1,
+                typeId: isIssue === true ? 1 : 2,
                 statusId: 1,
                 example: values.example
             };
@@ -154,9 +219,9 @@ const createTicketModal = ({
                     console.log('response: ', res)
                     const { success = false, message = null } = res;
                     if (success) {
-                        history.replace(`/ticket/index`);                 
+                        history.replace(`/ticket/index`);
                         showMessage(message, true);
-                        
+
                     } else {
                         console.log('res: ', res);
                         showMessage(message || t('errorMessage.title'));
@@ -170,7 +235,6 @@ const createTicketModal = ({
                 });
         }
     };
-
     return (
         <Modal
             centered
@@ -184,27 +248,35 @@ const createTicketModal = ({
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body className='px-0'>
-            <Row>
+                <Row>
                     <Col className='d-flex justify-content-center'>
                         <ListGroup horizontal>
                             <ListGroup.Item
-                                className={isError ? 'active text-uppercase' : 'text-uppercase'}
+                                className={isIssue ? 'active text-uppercase' : 'text-uppercase'}
                                 style={{ cursor: 'pointer' }}
-                                onClick={() => setIsError(true)}
+                                onClick={() => setIsIssue(true)}
                             >
-                                {t('ticket.ticket')}
+                                {t('ticket.error')}
                             </ListGroup.Item>
                             <ListGroup.Item
-                                className={!isError ? 'active text-uppercase' : 'text-uppercase'}
+                                className={!isIssue ? 'active text-uppercase' : 'text-uppercase'}
                                 style={{ cursor: 'pointer' }}
-                                onClick={() => setIsError(false)}
+                                onClick={() => setIsIssue(false)}
                             >
                                 {t('ticket.ticket')}
                             </ListGroup.Item>
                         </ListGroup>
                     </Col>
                 </Row>
-                <Forms ref={formRef} fields={fields} />
+                {
+                    isIssue
+                        ?
+                        <div>
+                            <Forms ref={formRefIssue} fields={issueFields} />
+                        </div>
+                        :
+                        <Forms ref={formRefRequest} fields={requestFields} />
+                }
             </Modal.Body>
             <Modal.Footer className='d-flex justify-content-center'>
                 <Button
