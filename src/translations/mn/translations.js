@@ -1252,6 +1252,7 @@ export const TRANSLATIONS_MN = {
       close: 'Хүсэлт хаах',
       tReply: 'Хариу',
       sender: 'Илгээгч',
-      assignee: 'Хүлээн авагч'
+      assignee: 'Хүлээн авагч',
+      ticketEdit: 'Хүсэлт засах'
     }
 };

@@ -15,6 +15,8 @@ export const homeFacts = '';
 export const ticketIndex = 'ticket/index';
 export const ticketCreate = 'ticket/submit';
 export const ticketView = 'ticket/view';
+export const ticketInfo = 'ticket/info';
+export const ticketDtlCreate = 'ticket/dtl';
 
 //-----------ticket-admin----------------
 export const adminIndex = 'admin/index';

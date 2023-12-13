@@ -113,7 +113,8 @@ const NavUserMenuContent = ({ userObj }) => {
             <Row className="m-0">
                 <Col xs="12" className="ps-1 mb-2">
                     <img className="profile d-inline me-3" width={70} alt='avatar'
-                        src={userObj?.avatar ? 'https://api.eschool.mn/' + userObj?.avatar : '../img/system/default-profile.png'} />
+                    src = '../img/ticket/avatar.png'></img>
+                         {/* src={userObj?.avatar ? 'https://api.eschool.mn/' + userObj?.avatar : '../img/system/default-profile.png'}  */}
                     <div className="fs-14 font-weight-bold text-dark d-inline">{userObj?.firstName}</div>
                 </Col>
                 <Col xs="12" className="ps-1 pe-1">
@@ -168,7 +169,8 @@ const NavUserMenuDropdownToggle = React.memo(
                 onClick(e);
             }}
         >
-            <img className="profile" alt={user.firstName} src={user?.avatar ? `https://api.eschool.mn/${user?.avatar}` : '../img/system/default-profile.png'} />
+            {/* <img className="profile" alt={user.firstName} src={user?.avatar ? `https://api.eschool.mn/${user?.avatar}` : '../img/system/default-profile.png'} /> */}
+            <img className="profile" alt={user.firstName} src='../img/ticket/avatar.png' />
         </a>
     ))
 );

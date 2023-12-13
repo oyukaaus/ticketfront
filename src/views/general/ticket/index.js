@@ -9,18 +9,20 @@ import showMessage from "modules/message";
 import { fetchRequest } from 'utils/fetchRequest';
 import { ticketIndex } from 'utils/fetchRequest/Urls';
 import { PlaylistAddCheckCircleOutlined } from '@mui/icons-material';
-import CreateTicketModal from './modal/createTicketModal';
-import CancelRequest from './modal/cancelRequest';
+import CreateTicket from './modal/create';
+import CancelRequest from './modal/cancel';
+import EditTicket from './modal/edit'
 
 const TicketPage = (props) => {
     const history = useHistory();
     const [data, setData] = useState([]);
+    const [selectedData, setSelectedData] = useState(null);
     const [showCreateTicket, setShowCreateTicket] = useState(false);
     const [showCancel, setShowCancel] = useState(false);
+    const [showEdit, setShowEdit] = useState(false);
     const [itemId, setItemId] = useState();
     const { t } = useTranslation();
     const dispatch = useDispatch();
-
     const breadcrumbs = [
         { to: '', text: t('menu.home') },
         { to: '/ticket/index', text: 'Санал хүсэлт' },
@@ -52,29 +54,6 @@ const TicketPage = (props) => {
         setDropdownStates(updatedDropdownStates);
     };
 
-    // const onChangeCreateTicketSubmit = (param) => {
-    //     dispatch(setLoading(true));
-    //     const postData = {
-    //         ...param
-    //     }
-
-    //     fetchRequest(userChangePassword, 'POST', postData)
-    //         .then(response => {
-    //             const { message = null, success = false } = response
-    //             if (response.success) {
-    //                 setShowCreateTicket(false)
-    //                 showMessage(message, success)
-    //             } else {
-    //                 showMessage(message || t('errorMessage.title'), success)
-    //             }
-    //             dispatch(setLoading(false));
-    //         })
-    //         .catch(() => {
-    //             dispatch(setLoading(false));
-    //             showMessage(t('errorMessage.title'))
-    //         });
-    // }
-
     const fetchInfo = async () => {
         dispatch(setLoading(true));
         fetchRequest(ticketIndex, 'POST', {
@@ -101,9 +80,15 @@ const TicketPage = (props) => {
         setShowCreateTicket(true);
     };
 
-    const cancelRequest = (id) => {
+    const cancelTicket = (id) => {
         setItemId(id);
         setShowCancel(true);
+    };
+
+    const editTicket = (id) => {
+        const filteredData = data.filter(item => item.id === id);
+        setSelectedData(filteredData);
+        setShowEdit(true);
     };
 
     const cancelFetch = () => {
@@ -134,7 +119,7 @@ const TicketPage = (props) => {
                                     <Row className='center'>
                                         <Col lg={3}></Col>
                                         <Col lg={2}>
-                                            <img src='../img/system/dashboard-light-icon.png' alt='school-icon' width={200} className='color-info me-1' /></Col>
+                                            <img src='../img/ticket/request.png' alt='school-icon'  className='color-info me-1' /></Col>
                                         <Col lg={4} className='d-flex align-items-center justify-content-center' style={{ color: '#000000', display: 'flex' }}>
                                             <Row className='d-flex align-items-center'>
                                                 <div style={{ textAlign: 'center', color: '#000000', fontFamily: 'Mulish' }}>
@@ -173,7 +158,7 @@ const TicketPage = (props) => {
                                 <Col lg={1} className="text-center flex-row">
                                     <Row style={{ display: 'flex' }}>
                                         <div style={{ textAlign: 'center' }}>
-                                            <img src="../img/system/default-profile.png" alt="school-icon" className="color-info me-1" style={{ maxWidth: '80%', height: 'auto' }} />
+                                            <img src="../img/ticket/avatar.png" alt="school-icon" className="color-info me-1"/>
                                         </div>
                                         <div style={{ textAlign: 'center', color: '#FD7845', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}>
                                             #{item.id}
@@ -194,17 +179,19 @@ const TicketPage = (props) => {
                                             </Button>
                                         </Col>
                                         <Dropdown style={{ width: 20 }}>
-                                            <Dropdown.Toggle className="btn-icon btn-icon-only " size="sm" onClick={() => handleDropdownToggle(i)} style={{ color: '#FD7845', border: '1px solid' }}>
-                                                {/* <CsLineIcons icon="more-vertical" /> */}
+                                            <Dropdown.Toggle 
+                                            className="btn-icon btn-icon-only " size="sm" onClick={() => handleDropdownToggle(i)} style={{ color: '#FD7845', border: '1px solid' }}
+                                            >
+                                            {/* <img src="../img/ticket/icon/dot.png" alt="dot-icon" width={10} className="color-info me-1"/> */}
                                             </Dropdown.Toggle>
                                             <Dropdown.Menu show={dropdownStates[i]}>
                                                 <Dropdown.Item onClick={() => history.push(`/ticket/view/${item.id}`)}>
                                                         <PlaylistAddCheckCircleOutlined className="w-19" /> Дэлгэрэнгүй харах
                                                 </Dropdown.Item>
-                                                <Dropdown.Item  onClick={() => history.push(`/ticket/view/${item.id}`)}>
+                                                <Dropdown.Item  onClick={() => editTicket(item.id)}>
                                                         <PlaylistAddCheckCircleOutlined className="w-19" />Хүсэлтээ засах
                                                 </Dropdown.Item >
-                                                <Dropdown.Item onClick={() => cancelRequest(item.id)} >
+                                                <Dropdown.Item onClick={() => cancelTicket(item.id)} >
                                                     <PlaylistAddCheckCircleOutlined className="w-19" />Хүсэлтээ цуцлах
                                                 </Dropdown.Item>
                                             </Dropdown.Menu>
@@ -226,10 +213,21 @@ const TicketPage = (props) => {
             <Row>
                 {
                     showCreateTicket &&
-                    <CreateTicketModal
+                    <CreateTicket
                         show={showCreateTicket}
                         setShow={setShowCreateTicket}
                     // onSubmit={onChangeCreateTicketSubmit}
+                    />
+                }
+            </Row>
+            <Row>
+                {
+                    showEdit &&
+                    <EditTicket
+                        selectedData={selectedData}
+                        show={showEdit}
+                        setShow={setShowEdit}
+                        // onSubmit={editFetch}
                     />
                 }
             </Row>

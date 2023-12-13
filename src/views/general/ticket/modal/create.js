@@ -35,6 +35,7 @@ const createTicketModal = ({
     // const [subMenus, setSubMenus] = useState([]);
     const subMenus = [{ value: 1, text: 'Нүүр хуудас' }, { value: 2, text: 'Санал хүсэлт' }];
     const [file, setFile] = React.useState();
+    const [fileData, setFileData] = useState({});
     const onSystemChange = (e) => {
         console.log('e: ', e)
         setSelectedSystem(e)
@@ -100,7 +101,7 @@ const createTicketModal = ({
             type: 'fileUpload',
             required: false,
             fileName: '',
-            multiple: false,
+            multiple: true,
             isExtendedButton: true,
             isExtendedButtonText: (
                 <>
@@ -120,6 +121,7 @@ const createTicketModal = ({
             ),
             isClearButtonClass: 'btn btn-outline-danger m-btn m-btn--icon m-btn--icon-only m-btn--circle-28',
             onChange: (files) => {
+                // console.log('files: ', files)
                 const [image] = !files ? [] : files;
                 if (image) {
                     const reader = new FileReader();
@@ -131,6 +133,8 @@ const createTicketModal = ({
                         false
                     );
                     reader.readAsDataURL(image);
+                    setFileData(image);
+                    console.log('image: ', image);
                 }
             },
         },
@@ -193,6 +197,8 @@ const createTicketModal = ({
                         false
                     );
                     reader.readAsDataURL(image);
+                    setFileData(image);
+                    console.log('image: ', image);
                 }
             },
         },
@@ -203,6 +209,13 @@ const createTicketModal = ({
         const [isValid, , values] = formRef.current.validate();
         if (isValid) {
             dispatch(setLoading(true));
+            console.log('postData: ', fileData);
+            const fileD = {
+                name: fileData.name,
+                type: fileData.type,
+                size: fileData.size,
+                path: '/'
+            };
             const postData = {
                 systemId: values.system,
                 menuId: values.menus,
@@ -211,9 +224,10 @@ const createTicketModal = ({
                 description: values.description,
                 typeId: isIssue === true ? 1 : 2,
                 statusId: 1,
-                example: values.example
+                example: values.example,
+                file: fileD
             };
-            console.log('postData: ', postData)
+            console.log('postData: ', postData);
             fetchRequest(ticketCreate, 'POST', postData)
                 .then((res) => {
                     console.log('response: ', res)
@@ -221,7 +235,6 @@ const createTicketModal = ({
                     if (success) {
                         history.replace(`/ticket/index`);
                         showMessage(message, true);
-
                     } else {
                         console.log('res: ', res);
                         showMessage(message || t('errorMessage.title'));

@@ -7,11 +7,12 @@ import CollectionsIcon from '@mui/icons-material/Collections';
 import { setLoading } from 'utils/redux/action';
 import { useDispatch } from 'react-redux';
 import { fetchRequest } from 'utils/fetchRequest';
-import { ticketCreate } from 'utils/fetchRequest/Urls';
+import { ticketDtlCreate } from 'utils/fetchRequest/Urls';
 import showMessage from 'modules/message';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom';
 
 const ReplyTicket = ({
+    selectedId,
     show,
     setShow,
     onSubmit,
@@ -27,7 +28,7 @@ const ReplyTicket = ({
         {
             key: 'description',
             value: '',
-            label: `${t('ticket.treply')}*`,
+            label: `${t('ticket.reply')}*`,
             type: 'textArea',
             required: true,
             labelBold: true,
@@ -80,11 +81,12 @@ const ReplyTicket = ({
         if (isValid) {
             dispatch(setLoading(true));
             const postData = {
+                ticketId: selectedId,
                 description: values.description,
                 statusId: 1,
             };
             console.log('postData: ', postData)
-            fetchRequest(ticketCreate, 'POST', postData)
+            fetchRequest(ticketDtlCreate, 'POST', postData)
                 .then((res) => {
                     console.log('response: ', res)
                     const { success = false, message = null } = res;

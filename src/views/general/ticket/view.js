@@ -6,12 +6,15 @@ import { useDispatch } from 'react-redux';
 import { setLoading } from 'utils/redux/action';
 import showMessage from "modules/message";
 import { fetchRequest } from 'utils/fetchRequest';
-import { ticketIndex } from 'utils/fetchRequest/Urls';
-import ReplyRequest from './modal/replyRequest';
-import CloseTicket from './modal/CloseTicket'
+import { ticketInfo } from 'utils/fetchRequest/Urls';
+import ReplyRequest from './modal/reply';
+import CloseTicket from './modal/close'
 
 const view = (props) => {
+    const { match } = props;
+    const { id } = match.params;
     const [data, setData] = useState([]);
+    const [replyData, setReplyData] = useState([]);
     const [showReplyTicket, setShowReplyTicket] = useState(false);
     const [showCloseTicket, setShowCloseTicket] = useState(false);
 
@@ -35,8 +38,6 @@ const view = (props) => {
                 return { backgroundColor: '#FFFFFF', color: '#000000' }; // Default button color
         }
     };
-    const comment = "Монгол хэл бол манай ард түмний өндөр соёлыг тусгасан баялаг хэл болох тул түүний үгсийн сангийн бүх баялгийг бүртгэн багтаасан бүрэн тайлбар толь гаргах гэвэл төрөл бүрийн ухааны мэрэгжлийн олон хүн, олон жил ажиллаж байж сая бүтээж чадах юм.Ингэхлээр бид монгол хэлний бүрэн тайлбар толь гаргахын наана монгол хэлний тэр их баялгаас давын өмнө чухал хэрэгцээтэй үгс буюу орчин цагийн монголын төв аялгуун дээр тулгуурласан бичгийн хэлний үгсийг ихэвчлэн багтааж үгийн утгын тоймыг тайлбарласан товч тайлбар толь гаргаж нийгмийн хэрэгцээний одоогийн шаардлагыг хангахыг зорьсон билээ.";
-    const [value, setValue] = React.useState();
     const [dropdownStates, setDropdownStates] = useState(Array(data.length).fill(false));
 
     const handleDropdownToggle = (i) => {
@@ -55,15 +56,15 @@ const view = (props) => {
 
     const fetchInfo = async () => {
         dispatch(setLoading(true));
-        fetchRequest(ticketIndex, 'POST', {
+        fetchRequest(ticketInfo, 'POST', {
+            ticketId: id
         })
             .then((res) => {
+                console.log('res: ', res)
                 const { success = false, message = null } = res;
                 if (success) {
-                    console.log('res: ', res)
-                    setData(res?.tickets);
-                    // setData(res?.survey)
-                    // setQuestionTypes(res?.questionTypes)
+                    setData(res?.ticket);
+                    setReplyData(res?.ticketDtlList);
                 } else {
                     showMessage(message || t('errorMessage.title'));
                 }
@@ -90,7 +91,7 @@ const view = (props) => {
                                         <Col xs={1} className="text-center">
                                             <Row style={{ display: 'flex' }}>
                                                 <div style={{ textAlign: 'center' }}>
-                                                    <img src="../../img/system/default-profile.png" alt="school-icon" className="color-info me-1" style={{ maxWidth: '65%', maxHeight: '65%' }} />
+                                                    <img src="../../img/ticket/avatar.png" alt="avatar-icon" className="color-info me-1" />
                                                 </div>
                                             </Row>
                                         </Col>
@@ -108,10 +109,15 @@ const view = (props) => {
                                             </div>
                                         </Col>
                                         <Col lg={2} align="end">
+                                            <Row>
                                             <Link to={{ pathname: `/ticket/index` }} style={{ textAlign: 'center', color: '#FD7845', fontSize: 12, fontWeight: 'bold', fontFamily: 'Mulish' }}>
                                                 Жагсаалт руу буцах
-                                            </Link>
-                                        </Col>
+                                            </Link></Row>
+                                            <Row>
+                                            <Link onClick={() => ticketReply(item.id)} style={{ textAlign: 'center', color: '#FD7845', fontSize: 12, fontWeight: 'bold', fontFamily: 'Mulish' }}>
+                                                Хариу бичих
+                                            </Link></Row>
+                                            </Col>
                                     </Row>
                                     <Row >
                                         <div style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold', marginLeft: 40 }}>
@@ -128,7 +134,7 @@ const view = (props) => {
 
             <Row>
                 <Col lg={1}></Col>
-                {data.map((item, i) => (
+                {replyData.map((item, i) => (
                     <Col key={i} lg={11}>
                         <Card className="mb-3">
                             <Card.Body className="d-flex flex-row align-content-center align-items-center position-relative mb-3">
@@ -137,7 +143,7 @@ const view = (props) => {
                                         <Col xs={1} className="text-center">
                                             <Row style={{ display: 'flex' }}>
                                                 <div style={{ textAlign: 'center' }}>
-                                                    <img src="../../img/system/default-profile.png" alt="school-icon" className="color-info me-1" style={{ maxWidth: '65%', maxHeight: '65%' }} />
+                                                    <img src="../../img/ticket/avatar.png" alt="school-icon" className="color-info me-1" />
                                                 </div>
                                             </Row>
 
@@ -167,7 +173,7 @@ const view = (props) => {
                                                     {/* <CsLineIcons icon="more-vertical" /> */}
                                                 </Dropdown.Toggle>
                                                 <Dropdown.Menu show={dropdownStates[i]}>
-                                                    <Dropdown.Item onClick={ticketReply}>Хариу бичих
+                                                    <Dropdown.Item onClick={() => ticketReply(item.id)}>Хариу бичих
                                                     </Dropdown.Item>
                                                     <Dropdown.Item onClick={ticketClose}> Хүсэлтийг хаах
                                                     </Dropdown.Item>
@@ -176,9 +182,9 @@ const view = (props) => {
                                             {/* </div> */}
                                         </Col>
                                     </Row>
-                                    <Row xs={11} style={{width:"100%"}}>
+                                    <Row xs={11} style={{ width: "100%" }}>
                                         <div style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold', maxWidth: '100%', fontFamily: 'Mulish' }}>
-                                            Хариу тайлбар. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}> {comment}</span>
+                                            Хариу тайлбар. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}> {item.description}</span>
                                         </div>
                                     </Row>
                                 </Col>
@@ -193,6 +199,7 @@ const view = (props) => {
                 {
                     showReplyTicket &&
                     <ReplyRequest
+                        selectedId={id}
                         show={showReplyTicket}
                         setShow={setShowReplyTicket}
                     />
@@ -202,6 +209,7 @@ const view = (props) => {
                 {
                     showCloseTicket &&
                     <CloseTicket
+                        selectedId={id}
                         show={showCloseTicket}
                         setShow={setShowCloseTicket}
                     />

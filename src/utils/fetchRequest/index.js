@@ -46,7 +46,6 @@ export function encryptUrlParams(params = {}) {
 }
 
 export function fetchRequest(url, method, bodyParams, fileUpload = false, formData = false, withEncryption = true) {
-    console.log('bodyParams: ', bodyParams);
     let headerObject = fileUpload ? RequestHeadersFile : RequestHeaders;
 
     let requestUrl = url.includes('http') ? url : ROOT_URL + url; // testing survey api
@@ -54,7 +53,6 @@ export function fetchRequest(url, method, bodyParams, fileUpload = false, formDa
     const {
         auth: { authToken }
     } = store.getState();
-    console.log('authToken: ', authToken)
     if (authToken) {
         headerObject['Authorization'] = `Bearer ${authToken}`;
     }
@@ -90,9 +88,6 @@ export function fetchRequest(url, method, bodyParams, fileUpload = false, formDa
             }
         }
     }
-    console.log('headerObject',headerObject);
-    console.log('methodObj',methodObj);
-    console.log('bodyObj',bodyObj);
     if (url === 'auth/login') {
         delete headerObject.Authorization;
     }
@@ -122,7 +117,6 @@ export function fetchRequest(url, method, bodyParams, fileUpload = false, formDa
             .then((responseData) => {
                 const data = responseData?.data || null;
                 const decrypted = decrypt("ESCHOOL_SCHOOL", data);
-                console.log('**decrypted**: ', decrypted)
                 let result = JSON.parse(decrypted);
                 result['success'] = responseData?.success || false;
                 resolve(result);

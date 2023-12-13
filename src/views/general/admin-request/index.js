@@ -327,7 +327,7 @@ const AdminRequest = (props) => {
                     </Col>
                 </Row>
                 <Row style={{ marginTop: 20 }}>
-                    <Col style={{ color: '#FD7845', fontSize: 16, fontWeight: 'bolder' }}>Миний илгээсэн санал хүсэлтүүд</Col>
+                    <Col style={{ color: '#FD7845', fontSize: 16, fontWeight: 'bolder' }}>Ирсэн санал хүсэлтүүд</Col>
                     <Col lg={2} className='d-flex justify-content-between align-items-center'>
                         <Row >
                             <input
@@ -345,19 +345,16 @@ const AdminRequest = (props) => {
                 </Row>
                 {data.map((item, i) => (
                     <Row key={i} style={{ marginTop: 10 }}>
-                        <Card className="mb-3">
-                            <Card.Body className="d-flex flex-row align-content-center align-items-center position-relative mb-3">
+                        <Card className="mb-1">
+                            <Card.Body>
+                                <Row className="d-flex flex-row align-content-center align-items-center position-relative mb-">
                                 <Col lg={1} className="text-center flex-row">
                                     <Row style={{ display: 'flex' }}>
                                         <div style={{ textAlign: 'center' }}>
-                                            <img src="../img/system/default-profile.png" alt="school-icon" className="color-info me-1" style={{ maxWidth: '80%', height: 'auto' }} />
-                                        </div>
-                                        <div style={{ textAlign: 'center', color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
-                                        #{item.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {item.description}</span>
+                                            <img src="../img/ticket/avatar.png" alt="school-icon" className="color-info me-1"/>
                                         </div>
                                     </Row>
                                 </Col>
-
                                 <Col>
                                     <Row>
                                         <Col>
@@ -403,6 +400,12 @@ const AdminRequest = (props) => {
                                         {item.createdDate?.date} | {item.type} | {item.systemId}
                                     </div>
                                 </Col>
+                                </Row>
+                                <Row>
+                                <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
+                                        #{item.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {item.description}</span>
+                                        </div>
+                                </Row>
                             </Card.Body>
                         </Card>
                     </Row>
