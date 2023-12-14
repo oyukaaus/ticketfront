@@ -6,12 +6,19 @@ import { useDispatch } from 'react-redux';
 import { setLoading } from 'utils/redux/action';
 import showMessage from "modules/message";
 import { fetchRequest } from 'utils/fetchRequest';
-import { ticketIndex } from 'utils/fetchRequest/Urls';
+import { ticketInfo } from 'utils/fetchRequest/Urls';
+import ReplyRequest from '../ticket/modal/reply';
+import CloseTicket from '../ticket/modal/close';
+import AssignRequest from '../ticket/modal/assign'
 
 const view = (props) => {
+    const { match } = props;
+    const { id } = match.params;
     const [data, setData] = useState([]);
+    const [replyData, setReplyData] = useState([]);
     const [showReplyTicket, setShowReplyTicket] = useState(false);
     const [showCloseTicket, setShowCloseTicket] = useState(false);
+    const [showAssignTicket, setShowAssignTicket] = useState(false);
 
     const { t } = useTranslation();
     const dispatch = useDispatch();
@@ -33,14 +40,11 @@ const view = (props) => {
                 return { backgroundColor: '#FFFFFF', color: '#000000' }; // Default button color
         }
     };
-    const comment = "Монгол хэл бол манай ард түмний өндөр соёлыг тусгасан баялаг хэл болох тул түүний үгсийн сангийн бүх баялгийг бүртгэн багтаасан бүрэн тайлбар толь гаргах гэвэл төрөл бүрийн ухааны мэрэгжлийн олон хүн, олон жил ажиллаж байж сая бүтээж чадах юм.Ингэхлээр бид монгол хэлний бүрэн тайлбар толь гаргахын наана монгол хэлний тэр их баялгаас давын өмнө чухал хэрэгцээтэй үгс буюу орчин цагийн монголын төв аялгуун дээр тулгуурласан бичгийн хэлний үгсийг ихэвчлэн багтааж үгийн утгын тоймыг тайлбарласан товч тайлбар толь гаргаж нийгмийн хэрэгцээний одоогийн шаардлагыг хангахыг зорьсон билээ.";
-    const [value, setValue] = React.useState();
-    const [dropdownStates, setDropdownStates] = useState(Array(data.length).fill(false));
+    const [dropdownStates, setDropdownStates] = useState([]);
+    const [dropdownStatesSecond, setDropdownStatesSecond] = useState([]);
 
-    const handleDropdownToggle = (i) => {
-        const updatedDropdownStates = [...dropdownStates];
-        updatedDropdownStates[i] = !updatedDropdownStates[i];
-        setDropdownStates(updatedDropdownStates);
+    const ticketAssign = () => {
+        setShowAssignTicket(true);
     };
 
     const ticketReply = () => {
@@ -50,18 +54,18 @@ const view = (props) => {
     const ticketClose = () => {
         setShowCloseTicket(true);
     };
-    
+
     const fetchInfo = async () => {
         dispatch(setLoading(true));
-        fetchRequest(ticketIndex, 'POST', {
+        fetchRequest(ticketInfo, 'POST', {
+            ticketId: id
         })
             .then((res) => {
+                console.log('res: ', res)
                 const { success = false, message = null } = res;
                 if (success) {
-                    console.log('res: ', res)
-                    setData(res?.tickets);
-                    // setData(res?.survey)
-                    // setQuestionTypes(res?.questionTypes)
+                    setData(res?.ticket);
+                    setReplyData(res?.ticketDtlList);
                 } else {
                     showMessage(message || t('errorMessage.title'));
                 }
@@ -74,6 +78,20 @@ const view = (props) => {
     };
 
     useEffect(() => {
+        setDropdownStates(new Array(data.length).fill(false));
+    }, [data]);
+
+    const handleDropdownToggle = (i) => {
+        console.log('i: ',i)
+        const updatedDropdownStates = [...dropdownStates];
+        updatedDropdownStates[i] = !updatedDropdownStates[i];
+        setDropdownStates(updatedDropdownStates);
+    };
+
+    const resetDropdownStates = () => {
+        setDropdownStates([]);
+    };
+    useEffect(() => {
         fetchInfo()
     }, []);
     return (
@@ -81,65 +99,111 @@ const view = (props) => {
             <Row>
                 {data.map((item, i) => (
                     <Row key={i} style={{ marginTop: 10 }}>
-                        <Card className="mb-3">
-                            <Card.Body className="d-flex flex-row position-relative">
-                                <Col>
-                                    <Row>
-                                        <Col xs={1} className="text-center">
-                                            <Row style={{ display: 'flex' }}>
-                                                <div style={{ textAlign: 'center' }}>
-                                                    <img src="../../img/system/default-profile.png" alt="school-icon" className="color-info me-1" style={{ maxWidth: '55%', maxHeight: '55%' }} />
-                                                </div>
-                                            </Row>
-                                        </Col>
-                                        <Col>
-                                            <Button
-                                                type="button"
-                                                size="sm"
-                                                disabled
-                                                style={getButtonColor(item.status)}
-                                            >
-                                                {item.status}
-                                            </Button>
-                                            <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold' }}>
-                                                {item.createdUser} | {item.createdDate?.date} | {item.type} | {item.systemId}
+                        <Card className="mb-1">
+                            <Card.Body>
+                                <Row>
+                                    <Link to={{ pathname: `/ticket/index` }} style={{ textAlign: 'right', color: '#FD7845', fontSize: 12, fontWeight: 'bold', fontFamily: 'Mulish' }}>
+                                        Жагсаалт руу буцах
+                                    </Link></Row>
+                                <Row className="d-flex flex-row align-content-center align-items-center position-relative mb-">
+                                    <Col lg={1} className="text-center flex-row">
+                                        <Row style={{ display: 'flex' }}>
+                                            <div style={{ textAlign: 'center' }}>
+                                                <img src="../../img/ticket/avatar.png" alt="school-icon" className="color-info me-1" />
                                             </div>
-                                        </Col>
-                                        <Col lg={1}>
-                                            <Link to={{ pathname: `/ticket/index` }} style={{ textAlign: 'center', color: '#FD7845', fontSize: 12, fontWeight: 'bold' }}>
-                                                Жагсаалт руу буцах
-                                            </Link>
-                                        </Col>
-                                    </Row>
-                                    <Row >
-                                        <div style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold', marginLeft: 40 }}>
-                                            #{item.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {item.description}</span>
+                                        </Row>
+                                    </Col>
+                                    <Col>
+                                        <Row>
+                                            <Col>
+                                                <Button className='position-relative d-inline-flex m-1'
+                                                    type="button"
+                                                    size="sm"
+                                                    disabled
+                                                    style={getButtonColor(item.status)}
+                                                >
+                                                    {item.status}
+                                                </Button>
+                                                <Button className='position-relative d-inline-flex m-1'
+                                                    type="button"
+                                                    size="sm"
+                                                    disabled
+                                                    style={{ backgroundColor: '#FD7845', fontFamily: 'Mulish' }}
+                                                >
+                                                    {/* {item.status} */}
+                                                    Тестийн сургууль
+                                                </Button>
+                                                <Button className='position-relative d-inline-flex m-1'
+                                                    type="button"
+                                                    size="sm"
+                                                    disabled
+                                                    style={{ backgroundColor: '#3B82F6', fontFamily: 'Mulish' }}
+                                                >
+                                                    {/* {item.status} */}
+                                                    Сургалтын менежер, Багш
+                                                </Button>
+                                                <Button className='position-relative d-inline-flex m-1'
+                                                    type="button"
+                                                    size="sm"
+                                                    disabled
+                                                    style={{ backgroundColor: '#047857', fontFamily: 'Mulish' }}
+                                                >
+                                                    {/* {item.status} */}
+                                                    99887766
+                                                </Button>
+                                            </Col>
+                                        </Row>
+
+                                        <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold' }}>
+                                            {item.createdDate?.date} | {item.type} | {item.systemId}
                                         </div>
-                                    </Row>
-                                </Col>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col>
+                                        <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
+                                            #{item.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {item.description}</span>
+                                        </div></Col>
+                                    <Col xs="1" className="d-flex align-items-end justify-content-end mb-2 mb-sm-0 order-sm-3">
+                                        <Dropdown align="end">
+                                            <Dropdown.Toggle className="dropdown-toggle dropdown-toggle-split" size="sm"
+                                   
+                                                style={{ color: '#FD7845', border: '1px solid' }}>
+                                            </Dropdown.Toggle>
+                                            <Dropdown.Menu >
+                                                <Dropdown.Item onClick={() => {
+                                                    ticketAssign();
+                                                }}> Хариуцагчийг солих</Dropdown.Item>
+                                                <Dropdown.Item onClick={() => ticketReply()}> Хариу бичих</Dropdown.Item>
+                                                <Dropdown.Item onClick={() => ticketClose()}> Хүсэлтийг хаах</Dropdown.Item>
+                                            </Dropdown.Menu>
+                                        </Dropdown>
+                                        {/* </div> */}
+                                    </Col>
+                                </Row>
                             </Card.Body>
                         </Card>
                     </Row>
-
                 ))}
             </Row>
 
             <Row>
                 <Col lg={1}></Col>
-                {data.map((item, i) => (
+                {replyData.map((item, i) => (
                     <Col key={i} lg={11}>
                         <Card className="mb-3">
                             <Card.Body className="d-flex flex-row align-content-center align-items-center position-relative mb-3">
-                                <Col xs={11}>
+                                <Col xs={12}>
                                     <Row>
                                         <Col xs={1} className="text-center">
                                             <Row style={{ display: 'flex' }}>
                                                 <div style={{ textAlign: 'center' }}>
-                                                    <img src="../../img/system/default-profile.png" alt="school-icon" className="color-info me-1" style={{ maxWidth: '55%', maxHeight: '55%' }} />
+                                                    <img src="../../img/ticket/avatar.png" alt="school-icon" className="color-info me-1" />
                                                 </div>
                                             </Row>
+
                                         </Col>
-                                        <Col>
+                                        <Col xs={10}>
                                             <Row>
                                                 <Col>
                                                     <Button
@@ -150,27 +214,56 @@ const view = (props) => {
                                                     >
                                                         {item.status}
                                                     </Button>
-                                                    <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold' }}>
-                                                {item.createdUser} | {item.createdDate?.date} | {item.type} | {item.systemId}
-                                            </div>
+                                                    <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold', fontFamily: 'Mulish' }}>
+                                                        {item.createdUser} | {item.createdDate?.date} | {item.type} | {item.systemId}
+                                                    </div>
                                                 </Col>
 
                                             </Row>
                                         </Col>
                                     </Row>
-                                    <Row >
-                                        <div style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold', maxWidth: '100%' }}>
-                                            Хариу тайлбар. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {comment}</span>
+                                    <Row xs={11} style={{ width: "100%" }}>
+                                        <div style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold', maxWidth: '100%', fontFamily: 'Mulish' }}>
+                                            Хариу тайлбар. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}> {item.description}</span>
                                         </div>
                                     </Row>
                                 </Col>
+
                             </Card.Body>
                         </Card>
                     </Col>
                 ))}
             </Row>
-
-            
+            <Row>
+                {
+                    showAssignTicket &&
+                    <AssignRequest
+                        selectedId={id}
+                        show={showAssignTicket}
+                        setShow={setShowAssignTicket}
+                    />
+                }
+            </Row>
+            <Row>
+                {
+                    showReplyTicket &&
+                    <ReplyRequest
+                        selectedId={id}
+                        show={showReplyTicket}
+                        setShow={setShowReplyTicket}
+                    />
+                }
+            </Row>
+            <Row>
+                {
+                    showCloseTicket &&
+                    <CloseTicket
+                        selectedId={id}
+                        show={showCloseTicket}
+                        setShow={setShowCloseTicket}
+                    />
+                }
+            </Row>
         </>
     );
 };

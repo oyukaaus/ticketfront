@@ -35,7 +35,7 @@ const createTicketModal = ({
     // const [subMenus, setSubMenus] = useState([]);
     const subMenus = [{ value: 1, text: 'Нүүр хуудас' }, { value: 2, text: 'Санал хүсэлт' }];
     const [file, setFile] = React.useState();
-    const [fileData, setFileData] = useState({});
+    const [fileData, setFileData] = useState();
     const onSystemChange = (e) => {
         console.log('e: ', e)
         setSelectedSystem(e)
@@ -210,12 +210,6 @@ const createTicketModal = ({
         if (isValid) {
             dispatch(setLoading(true));
             console.log('postData: ', fileData);
-            const fileD = {
-                name: fileData.name,
-                type: fileData.type,
-                size: fileData.size,
-                path: '/'
-            };
             const postData = {
                 systemId: values.system,
                 menuId: values.menus,
@@ -225,8 +219,17 @@ const createTicketModal = ({
                 typeId: isIssue === true ? 1 : 2,
                 statusId: 1,
                 example: values.example,
-                file: fileD
-            };
+              };
+          
+              if (fileData) {
+                postData.file = {
+                  name: fileData.name,
+                  type: fileData.type,
+                  size: fileData.size,
+                  path: '/',
+                };
+              }
+          
             console.log('postData: ', postData);
             fetchRequest(ticketCreate, 'POST', postData)
                 .then((res) => {

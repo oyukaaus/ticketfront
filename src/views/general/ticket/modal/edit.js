@@ -4,22 +4,23 @@ import { useTranslation } from 'react-i18next';
 import Forms from 'modules/Form/Forms';
 import 'css/addInvoice.css';
 import CollectionsIcon from '@mui/icons-material/Collections';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { setLoading } from 'utils/redux/action';
 import { fetchRequest } from 'utils/fetchRequest';
-import { ticketInfo } from 'utils/fetchRequest/Urls';
+import { ticketEdit, ticketInfo } from 'utils/fetchRequest/Urls';
 import showMessage from 'modules/message';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom';
 
 const editTicket = ({
     selectedData,
     show,
     setShow,
-    onSubmit
 }) => {
     const { t } = useTranslation();
     const formRefIssue = useRef();
     const formRefRequest = useRef();
     const dispatch = useDispatch();
+    const history = useHistory();
 
     const [isIssue, setIsIssue] = useState(true);
     const selectedOne = selectedData[0];
@@ -34,7 +35,7 @@ const editTicket = ({
     // const [subMenus, setSubMenus] = useState([]);
     const subMenus = [{ value: 1, text: 'Нүүр хуудас' }, { value: 2, text: 'Санал хүсэлт' }];
     const [file, setFile] = React.useState();
-    const [isInitial, setIsInitial] = useState(true)
+    const [fileData, setFileData] = useState();
 
     const onSystemChange = (e) => {
         setSelectedSystem(e)
@@ -132,6 +133,7 @@ const editTicket = ({
                         false
                     );
                     reader.readAsDataURL(image);
+                    setFileData(image);
                 }
             },
         },
@@ -194,49 +196,56 @@ const editTicket = ({
                         false
                     );
                     reader.readAsDataURL(image);
+                    setFileData(image);
                 }
             },
         },
     ];
 
-    const updateFields = () => {
-        const formRef = isIssue ? formRefIssue : formRefRequest;
-        if (formRef && formRef?.current) {
-            const values = formRef?.current?.getValues();
-            if (isInitial) {
-                if (selectedOne) {
-                    values.description = selectedOne?.description;
-                    values.example = selectedOne?.title;
-                    values.system = selectedOne?.systemId;
-                    values.menu = selectedOne?.menuId;
-                    values.subMenu = selectedOne?.menuId;
-                    values.isIssue = selectedOne.type === "Алдаа" ? true : false;
-                }
-            }
-            if (values.isIssue) {
-                formRef?.current?.updateFields(issueFields?.map((f) => {
-                    return {
-                        ...f,
-                        value: values[f.key]
-                    }
-                }));
-            } else {
-                formRef?.current?.updateFields(requestFields?.map((f) => {
-                    return {
-                        ...f,
-                        value: values[f.key]
-                    }
-                }));
-            }
-            console.log('value: ', values)
-        }
-    }
-
     const onSaveClick = () => {
         const formRef = isIssue ? formRefIssue : formRefRequest;
         const [isValid, , values] = formRef.current.validate();
         if (isValid) {
-            onSubmit(values);
+            dispatch(setLoading(true));
+            const postData = {
+                ticketId: selectedOne.id,
+                systemId: values.system,
+                menuId: values.menus,
+                submenuId: values.subMenu,
+                title: 'Title',
+                description: values.description,
+                typeId: isIssue === true ? 1 : 2,
+                statusId: 1,
+                example: values.example,
+              };
+          
+              if (fileData) {
+                postData.file = {
+                  name: fileData.name,
+                  type: fileData.type,
+                  size: fileData.size,
+                  path: '/',
+                };
+              }
+          
+            console.log('postData: ', postData);
+            fetchRequest(ticketEdit, 'POST', postData)
+                .then((res) => {
+                    const { success = false, message = null } = res;
+                    if (success) {
+                        window.location.reload();
+                        showMessage(message, true);
+                    } else {
+                        console.log('res: ', res);
+                        showMessage(message || t('errorMessage.title'));
+                    }
+                    dispatch(setLoading(false));
+                })
+                .catch((e) => {
+                    console.log('e', e)
+                    dispatch(setLoading(false));
+                    showMessage(t('errorMessage.title'));
+                });
         }
     };
 
@@ -264,10 +273,6 @@ const editTicket = ({
     useEffect(() => {
         loadInfo()
     }, []);
-
-    useEffect(() => {
-        // updateFields()
-    },);
 
     return (
         <Modal

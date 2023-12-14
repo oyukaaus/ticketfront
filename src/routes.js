@@ -4,7 +4,7 @@ import { DEFAULT_PATHS } from 'config.js';
 import { trimEnd } from 'lodash';
 
 const index = {
-  home: lazy(() => import('views/general/dashboard/student/index')),
+  home: lazy(() => import('views/general/ticket/index')),
   index: lazy(() => import('views/general/ticket/index')),
   // home: lazy(() => import('views/general/home')),
   // index: lazy(() => import('views/general/index')),

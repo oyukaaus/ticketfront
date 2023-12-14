@@ -36,11 +36,13 @@ const TicketPage = (props) => {
     const getButtonColor = (type) => {
         switch (type) {
             case 'Шинэ':
-                return { backgroundColor: '#FF003D', color: '#FFFFFF', fontFamily: 'Mulish' };
-            case 'eSchool хүлээж авсан':
                 return { backgroundColor: 'green', color: '#FFFFFF', fontFamily: 'Mulish' };
-            case 'Хаагдсан':
+            case 'eSchool хүлээж авсан':
                 return { backgroundColor: 'blue', color: '#FFFFFF', fontFamily: 'Mulish' };
+            case 'Хаагдсан':
+                return { backgroundColor: 'grey', color: '#FFFFFF', fontFamily: 'Mulish' };
+            case 'Цуцласан':
+                return { backgroundColor: 'red', color: '#FFFFFF', fontFamily: 'Mulish' };
             default:
                 return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish' }; // Default button color
         }
@@ -236,6 +238,7 @@ const TicketPage = (props) => {
                     showCancel &&
                     <CancelRequest
                         show={showCancel}
+                        id={itemId}
                         setShow={setShowCancel}
                         onSubmit={cancelFetch}
                     />

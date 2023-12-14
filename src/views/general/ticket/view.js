@@ -113,17 +113,26 @@ const view = (props) => {
                                             <Link to={{ pathname: `/ticket/index` }} style={{ textAlign: 'center', color: '#FD7845', fontSize: 12, fontWeight: 'bold', fontFamily: 'Mulish' }}>
                                                 Жагсаалт руу буцах
                                             </Link></Row>
-                                            <Row>
-                                            <Link onClick={() => ticketReply(item.id)} style={{ textAlign: 'center', color: '#FD7845', fontSize: 12, fontWeight: 'bold', fontFamily: 'Mulish' }}>
-                                                Хариу бичих
-                                            </Link></Row>
                                             </Col>
                                     </Row>
                                     <Row >
+                                        <Col>
                                         <div style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold', marginLeft: 40 }}>
                                             #{item.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}> {item.description}</span>
                                         </div>
+                                        </Col>
+                                        <Col xs="1" className="d-flex align-items-end justify-content-end ">
+                                            <Dropdown align="end">
+                                                <Dropdown.Toggle className="dropdown-toggle dropdown-toggle-split" size="sm" style={{ color: '#FD7845', border: '1px solid' }}>
+                                                </Dropdown.Toggle>
+                                                <Dropdown.Menu>
+                                                    <Dropdown.Item  onClick={() => ticketClose()}> Хүсэлтийг хаах
+                                                    </Dropdown.Item>
+                                                </Dropdown.Menu>
+                                            </Dropdown>
+                                        </Col>
                                     </Row>
+                                    
                                 </Col>
                             </Card.Body>
                         </Card>
@@ -132,11 +141,11 @@ const view = (props) => {
                 ))}
             </Row>
 
-            <Row>
+            {replyData.map((item, i) => (
+            <Row key={i} >
                 <Col lg={1}></Col>
-                {replyData.map((item, i) => (
-                    <Col key={i} lg={11}>
-                        <Card className="mb-3">
+                    <Col lg={11}>
+                        <Card className="mb-4">
                             <Card.Body className="d-flex flex-row align-content-center align-items-center position-relative mb-3">
                                 <Col xs={12}>
                                     <Row>
@@ -175,8 +184,6 @@ const view = (props) => {
                                                 <Dropdown.Menu show={dropdownStates[i]}>
                                                     <Dropdown.Item onClick={() => ticketReply(item.id)}>Хариу бичих
                                                     </Dropdown.Item>
-                                                    <Dropdown.Item onClick={ticketClose}> Хүсэлтийг хаах
-                                                    </Dropdown.Item>
                                                 </Dropdown.Menu>
                                             </Dropdown>
                                             {/* </div> */}
@@ -192,9 +199,9 @@ const view = (props) => {
                             </Card.Body>
                         </Card>
                     </Col>
-                ))}
             </Row>
 
+))}
             <Row>
                 {
                     showReplyTicket &&

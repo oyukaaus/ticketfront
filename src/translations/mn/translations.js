@@ -1253,6 +1253,8 @@ export const TRANSLATIONS_MN = {
       tReply: 'Хариу',
       sender: 'Илгээгч',
       assignee: 'Хүлээн авагч',
-      ticketEdit: 'Хүсэлт засах'
+      ticketEdit: 'Хүсэлт засах',
+      comment: 'Тайлбар',
+      selectAssignee: 'Хариуцагчийг солих'
     }
 };

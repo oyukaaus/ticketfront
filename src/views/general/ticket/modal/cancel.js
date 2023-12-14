@@ -1,13 +1,37 @@
 import React from 'react';
 import { Modal, Button, Row, Col } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
+import { fetchRequest } from 'utils/fetchRequest';
+import { ticketCancel } from 'utils/fetchRequest/Urls';
+import showMessage from 'modules/message';
+import { useDispatch } from 'react-redux';
+import { setLoading } from 'utils/redux/action';
 
-const CancelRequest = ({ show, setShow, onSubmit }) => {
+const CancelRequest = ({id, show, setShow }) => {
     const { t } = useTranslation();
+    const dispatch = useDispatch();
     const onSaveClick = () => {
         setShow(false)
-        window.location.reload();
-        onSubmit();
+        const postData = {
+            ticketId: id,
+            statusId: 4
+        };
+        fetchRequest(ticketCancel, 'POST', postData)
+        .then((res) => {
+            const { success = false, message = null } = res;
+            if (success) {
+                window.location.reload();
+                showMessage(message, true);
+            } else {
+                showMessage(message || t('errorMessage.title'));
+            }
+            dispatch(setLoading(false));
+        })
+        .catch((e) => {
+            console.log('e', e)
+            dispatch(setLoading(false));
+            showMessage(t('errorMessage.title'));
+        });
     };
 
     return (

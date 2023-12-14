@@ -15,12 +15,17 @@ export const homeFacts = '';
 export const ticketIndex = 'ticket/index';
 export const ticketCreate = 'ticket/submit';
 export const ticketView = 'ticket/view';
+export const ticketEdit = 'ticket/edit';
 export const ticketInfo = 'ticket/info';
 export const ticketDtlCreate = 'ticket/dtl';
+export const ticketCancel = 'ticket/cancel';
+export const ticketClose = 'ticket/close';
+export const ticketAssign = 'ticket/assign';
 
 //-----------ticket-admin----------------
 export const adminIndex = 'admin/index';
 export const adminView = 'admin/view';
+export const ticketList = 'admin/list';
 
 // ----------appointment-------------
 export const appointmentRequestIndex = 'appointment/request/index';

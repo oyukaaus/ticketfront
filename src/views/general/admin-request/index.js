@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 import { Card, Row, Col, Button, Dropdown } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
@@ -7,51 +7,60 @@ import { useDispatch } from 'react-redux';
 import { setLoading } from 'utils/redux/action';
 import showMessage from "modules/message";
 import { fetchRequest } from 'utils/fetchRequest';
-import { ticketIndex, doctorDashboardIndex, doctorDashboardDetails } from 'utils/fetchRequest/Urls';
-import { PlaylistAddCheckCircleOutlined, TuneRounded } from '@mui/icons-material';
+import { ticketIndex, ticketList } from 'utils/fetchRequest/Urls';
+import { TuneRounded } from '@mui/icons-material';
 import DatePickerRange from 'modules/Form/DatePickerRange';
 import Select from 'modules/Form/Select';
 
+
 const AdminRequest = (props) => {
+    const history = useHistory();
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const [data, setData] = useState([]);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [errorDueDate, setErrorDueDate] = useState(false);
-    const [selectedTypesIds, setSelectedTypes] = useState([]);
     const [searchValue, setSearchValue] = useState('');
-    const breadcrumbs = [
-        { to: '', text: t('menu.home') },
-        { to: '/ticket/index', text: 'Санал хүсэлт' },
-
-    ];
-
+    const [selectedTypesIds, setSelectedTypes] = useState([]);
     const types = [{ value: 1, text: 'Алдаа' }, { value: 2, text: 'Санал хүсэлт' }];
+    const [selectedRequestersIds, setSelectedRequesters] = useState([]);
+    const requesters = [{ value: 1, text: 'Алдаа' }, { value: 2, text: 'Санал хүсэлт' }];
+    const [selectedAssigneeIds, setSelectedAssignees] = useState([]);
+    const assignees = [{ value: 1, text: 'Алдаа' }, { value: 2, text: 'Санал хүсэлт' }];
+    const [selectedSystemIds, setSelectedSystems] = useState([]);
+    const systems = [{ value: 1, text: 'Алдаа' }, { value: 2, text: 'Санал хүсэлт' }];
+    const [selectedSchoolIds, setSelectedSchools] = useState([]);
+    const schools = [{ value: 1, text: 'Алдаа' }, { value: 2, text: 'Санал хүсэлт' }];
+    const [selectedStatusIds, setSelectedStatus] = useState([]);
+    const statuses = [{ value: 1, text: 'Алдаа' }, { value: 2, text: 'Санал хүсэлт' }];
     useEffect(() => {
         dispatch(setLoading(true));
 
     }, []);
 
+    const breadcrumbs = [
+        { to: '', text: t('menu.home') },
+        { to: '/ticket/index', text: 'Санал хүсэлт' },
+
+    ];
     const getButtonColor = (type) => {
         switch (type) {
             case 'Шинэ':
-                return { backgroundColor: '#FF003D', color: '#FFFFFF' };
+                return { backgroundColor: 'green', color: '#FFFFFF', fontFamily: 'Mulish' };
             case 'eSchool хүлээж авсан':
-                return { backgroundColor: 'green', color: '#FFFFFF' };
+                return { backgroundColor: 'blue', color: '#FFFFFF', fontFamily: 'Mulish' };
             case 'Хаагдсан':
-                return { backgroundColor: 'blue', color: '#FFFFFF' };
+                return { backgroundColor: 'grey', color: '#FFFFFF', fontFamily: 'Mulish' };
+            case 'Цуцласан':
+                return { backgroundColor: 'red', color: '#FFFFFF', fontFamily: 'Mulish' };
             default:
-                return { backgroundColor: '#FFFFFF', color: '#000000' }; // Default button color
+                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish' }; // Default button color
         }
     };
     const [dropdownStates, setDropdownStates] = useState(Array(data.length).fill(false));
 
-    const handleDropdownToggle = (i) => {
-        const updatedDropdownStates = [...dropdownStates];
-        updatedDropdownStates[i] = !updatedDropdownStates[i];
-        setDropdownStates(updatedDropdownStates);
-    };
+
     const handleInspectionDateChange = (value) => {
         if (value && value.length > 0) {
             setStartDate(value[0]?.startDate || '')
@@ -61,8 +70,12 @@ const AdminRequest = (props) => {
     const loadDetails = (type = null, start = null, end = null, page = 1, pageSize = 10, query = null, sortBy = null, order = null) => {
         dispatch(setLoading(true));
         const postData = {
-            // school: selectedSchool?.id,
-            type,
+            type: selectedTypesIds,
+            requester: selectedRequestersIds,
+            assignee: selectedAssigneeIds,
+            system: selectedSystemIds,
+            school: selectedSchoolIds,
+            status: selectedStatusIds,
             startDate: start,
             endDate: end,
             page,
@@ -71,7 +84,7 @@ const AdminRequest = (props) => {
             sortBy,
             order
         }
-        fetchRequest(doctorDashboardDetails, 'POST', postData)
+        fetchRequest(ticketList, 'POST', postData)
             .then(res => {
                 const { list = [], totalCount = 0, success = false, message = null } = res
                 if (success) {
@@ -99,6 +112,24 @@ const AdminRequest = (props) => {
         setSelectedTypes(value)
     }
 
+    const handleRequesterChange = (value) => {
+        setSelectedRequesters(value)
+    }
+
+    const handleAssigneeChange = (value) => {
+        setSelectedAssignees(value)
+    }
+
+    const handleSystemChange = (value) => {
+        setSelectedSystems(value)
+    }
+    const handleSchoolChange = (value) => {
+        setSelectedSchools(value)
+    }
+    const handleStatusChange = (value) => {
+        setSelectedStatus(value)
+    }
+
     const onSeeClick = () => {
         if (startDate && endDate) {
             setErrorDueDate(false);
@@ -111,6 +142,7 @@ const AdminRequest = (props) => {
     const fetchInfo = async () => {
         dispatch(setLoading(true));
         fetchRequest(ticketIndex, 'POST', {
+
         })
             .then((res) => {
                 const { success = false, message = null } = res;
@@ -173,15 +205,15 @@ const AdminRequest = (props) => {
                                         <Col lg={4}>
                                             <Row className='d-flex justify-content-between align-items-center'>
                                                 <Col >
-                                                    <label className='modal-label'>{t('ticket.sender')}</label>
+                                                    <label className='modal-label'>{t('ticket.requester')}</label>
                                                 </Col>
                                                 <Col>
                                                     <Select
                                                         multiple
                                                         clearable={false}
-                                                        options={types}
-                                                        value={selectedTypesIds}
-                                                        onChange={(value) => handleTypeChange(value)}
+                                                        options={requesters}
+                                                        value={selectedRequestersIds}
+                                                        onChange={(value) => handleRequesterChange(value)}
                                                     />
                                                 </Col>
                                             </Row>
@@ -195,9 +227,9 @@ const AdminRequest = (props) => {
                                                     <Select
                                                         multiple
                                                         clearable={false}
-                                                        options={types}
-                                                        value={selectedTypesIds}
-                                                        onChange={(value) => handleTypeChange(value)}
+                                                        options={assignees}
+                                                        value={selectedAssigneeIds}
+                                                        onChange={(value) => handleAssigneeChange(value)}
                                                     />
                                                 </Col>
                                             </Row>
@@ -213,9 +245,9 @@ const AdminRequest = (props) => {
                                                     <Select
                                                         multiple
                                                         clearable={false}
-                                                        options={types}
-                                                        value={selectedTypesIds}
-                                                        onChange={(value) => handleTypeChange(value)}
+                                                        options={systems}
+                                                        value={selectedSystemIds}
+                                                        onChange={(value) => handleSystemChange(value)}
                                                     />
                                                 </Col>
                                             </Row>
@@ -254,9 +286,9 @@ const AdminRequest = (props) => {
                                                     <Select
                                                         multiple
                                                         clearable={false}
-                                                        options={types}
-                                                        value={selectedTypesIds}
-                                                        onChange={(value) => handleTypeChange(value)}
+                                                        options={schools}
+                                                        value={selectedSchoolIds}
+                                                        onChange={(value) => handleSchoolChange(value)}
                                                     />
                                                 </Col>
                                             </Row>
@@ -270,9 +302,9 @@ const AdminRequest = (props) => {
                                                     <Select
                                                         multiple
                                                         clearable={false}
-                                                        options={types}
-                                                        value={selectedTypesIds}
-                                                        onChange={(value) => handleTypeChange(value)}
+                                                        options={statuses}
+                                                        value={selectedStatusIds}
+                                                        onChange={(value) => handleStatusChange(value)}
                                                     />
                                                 </Col>
                                             </Row>
@@ -344,7 +376,7 @@ const AdminRequest = (props) => {
                     </Col>
                 </Row>
                 {data.map((item, i) => (
-                    <Row key={i} style={{ marginTop: 10 }}>
+                    <Row key={i} style={{ marginTop: 10 }}  onClick={() => history.push(`/admin/view/${item.id}`)}>
                         <Card className="mb-1">
                             <Card.Body>
                                 <Row className="d-flex flex-row align-content-center align-items-center position-relative mb-">
