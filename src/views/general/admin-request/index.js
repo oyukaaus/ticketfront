@@ -429,7 +429,7 @@ const AdminRequest = (props) => {
                                     </Row>
 
                                     <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold' }}>
-                                        {item.createdDate?.date} | {item.type} | {item.systemId}
+                                    {(item.createdDate?.date).replace(/\.\d+$/, '')} | {item.type} | {item.systemId}
                                     </div>
                                 </Col>
                                 </Row>

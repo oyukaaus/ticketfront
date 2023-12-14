@@ -1255,6 +1255,7 @@ export const TRANSLATIONS_MN = {
       assignee: 'Хүлээн авагч',
       ticketEdit: 'Хүсэлт засах',
       comment: 'Тайлбар',
-      selectAssignee: 'Хариуцагчийг солих'
+      selectAssignee: 'Хариуцагчийг солих',
+      requester: 'Хүсэлт гаргагч'
     }
 };

@@ -2,7 +2,6 @@ import React, { useRef, useState } from 'react';
 import { Modal, Button, Row, Col, ListGroup } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import Forms from 'modules/Form/Forms';
-// import { userChangeAvatar } from '../../utils/fetchRequest/Urls';
 import CollectionsIcon from '@mui/icons-material/Collections';
 import { setLoading } from 'utils/redux/action';
 import { useDispatch } from 'react-redux';
@@ -237,6 +236,7 @@ const createTicketModal = ({
                     const { success = false, message = null } = res;
                     if (success) {
                         history.replace(`/ticket/index`);
+                        window.location.reload()
                         showMessage(message, true);
                     } else {
                         console.log('res: ', res);

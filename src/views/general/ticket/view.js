@@ -105,7 +105,7 @@ const view = (props) => {
                                                 {item.status}
                                             </Button>
                                             <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold' }}>
-                                                {item.createdUser} | {item.createdDate?.date} | {item.type} | {item.systemId}
+                                                {item.createdUser} | {(item.createdDate?.date).replace(/\.\d+$/, '')} | {item.type} | {item.systemId}
                                             </div>
                                         </Col>
                                         <Col lg={2} align="end">
@@ -169,7 +169,7 @@ const view = (props) => {
                                                         {item.status}
                                                     </Button>
                                                     <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold', fontFamily: 'Mulish' }}>
-                                                        {item.createdUser} | {item.createdDate?.date} | {item.type} | {item.systemId}
+                                                        {item.createdUser} | {(item.createdDate?.date).replace(/\.\d+$/, '')} | {item.type} | {item.systemId}
                                                     </div>
                                                 </Col>
 

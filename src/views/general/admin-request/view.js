@@ -81,16 +81,6 @@ const view = (props) => {
         setDropdownStates(new Array(data.length).fill(false));
     }, [data]);
 
-    const handleDropdownToggle = (i) => {
-        console.log('i: ',i)
-        const updatedDropdownStates = [...dropdownStates];
-        updatedDropdownStates[i] = !updatedDropdownStates[i];
-        setDropdownStates(updatedDropdownStates);
-    };
-
-    const resetDropdownStates = () => {
-        setDropdownStates([]);
-    };
     useEffect(() => {
         fetchInfo()
     }, []);
@@ -99,10 +89,10 @@ const view = (props) => {
             <Row>
                 {data.map((item, i) => (
                     <Row key={i} style={{ marginTop: 10 }}>
-                        <Card className="mb-1">
+                        <Card className="mb-4">
                             <Card.Body>
                                 <Row>
-                                    <Link to={{ pathname: `/ticket/index` }} style={{ textAlign: 'right', color: '#FD7845', fontSize: 12, fontWeight: 'bold', fontFamily: 'Mulish' }}>
+                                    <Link to={{ pathname: `/admin/index` }} style={{ textAlign: 'right', color: '#FD7845', fontSize: 12, fontWeight: 'bold', fontFamily: 'Mulish' }}>
                                         Жагсаалт руу буцах
                                     </Link></Row>
                                 <Row className="d-flex flex-row align-content-center align-items-center position-relative mb-">
@@ -155,7 +145,7 @@ const view = (props) => {
                                         </Row>
 
                                         <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold' }}>
-                                            {item.createdDate?.date} | {item.type} | {item.systemId}
+                                            {(item.createdDate?.date).replace(/\.\d+$/, '')} | {item.type} | {item.systemId}
                                         </div>
                                     </Col>
                                 </Row>
@@ -166,16 +156,17 @@ const view = (props) => {
                                         </div></Col>
                                     <Col xs="1" className="d-flex align-items-end justify-content-end mb-2 mb-sm-0 order-sm-3">
                                         <Dropdown align="end">
-                                            <Dropdown.Toggle className="dropdown-toggle dropdown-toggle-split" size="sm"
-                                   
+                                            {/* <Dropdown.Toggle className="dropdown-toggle dropdown-toggle-split" size="sm"
                                                 style={{ color: '#FD7845', border: '1px solid' }}>
+                                            </Dropdown.Toggle> */}
+                                            <Dropdown.Toggle size='sm' active style={{ backgroundColor: '#FD7845' }} >
                                             </Dropdown.Toggle>
                                             <Dropdown.Menu >
                                                 <Dropdown.Item onClick={() => {
                                                     ticketAssign();
-                                                }}> Хариуцагчийг солих</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => ticketReply()}> Хариу бичих</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => ticketClose()}> Хүсэлтийг хаах</Dropdown.Item>
+                                                }}><img src="../../img/ticket/icon/user-profile-add.png" alt="view-icon" /> Хариуцагчийг солих</Dropdown.Item>
+                                                <Dropdown.Item onClick={() => ticketReply()}><img src="../../img/ticket/icon/file-input.png" alt="fileinput-icon" /> Хариу бичих</Dropdown.Item>
+                                                <Dropdown.Item onClick={() => ticketClose()}><img src="../../img/ticket/icon/file-check-2.png" alt="filecheck-icon" /> Хүсэлтийг хаах</Dropdown.Item>
                                             </Dropdown.Menu>
                                         </Dropdown>
                                         {/* </div> */}
@@ -215,7 +206,7 @@ const view = (props) => {
                                                         {item.status}
                                                     </Button>
                                                     <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold', fontFamily: 'Mulish' }}>
-                                                        {item.createdUser} | {item.createdDate?.date} | {item.type} | {item.systemId}
+                                                        {item.createdUser} | {(item.createdDate?.date).replace(/\.\d+$/, '')} | {item.type} | {item.systemId}
                                                     </div>
                                                 </Col>
 

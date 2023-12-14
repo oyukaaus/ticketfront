@@ -45,7 +45,6 @@ const App = () => {
     }, [isFirstCycle])
 
     const routes = useMemo(() => getRoutes({ data: routesAndMenuItems, isLogin, userRole: currentUser?.role, selectedSchool }), [isLogin, currentUser]);
-    console.log('routes: ', routes)
     if (routes) {
         return (
             <Layout>

@@ -1,8 +1,7 @@
-import React, { useRef, useState } from 'react';
-import { Modal, Button, Row, Col, ListGroup } from 'react-bootstrap';
+import React, { useRef } from 'react';
+import { Modal, Button} from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import Forms from 'modules/Form/Forms';
-// import { userChangeAvatar } from '../../utils/fetchRequest/Urls';
 import CollectionsIcon from '@mui/icons-material/Collections';
 import { setLoading } from 'utils/redux/action';
 import { useDispatch } from 'react-redux';

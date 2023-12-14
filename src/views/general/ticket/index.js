@@ -157,7 +157,7 @@ const TicketPage = (props) => {
                     <Row key={i} style={{ marginTop: 10 }}>
                         <Card className="mb-3">
                             <Card.Body className="d-flex flex-row align-content-center align-items-center position-relative mb-3">
-                                <Col lg={1} className="text-center flex-row">
+                                <Col xs={1} className="text-center flex-row">
                                     <Row style={{ display: 'flex' }}>
                                         <div style={{ textAlign: 'center' }}>
                                             <img src="../img/ticket/avatar.png" alt="school-icon" className="color-info me-1"/>
@@ -181,27 +181,25 @@ const TicketPage = (props) => {
                                             </Button>
                                         </Col>
                                         <Dropdown style={{ width: 20 }}>
-                                            <Dropdown.Toggle 
-                                            className="btn-icon btn-icon-only " size="sm" onClick={() => handleDropdownToggle(i)} style={{ color: '#FD7845', border: '1px solid' }}
-                                            >
-                                            {/* <img src="../img/ticket/icon/dot.png" alt="dot-icon" width={10} className="color-info me-1"/> */}
+                                            <Dropdown.Toggle size='sm' active style={{ backgroundColor: '#FD7845'}} >
                                             </Dropdown.Toggle>
+                                            {/* <img src="../img/ticket/icon/dot.png" alt="dot-icon"/> */}
                                             <Dropdown.Menu show={dropdownStates[i]}>
                                                 <Dropdown.Item onClick={() => history.push(`/ticket/view/${item.id}`)}>
-                                                        <PlaylistAddCheckCircleOutlined className="w-19" /> Дэлгэрэнгүй харах
+                                                <img src="../img/ticket/icon/view.png" alt="dot-icon" className="color-info me-1"/>Дэлгэрэнгүй харах
                                                 </Dropdown.Item>
                                                 <Dropdown.Item  onClick={() => editTicket(item.id)}>
-                                                        <PlaylistAddCheckCircleOutlined className="w-19" />Хүсэлтээ засах
+                                                <img src="../img/ticket/icon/edit.png" alt="dot-icon" className="color-info me-1"/>Хүсэлтээ засах
                                                 </Dropdown.Item >
                                                 <Dropdown.Item onClick={() => cancelTicket(item.id)} >
-                                                    <PlaylistAddCheckCircleOutlined className="w-19" />Хүсэлтээ цуцлах
+                                                <img src="../img/ticket/icon/x-square.png" alt="dot-icon" className="color-info me-1"/>Хүсэлтээ цуцлах
                                                 </Dropdown.Item>
                                             </Dropdown.Menu>
                                         </Dropdown>
                                     </Row>
 
                                     <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold', fontFamily: 'Mulish' }}>
-                                        {item.createdDate?.date} | {item.type} | {item.systemId} | {item.createdUser}
+                                        {(item.createdDate?.date).replace(/\.\d+$/, '')} | {item.type} | {item.systemId} | {item.createdUser}
                                     </div>
                                     <div style={{ color: 'black', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}>
                                         {item.description}
