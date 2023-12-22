@@ -39,21 +39,21 @@ export const convertToRoutes = ({
   selectedSchool = null
 }) => {
   let items = [];
-  if (selectedSchool && selectedSchool.roleCodes) {
-    if (selectedSchool.roleCodes.indexOf('ROLE_DOCTOR') > -1) {
-      if (selectedSchool.roleCodes.indexOf('ROLE_TEACHER') > -1) {
-        items = [...data.teacherAndDoctorSidebarItems];
-      } else {
-        items = [...data.doctorSidebarItems];
-      }
-    } else if (selectedSchool.roleCodes.indexOf('ROLE_TEACHER') > -1) {
+  // if (selectedSchool && selectedSchool.roleCodes) {
+  //   if (selectedSchool.roleCodes.indexOf('ROLE_DOCTOR') > -1) {
+  //     if (selectedSchool.roleCodes.indexOf('ROLE_TEACHER') > -1) {
+  //       items = [...data.teacherAndDoctorSidebarItems];
+  //     } else {
+        // items = [...data.doctorSidebarItems];
+  //     }
+  //   } else if (selectedSchool.roleCodes.indexOf('ROLE_TEACHER') > -1) {
       items = [...data.teacherSidebarItems];
-    } else {
-      items = [...data.sidebarItems];
-    }
-  } else {
-    items = [...data.sidebarItems];
-  }  
+  //   } else {
+  //     items = [...data.sidebarItems];
+  //   }
+  // } else {
+  //   items = [...data.sidebarItems];
+  // }  
   const routes = [];
   return () => {
     const itemMapper = (item) => {
@@ -144,21 +144,21 @@ export const convertToMenuItems = ({ data = [], authGuardActive = IS_AUTH_GUARD_
 
   let items = [];
 
-  if (selectedSchool && selectedSchool.roleCodes) {
-    if (selectedSchool.roleCodes.indexOf('ROLE_DOCTOR') > -1) {
-      if (selectedSchool.roleCodes.indexOf('ROLE_TEACHER') > -1) {
-        items = [...data.teacherAndDoctorSidebarItems];
-      } else {
-        items = [...data.doctorSidebarItems];
-      }      
-    } else if (selectedSchool.roleCodes.indexOf('ROLE_TEACHER') > -1) {
+  // if (selectedSchool && selectedSchool.roleCodes) {
+  //   if (selectedSchool.roleCodes.indexOf('ROLE_DOCTOR') > -1) {
+  //     if (selectedSchool.roleCodes.indexOf('ROLE_TEACHER') > -1) {
+  //       items = [...data.teacherAndDoctorSidebarItems];
+  //     } else {
+  //       items = [...data.doctorSidebarItems];
+  //     }      
+  //   } else if (selectedSchool.roleCodes.indexOf('ROLE_TEACHER') > -1) {
       items = [...data.teacherSidebarItems];
-    } else {
-      items = [...data.sidebarItems];
-    }
-  } else {
-    items = [...data.sidebarItems];
-  }
+  //   } else {
+  //     items = [...data.sidebarItems];
+  //   }
+  // } else {
+  //   items = [...data.sidebarItems];
+  // }
   const itemMapper = (item) => {
     const tempItem = { ...item };
 

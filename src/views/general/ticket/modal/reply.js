@@ -1,5 +1,5 @@
-import React, { useRef } from 'react';
-import { Modal, Button} from 'react-bootstrap';
+import React, { useRef, useState } from 'react';
+import { Modal, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import Forms from 'modules/Form/Forms';
 import CollectionsIcon from '@mui/icons-material/Collections';
@@ -12,6 +12,7 @@ import { useHistory } from 'react-router-dom/cjs/react-router-dom';
 
 const ReplyTicket = ({
     selectedId,
+    tag,
     show,
     setShow,
 }) => {
@@ -20,6 +21,7 @@ const ReplyTicket = ({
     const history = useHistory();
     const formRef = useRef();
     const [file, setFile] = React.useState();
+    const [fileData, setFileData] = useState([]);
 
     const requestFields = [
         {
@@ -68,6 +70,7 @@ const ReplyTicket = ({
                         false
                     );
                     reader.readAsDataURL(image);
+                    setFileData(image);
                 }
             },
         },
@@ -82,13 +85,26 @@ const ReplyTicket = ({
                 description: values.description,
                 statusId: 1,
             };
+            if (fileData) {
+                postData.file = {
+                    name: fileData.name,
+                    type: fileData.type,
+                    size: fileData.size,
+                    path: '/',
+                    content: file
+                };
+            }
             console.log('postData: ', postData)
             fetchRequest(ticketDtlCreate, 'POST', postData)
                 .then((res) => {
                     console.log('response: ', res)
                     const { success = false, message = null } = res;
                     if (success) {
-                        history.replace(`/ticket/view/${selectedId}`);
+                        if (tag && tag === 'admin') {
+                            history.replace(`/admin/view/${selectedId}`);
+                        } else {
+                            history.replace(`/ticket/view/${selectedId}`);
+                        }
                         window.location.reload();
                         showMessage(message, true);
                     } else {
@@ -118,7 +134,7 @@ const ReplyTicket = ({
             </Modal.Header>
             <Modal.Body className='px-0'>
                 <Forms ref={formRef} fields={requestFields} />
-              </Modal.Body>
+            </Modal.Body>
             <Modal.Footer className='d-flex justify-content-center'>
                 <Button
                     onClick={() => setShow(false)}

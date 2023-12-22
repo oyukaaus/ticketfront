@@ -7,56 +7,108 @@ import CollectionsIcon from '@mui/icons-material/Collections';
 import { useDispatch } from 'react-redux';
 import { setLoading } from 'utils/redux/action';
 import { fetchRequest } from 'utils/fetchRequest';
-import { ticketEdit, ticketInfo } from 'utils/fetchRequest/Urls';
+import { ticketEdit, ticketInfo, ticketMenu, ticketSubMenu } from 'utils/fetchRequest/Urls';
 import showMessage from 'modules/message';
-import { useHistory } from 'react-router-dom/cjs/react-router-dom';
 
 const editTicket = ({
     selectedData,
     show,
     setShow,
+    systemList
 }) => {
     const { t } = useTranslation();
     const formRefIssue = useRef();
     const formRefRequest = useRef();
     const dispatch = useDispatch();
-    const history = useHistory();
-
     const [isIssue, setIsIssue] = useState(true);
     const selectedOne = selectedData[0];
-    console.log('selectedOne', selectedOne)
     const [selectedSystem, setSelectedSystem] = useState(null);
-    // const [systems, setSystems] = useState([]);
-    const systems = [{ value: 1, text: 'ERP' }, { value: 2, text: 'd' }];
     const [selectedMenu, setSelectedMenu] = useState(null);
-    // const [menus, setMenu] = useState([]);
-    const menus = [{ value: 1, text: 'Нүүр хуудас' }, { value: 2, text: 'Санал хүсэлт' }];
     const [selectedSubMenu, setSelectedSubMenu] = useState(null);
-    // const [subMenus, setSubMenus] = useState([]);
-    const subMenus = [{ value: 1, text: 'Нүүр хуудас' }, { value: 2, text: 'Санал хүсэлт' }];
     const [file, setFile] = React.useState();
     const [fileData, setFileData] = useState();
+    const [menuList, setMenuList] = useState([]);
+    const [subMenus, setSubMenus] = useState([]);
+    const [formKey, setFormKey] = useState(Date.now());
+    
+    const fetchMenu = async (item) => {
+        console.log('item: ', item)
+        dispatch(setLoading(true));
+        fetchRequest(ticketMenu, 'POST', {
+            systemId: selectedOne.systemId
+        })
+            .then((res) => {
+                const { success = false, message = null } = res;
+                if (success) {
+                    setMenuList(res?.menus);
+                    setFormKey(Date.now());
+                } else {
+                    showMessage(message || t('errorMessage.title'));
+                }
+                dispatch(setLoading(false));
+            })
+            .catch((e) => {
+                console.log('e', e)
+                dispatch(setLoading(false));
+                showMessage(t('errorMessage.title'));
+            });
+    };
+
+    const fetchSubMenu = async (item, item2) => {
+        dispatch(setLoading(true));
+        fetchRequest(ticketSubMenu, 'POST', {
+            systemId: item,
+            menuId: item2
+        })
+            .then((res) => {
+                const { success = false, message = null } = res;
+                if (success) {
+                    setSubMenus(res?.subMenus);
+                    setFormKey(Date.now());
+                } else {
+                    showMessage(message || t('errorMessage.title'));
+                }
+                dispatch(setLoading(false));
+            })
+            .catch((e) => {
+                console.log('e', e)
+                dispatch(setLoading(false));
+                showMessage(t('errorMessage.title'));
+            });
+    };
 
     const onSystemChange = (e) => {
-        setSelectedSystem(e)
+        setSelectedSystem(e);
+        if(isIssue){
+            fetchMenu(e);
+        }
+
     }
-    console.log('selectedOne: ', selectedData?.description)
+    const onChangeMenu = (e) => {
+        setSelectedMenu(e);
+        fetchSubMenu(e);
+
+    }
+    const onChangeSubMenu = (e) => {
+        setSelectedSubMenu(e);
+    }
+
 
     const issueFields = [
         {
             key: 'system',
-            value:  selectedOne?.systemId,
+            value:  selectedSystem,
             label: `${t('ticket.system')}*`,
             type: 'dropdown',
             required: true,
             errorMessage: t('errorMessage.enterValue'),
             labelBold: true,
-            options: systems,
+            options: systemList,
             onChange: onSystemChange,
         },
         {
             key: 'menu',
-            value:  selectedOne?.menuId,
+            value:  selectedMenu,
             label: `${t('ticket.menu')}*`,
             type: 'dropdown',
             required: true,
@@ -64,11 +116,12 @@ const editTicket = ({
             labelBold: true,
             searchable: true,
             multiple: false,
-            options: menus,
+            options: menuList.map(menu => ({ value: menu.value, text: menu.text })),
+            onChange: onChangeMenu,
         },
         {
             key: 'subMenu',
-            value: 1,
+            value: selectedSubMenu,
             label: `${t('ticket.subMenu')}*`,
             type: 'dropdown',
             required: true,
@@ -76,7 +129,8 @@ const editTicket = ({
             labelBold: true,
             searchable: true,
             multiple: false,
-            options: subMenus,
+            options: subMenus.map(menu => ({ value: menu.value, text: menu.text })),
+            onChange: onChangeSubMenu
         },
         {
             key: 'description',
@@ -122,6 +176,7 @@ const editTicket = ({
             ),
             isClearButtonClass: 'btn btn-outline-danger m-btn m-btn--icon m-btn--icon-only m-btn--circle-28',
             onChange: (files) => {
+                console.log('files: ', files)
                 const [image] = !files ? [] : files;
                 if (image) {
                     const reader = new FileReader();
@@ -147,7 +202,7 @@ const editTicket = ({
             required: true,
             errorMessage: t('errorMessage.enterValue'),
             labelBold: true,
-            options: systems,
+            options: systemList,
             onChange: onSystemChange,
         },
         {
@@ -201,7 +256,6 @@ const editTicket = ({
             },
         },
     ];
-
     const onSaveClick = () => {
         const formRef = isIssue ? formRefIssue : formRefRequest;
         const [isValid, , values] = formRef.current.validate();
@@ -210,8 +264,8 @@ const editTicket = ({
             const postData = {
                 ticketId: selectedOne.id,
                 systemId: values.system,
-                menuId: values.menus,
-                submenuId: values.subMenu,
+                menuId: selectedMenu,
+                subMenuId: selectedSubMenu,
                 title: 'Title',
                 description: values.description,
                 typeId: isIssue === true ? 1 : 2,
@@ -225,6 +279,7 @@ const editTicket = ({
                   type: fileData.type,
                   size: fileData.size,
                   path: '/',
+                  content: file
                 };
               }
           
@@ -255,11 +310,13 @@ const editTicket = ({
             ticketId: selectedOne?.id,
         }).then((res) => {
             if (res?.success) {
+                fetchMenu(selectedOne?.systemId);
+                fetchSubMenu(selectedOne?.systemId, selectedOne?.menuId);
                 setIsIssue(res?.ticket[0].type === "Алдаа" ? true : false);
-                console.log('res?.ticket[0].systemId: ', res?.ticket[0].systemId)
                 setSelectedSystem(res?.ticket[0].systemId);
                 setSelectedMenu(res?.ticket[0].menuId);
-                // updateFields();
+                setSelectedSubMenu(res?.ticket[0].subMenuId);
+                setFile(res?.ticket?.files)
             } else {
                 showMessage(res?.message || t('errorMessage.title'));
             }
@@ -276,6 +333,7 @@ const editTicket = ({
 
     return (
         <Modal
+        key={formKey}
             centered
             show={show}
             onHide={() => setShow(false)}

@@ -13,16 +13,16 @@ const AssignTicket = ({
     selectedId,
     show,
     setShow,
+    userlist
 }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const history = useHistory();
     const formRef = useRef();
     const [selectedAssignee, setSelectedAssignee] = useState(null);
-    const assignees = [{ value: 101, text: 'Oyuka' }, { value: 102, text: 'Sodoo' }];
+    const assignees = userlist&&userlist.map(user => ({ value: user.id, text: user.firstname }));
 
     const onAssigneeChange = (e) => {
-        console.log('e: ', e)
         setSelectedAssignee(e)
     }
 
@@ -69,7 +69,7 @@ const AssignTicket = ({
                     if (success) {
                         history.replace(`/admin/view/${selectedId}`);
                         showMessage(message, true);
-
+                        window.location.reload();
                     } else {
                         console.log('res: ', res);
                         showMessage(message || t('errorMessage.title'));

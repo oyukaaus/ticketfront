@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
+import {  useHistory } from 'react-router-dom';
 import { Card, Row, Col, Button, Dropdown } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
@@ -8,21 +8,22 @@ import { setLoading } from 'utils/redux/action';
 import showMessage from "modules/message";
 import { fetchRequest } from 'utils/fetchRequest';
 import { ticketIndex } from 'utils/fetchRequest/Urls';
-import { PlaylistAddCheckCircleOutlined } from '@mui/icons-material';
 import CreateTicket from './modal/create';
 import CancelRequest from './modal/cancel';
 import EditTicket from './modal/edit'
 
-const TicketPage = (props) => {
+const TicketPage = () => {
     const history = useHistory();
+    const { t } = useTranslation();
+    const dispatch = useDispatch();
     const [data, setData] = useState([]);
+    const [systems, setSystems] = useState([]);
     const [selectedData, setSelectedData] = useState(null);
     const [showCreateTicket, setShowCreateTicket] = useState(false);
     const [showCancel, setShowCancel] = useState(false);
     const [showEdit, setShowEdit] = useState(false);
     const [itemId, setItemId] = useState();
-    const { t } = useTranslation();
-    const dispatch = useDispatch();
+
     const breadcrumbs = [
         { to: '', text: t('menu.home') },
         { to: '/ticket/index', text: 'Санал хүсэлт' },
@@ -44,17 +45,11 @@ const TicketPage = (props) => {
             case 'Цуцласан':
                 return { backgroundColor: 'red', color: '#FFFFFF', fontFamily: 'Mulish' };
             default:
-                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish' }; // Default button color
+                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish' };
         }
     };
     const [value, setValue] = React.useState();
-    const [dropdownStates, setDropdownStates] = useState(Array(data.length).fill(false));
-
-    const handleDropdownToggle = (i) => {
-        const updatedDropdownStates = [...dropdownStates];
-        updatedDropdownStates[i] = !updatedDropdownStates[i];
-        setDropdownStates(updatedDropdownStates);
-    };
+    // const [dropdownStates, setDropdownStates] = useState(Array(data.length).fill(false));
 
     const fetchInfo = async () => {
         dispatch(setLoading(true));
@@ -63,16 +58,16 @@ const TicketPage = (props) => {
             .then((res) => {
                 const { success = false, message = null } = res;
                 if (success) {
-                    console.log('res: ', res)
                     setData(res?.tickets);
-                    // setData(res?.survey)
-                    // setQuestionTypes(res?.questionTypes)
+                    setSystems(res?.systems);
+                    console.log('res: ', res)
                 } else {
                     showMessage(message || t('errorMessage.title'));
                 }
                 dispatch(setLoading(false));
             })
             .catch((e) => {
+                console.log(e);
                 dispatch(setLoading(false));
                 showMessage(t('errorMessage.title'));
             });
@@ -93,9 +88,31 @@ const TicketPage = (props) => {
         setShowEdit(true);
     };
 
+    const handleSearch = (e) => {
+        console.log('e', e)
+        const searchValue = e.toLowerCase();
+        if (e) {
+            setValue(searchValue);
+            const dataList = data.filter((item) => {
+                return (
+                    item.description.toLowerCase().includes(searchValue)
+                )
+            });
+            setData(dataList)
+        } else {
+            fetchInfo()
+        }
+
+    }
+    const getSystemName = (systemId) => {
+        const system = systems.find((sys) => sys.value === systemId);
+        return system ? system.text : 'Unknown System';
+    };
+
     const cancelFetch = () => {
         console.log(itemId, 'cancelled')
     }
+
     useEffect(() => {
         fetchInfo()
     }, []);
@@ -104,8 +121,8 @@ const TicketPage = (props) => {
             <Row>
                 <Col lg={12} className="mb-3">
                     <h2 className='font-standard mb-0'>
-                        {/* {t('dashboard.appointment')} */}
-                        Санал хүсэлт
+                        {t('ticket.idea')}
+                        {/* Санал хүсэлт */}
                     </h2>
                     <BreadcrumbList
                         basePath='/'
@@ -121,7 +138,7 @@ const TicketPage = (props) => {
                                     <Row className='center'>
                                         <Col lg={3}></Col>
                                         <Col lg={2}>
-                                            <img src='../img/ticket/request.png' alt='school-icon'  className='color-info me-1' /></Col>
+                                            <img src='../img/ticket/request.png' alt='school-icon' className='color-info me-1' /></Col>
                                         <Col lg={4} className='d-flex align-items-center justify-content-center' style={{ color: '#000000', display: 'flex' }}>
                                             <Row className='d-flex align-items-center'>
                                                 <div style={{ textAlign: 'center', color: '#000000', fontFamily: 'Mulish' }}>
@@ -146,7 +163,7 @@ const TicketPage = (props) => {
                             className="form-control datatable-search"
                             value={value || ''}
                             onChange={(e) => {
-                                setValue(e.target.value);
+                                handleSearch(e.target.value);
                             }}
                             placeholder="Хайх..."
                             style={{ fontFamily: 'Mulish' }}
@@ -154,22 +171,19 @@ const TicketPage = (props) => {
                     </Col>
                 </Row>
                 {data.map((item, i) => (
+
                     <Row key={i} style={{ marginTop: 10 }}>
                         <Card className="mb-3">
                             <Card.Body className="d-flex flex-row align-content-center align-items-center position-relative mb-3">
-                                <Col xs={1} className="text-center flex-row">
-                                    <Row style={{ display: 'flex' }}>
-                                        <div style={{ textAlign: 'center' }}>
-                                            <img src="../img/ticket/avatar.png" alt="school-icon" className="color-info me-1"/>
-                                        </div>
-                                        <div style={{ textAlign: 'center', color: '#FD7845', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}>
-                                            #{item.id}
-                                        </div>
-                                    </Row>
-                                </Col>
-
                                 <Col>
                                     <Row>
+                                        <Col xs={1} className="text-center">
+                                            <Row style={{ display: 'flex' }}>
+                                                <div style={{ textAlign: 'center' }}>
+                                                    <img src="../../img/ticket/avatar.png" alt="avatar-icon" className="color-info me-1" />
+                                                </div>
+                                            </Row>
+                                        </Col>
                                         <Col>
                                             <Button
                                                 type="button"
@@ -179,31 +193,47 @@ const TicketPage = (props) => {
                                             >
                                                 {item.status}
                                             </Button>
+
+                                            <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold', fontFamily: 'Mulish' }}>
+                                                {(item.createdDate?.date).replace(/\.\d+$/, '')} | {item.type} | {getSystemName(item.systemId)}
+                                            </div>
                                         </Col>
-                                        <Dropdown style={{ width: 20 }}>
-                                            <Dropdown.Toggle size='sm' active style={{ backgroundColor: '#FD7845'}} >
-                                            </Dropdown.Toggle>
-                                            {/* <img src="../img/ticket/icon/dot.png" alt="dot-icon"/> */}
-                                            <Dropdown.Menu show={dropdownStates[i]}>
-                                                <Dropdown.Item onClick={() => history.push(`/ticket/view/${item.id}`)}>
-                                                <img src="../img/ticket/icon/view.png" alt="dot-icon" className="color-info me-1"/>Дэлгэрэнгүй харах
-                                                </Dropdown.Item>
-                                                <Dropdown.Item  onClick={() => editTicket(item.id)}>
-                                                <img src="../img/ticket/icon/edit.png" alt="dot-icon" className="color-info me-1"/>Хүсэлтээ засах
-                                                </Dropdown.Item >
-                                                <Dropdown.Item onClick={() => cancelTicket(item.id)} >
-                                                <img src="../img/ticket/icon/x-square.png" alt="dot-icon" className="color-info me-1"/>Хүсэлтээ цуцлах
-                                                </Dropdown.Item>
-                                            </Dropdown.Menu>
-                                        </Dropdown>
+                                        {/* <Col lg={2} align="end">
+                                            <Row>
+                                                <Link to={{ pathname: `/ticket/index` }} style={{ textAlign: 'center', color: '#FD7845', fontSize: 12, fontWeight: 'bold', fontFamily: 'Mulish' }}>
+                                                    Жагсаалт руу буцах
+                                                </Link></Row>
+                                        </Col> */}
+                                    </Row>
+                                    <Row >
+                                        <Col>
+                                            <div style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold', marginLeft: 40 }}>
+                                                #{item.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}> {item.description}</span>
+                                            </div>
+                                        </Col>
+
                                     </Row>
 
-                                    <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold', fontFamily: 'Mulish' }}>
-                                        {(item.createdDate?.date).replace(/\.\d+$/, '')} | {item.type} | {item.systemId} | {item.createdUser}
-                                    </div>
-                                    <div style={{ color: 'black', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}>
-                                        {item.description}
-                                    </div>
+                                </Col>
+                                <Col xs="1" className="d-flex align-items-start justify-content-end ">
+                                    <Dropdown style={{ width: 20 }}>
+                                        <Dropdown.Toggle size='sm' active style={{ backgroundColor: '#FD7845' }} >
+                                        </Dropdown.Toggle>
+                                        {/* <img src="../img/ticket/icon/dot.png" alt="dot-icon"/> */}
+                                        <Dropdown.Menu>
+                                            <Dropdown.Item onClick={() => history.push(`/ticket/view/${item.id}`)}>
+                                                <img src="../img/ticket/icon/view.png" alt="dot-icon" className="color-info me-1" />Дэлгэрэнгүй харах
+                                            </Dropdown.Item>
+                                            {item.status === 'Шинэ' && (
+                                                <Dropdown.Item onClick={() => editTicket(item.id)}>
+                                                    <img src="../img/ticket/icon/edit.png" alt="dot-icon" className="color-info me-1" />Хүсэлтээ засах
+                                                </Dropdown.Item>
+                                            )}
+                                            <Dropdown.Item onClick={() => cancelTicket(item.id)} >
+                                                <img src="../img/ticket/icon/x-square.png" alt="dot-icon" className="color-info me-1" />Хүсэлтээ цуцлах
+                                            </Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
                                 </Col>
                             </Card.Body>
                         </Card>
@@ -216,7 +246,7 @@ const TicketPage = (props) => {
                     <CreateTicket
                         show={showCreateTicket}
                         setShow={setShowCreateTicket}
-                    // onSubmit={onChangeCreateTicketSubmit}
+                        systemList={systems}
                     />
                 }
             </Row>
@@ -227,7 +257,7 @@ const TicketPage = (props) => {
                         selectedData={selectedData}
                         show={showEdit}
                         setShow={setShowEdit}
-                        // onSubmit={editFetch}
+                        systemList={systems}
                     />
                 }
             </Row>

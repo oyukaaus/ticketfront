@@ -21,11 +21,14 @@ export const ticketDtlCreate = 'ticket/dtl';
 export const ticketCancel = 'ticket/cancel';
 export const ticketClose = 'ticket/close';
 export const ticketAssign = 'ticket/assign';
+export const ticketSystem = 'ticket/system';
+export const ticketMenu = 'ticket/menu';
+export const ticketSubMenu = 'ticket/sub-menu';
 
 //-----------ticket-admin----------------
 export const adminIndex = 'admin/index';
 export const adminView = 'admin/view';
-export const ticketList = 'admin/list';
+export const ticketList = 'ticket/list';
 
 // ----------appointment-------------
 export const appointmentRequestIndex = 'appointment/request/index';

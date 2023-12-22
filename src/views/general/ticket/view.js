@@ -14,7 +14,9 @@ const view = (props) => {
     const { match } = props;
     const { id } = match.params;
     const [data, setData] = useState([]);
+    const [systems, setSystems] = useState([]);
     const [replyData, setReplyData] = useState([]);
+    const [files, setFiles] = useState([]);
     const [showReplyTicket, setShowReplyTicket] = useState(false);
     const [showCloseTicket, setShowCloseTicket] = useState(false);
 
@@ -29,21 +31,16 @@ const view = (props) => {
     const getButtonColor = (type) => {
         switch (type) {
             case 'Шинэ':
-                return { backgroundColor: '#FF003D', color: '#FFFFFF' };
+                return { backgroundColor: 'green', color: '#FFFFFF', fontFamily: 'Mulish' };
             case 'eSchool хүлээж авсан':
-                return { backgroundColor: 'green', color: '#FFFFFF' };
+                return { backgroundColor: 'blue', color: '#FFFFFF', fontFamily: 'Mulish' };
             case 'Хаагдсан':
-                return { backgroundColor: 'blue', color: '#FFFFFF' };
+                return { backgroundColor: 'grey', color: '#FFFFFF', fontFamily: 'Mulish' };
+            case 'Цуцласан':
+                return { backgroundColor: 'red', color: '#FFFFFF', fontFamily: 'Mulish' };
             default:
-                return { backgroundColor: '#FFFFFF', color: '#000000' }; // Default button color
+                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish' }; // Default button color
         }
-    };
-    const [dropdownStates, setDropdownStates] = useState(Array(data.length).fill(false));
-
-    const handleDropdownToggle = (i) => {
-        const updatedDropdownStates = [...dropdownStates];
-        updatedDropdownStates[i] = !updatedDropdownStates[i];
-        setDropdownStates(updatedDropdownStates);
     };
 
     const ticketReply = () => {
@@ -54,6 +51,14 @@ const view = (props) => {
         setShowCloseTicket(true);
     };
 
+    const openImageInNewWindow = (path) => {
+        window.open(path, '_blank');
+    };
+
+    const getSystemName = (systemId) => {
+        const system = systems.find((sys) => sys.value === systemId);
+        return system ? system.text : 'Unknown System';
+    };
     const fetchInfo = async () => {
         dispatch(setLoading(true));
         fetchRequest(ticketInfo, 'POST', {
@@ -64,6 +69,8 @@ const view = (props) => {
                 const { success = false, message = null } = res;
                 if (success) {
                     setData(res?.ticket);
+                    setFiles(res?.files);
+                    setSystems(res?.systems)
                     setReplyData(res?.ticketDtlList);
                 } else {
                     showMessage(message || t('errorMessage.title'));
@@ -71,6 +78,7 @@ const view = (props) => {
                 dispatch(setLoading(false));
             })
             .catch((e) => {
+                console.log(e);
                 dispatch(setLoading(false));
                 showMessage(t('errorMessage.title'));
             });
@@ -105,34 +113,48 @@ const view = (props) => {
                                                 {item.status}
                                             </Button>
                                             <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold' }}>
-                                                {item.createdUser} | {(item.createdDate?.date).replace(/\.\d+$/, '')} | {item.type} | {item.systemId}
+                                                {(item.createdDate?.date).replace(/\.\d+$/, '')} | {item.type} | {getSystemName(item.systemId)}
                                             </div>
                                         </Col>
                                         <Col lg={2} align="end">
                                             <Row>
-                                            <Link to={{ pathname: `/ticket/index` }} style={{ textAlign: 'center', color: '#FD7845', fontSize: 12, fontWeight: 'bold', fontFamily: 'Mulish' }}>
-                                                Жагсаалт руу буцах
-                                            </Link></Row>
-                                            </Col>
+                                                <Link to={{ pathname: `/ticket/index` }} style={{ textAlign: 'center', color: '#FD7845', fontSize: 12, fontWeight: 'bold', fontFamily: 'Mulish' }}>
+                                                    Жагсаалт руу буцах
+                                                </Link></Row>
+                                        </Col>
                                     </Row>
                                     <Row >
                                         <Col>
-                                        <div style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold', marginLeft: 40 }}>
-                                            #{item.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}> {item.description}</span>
-                                        </div>
+                                            <div style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold', marginLeft: 40 }}>
+                                                #{item.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}> {item.description}</span>
+                                            </div>
                                         </Col>
                                         <Col xs="1" className="d-flex align-items-end justify-content-end ">
                                             <Dropdown align="end">
                                                 <Dropdown.Toggle className="dropdown-toggle dropdown-toggle-split" size="sm" style={{ color: '#FD7845', border: '1px solid' }}>
                                                 </Dropdown.Toggle>
                                                 <Dropdown.Menu>
-                                                    <Dropdown.Item  onClick={() => ticketClose()}> Хүсэлтийг хаах
+                                                    {(item.status === 'Шинэ' || item.status === "eSchool хүлээж авсан") && (
+                                                        <Dropdown.Item onClick={() => ticketReply()}> Хариу бичих
+                                                        </Dropdown.Item>
+                                                    )}
+                                                    <Dropdown.Item onClick={() => ticketClose()}> Хүсэлтийг хаах
                                                     </Dropdown.Item>
                                                 </Dropdown.Menu>
                                             </Dropdown>
                                         </Col>
                                     </Row>
-                                    
+                                    <Row className="d-flex align-items-end justify-content-end " >
+                                        <Col lg={1}>
+                                            {files && files.map((dtlItem, index) => (
+                                                <div key={index} className="text-center">
+                                                    <img src={dtlItem.path} alt={`Image ${index}`} width='60' onClick={() => openImageInNewWindow(dtlItem.path)} />
+                                                    {/* {dtlItem.name} */}
+                                                </div>
+                                            ))}
+                                        </Col>
+                                        <Col lg={11}></Col>
+                                    </Row>
                                 </Col>
                             </Card.Body>
                         </Card>
@@ -142,8 +164,8 @@ const view = (props) => {
             </Row>
 
             {replyData.map((item, i) => (
-            <Row key={i} >
-                <Col lg={1}></Col>
+                <Row key={i} >
+                    <Col lg={1}></Col>
                     <Col lg={11}>
                         <Card className="mb-4">
                             <Card.Body className="d-flex flex-row align-content-center align-items-center position-relative mb-3">
@@ -169,23 +191,22 @@ const view = (props) => {
                                                         {item.status}
                                                     </Button>
                                                     <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold', fontFamily: 'Mulish' }}>
-                                                        {item.createdUser} | {(item.createdDate?.date).replace(/\.\d+$/, '')} | {item.type} | {item.systemId}
+                                                        {item.createdUser} username | {(item.createdDate?.date).replace(/\.\d+$/, '')}
                                                     </div>
                                                 </Col>
 
                                             </Row>
                                         </Col>
                                         <Col xs="1" className="d-flex align-items-end justify-content-end mb-2 mb-sm-0 order-sm-3">
-                                            {/* <div className="btn-group ms-1 check-all-container"> */}
-                                            <Dropdown align="end">
-                                                <Dropdown.Toggle className="dropdown-toggle dropdown-toggle-split" size="sm" onClick={() => handleDropdownToggle(i)} style={{ color: '#FD7845', border: '1px solid' }}>
-                                                    {/* <CsLineIcons icon="more-vertical" /> */}
-                                                </Dropdown.Toggle>
-                                                <Dropdown.Menu show={dropdownStates[i]}>
-                                                    <Dropdown.Item onClick={() => ticketReply(item.id)}>Хариу бичих
-                                                    </Dropdown.Item>
-                                                </Dropdown.Menu>
-                                            </Dropdown>
+                                            {/* <Dropdown align="end"> */}
+                                            {/* <Dropdown.Toggle className="dropdown-toggle dropdown-toggle-split" size="sm" onClick={() => handleDropdownToggle(i)} style={{ color: '#FD7845', border: '1px solid' }}> */}
+                                            {/* <CsLineIcons icon="more-vertical" /> */}
+                                            {/* </Dropdown.Toggle> */}
+                                            {/* <Dropdown.Menu show={dropdownStates[i]}> */}
+                                            {/* <Dropdown.Item onClick={() => ticketReply(item.id)}>Хариу бичих */}
+                                            {/* </Dropdown.Item> */}
+                                            {/* </Dropdown.Menu> */}
+                                            {/* </Dropdown> */}
                                             {/* </div> */}
                                         </Col>
                                     </Row>
@@ -194,14 +215,25 @@ const view = (props) => {
                                             Хариу тайлбар. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}> {item.description}</span>
                                         </div>
                                     </Row>
+                                    <Row className="d-flex align-items-end justify-content-end " >
+                                        <Col lg={1}>
+                                            {item.file && item.file.map((dItem, index) => (
+                                                <div key={index} className="text-center">
+                                                    <img src={dItem.path} alt={`Image ${index}`} width='60' onClick={() => openImageInNewWindow(dItem.path)} />
+                                                    {/* {dItem.name} */}
+                                                </div>
+                                            ))}
+                                        </Col>
+                                        <Col lg={11}></Col>
+                                    </Row>
                                 </Col>
 
                             </Card.Body>
                         </Card>
                     </Col>
-            </Row>
+                </Row>
 
-))}
+            ))}
             <Row>
                 {
                     showReplyTicket &&

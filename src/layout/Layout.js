@@ -18,20 +18,21 @@ const Layout = ({ children }) => {
 
   const getMenus = () => {
     let menus = [];
-
-    if (selectedSchool && selectedSchool?.roleCodes && isLogin) {
-      if (selectedSchool?.roleCodes.indexOf('ROLE_DOCTOR') > -1) {
-        if (selectedSchool?.roleCodes.indexOf('ROLE_TEACHER') > -1) {
-          menus = routesAndMenuItems.teacherAndDoctorSidebarItems;
-        } else {
-          menus = routesAndMenuItems.doctorSidebarItems;
-        }        
-      } else if (selectedSchool?.roleCodes.indexOf('ROLE_TEACHER') > -1) {
-        menus = routesAndMenuItems.teacherSidebarItems;
-      }
-    } else {
+    console.log('selected: ', selectedSchool)
+    // if (selectedSchool && selectedSchool?.roleCodes && isLogin) {
+    //   if (selectedSchool?.roleCodes.indexOf('ROLE_DOCTOR') > -1) {
+    //     if (selectedSchool?.roleCodes.indexOf('ROLE_TEACHER') > -1) {
+    //       menus = routesAndMenuItems.teacherSidebarItems;
+    //     }
+    //     //  else {
+    //     //   menus = routesAndMenuItems.doctorSidebarItems;
+    //     // }        
+    //   } else if (selectedSchool?.roleCodes.indexOf('ROLE_TEACHER') > -1) {
+    //     menus = routesAndMenuItems.teacherSidebarItems;
+    //   }
+    // } else {
       menus = routesAndMenuItems.sidebarItems
-    }
+    // }
     return menus;
   }
 

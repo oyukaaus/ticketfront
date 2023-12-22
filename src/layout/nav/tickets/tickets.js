@@ -1,12 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { Send, QuestionMark, FilePresent } from '@mui/icons-material';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from 'react-i18next';
 import { Col } from 'react-bootstrap';
 import { layoutShowingNavMenu } from 'layout/layoutSlice';
 import showMessage from "../../../modules/message";
-import { setLoading, setSelectedSchool } from '../../../utils/redux/action';
 
 // const MENU_NAME = 'Tickets';
 const Tickets = () => {
@@ -19,10 +17,8 @@ const Tickets = () => {
         attrMenuAnimate,
     } = useSelector((state) => state.menu);
     const { color } = useSelector((state) => state.settings);
-    // const { tickets, selectedSchool } = useSelector((state) => state.schoolData);
     const { tickets, selectedSchool } = useSelector((state) => ({
         tickets: [
-            // Sample ticket data
             { id: 1, title: 'Ticket 1', description: 'Description for Ticket 1' },
             { id: 2, title: 'Ticket 2', description: 'Description for Ticket 2' },
         ],
@@ -31,7 +27,7 @@ const Tickets = () => {
             name: 'Selected School Name',
         },
     }));
-    const [searchValue, setSearchValue] = useState('');
+    // const [searchValue, setSearchValue] = useState('');
     useEffect(() => {
         dispatch(layoutShowingNavMenu(''));
     }, [attrMenuAnimate, behaviourHtmlData, attrMobile, color]);
@@ -42,26 +38,26 @@ const Tickets = () => {
         }
     }, [])
 
-    const onSearch = (nameKey) => {
-        setSearchValue(nameKey)
-    }
+    // const onSearch = (nameKey) => {
+    //     setSearchValue(nameKey)
+    // }
 
-    const renderData = (obj) => {
-        return (
-            <li key={`schoolItem.${obj.id}`}
-                className="py-2 border-bottom border-separator-light d-flex school-option" onClick={() => {
-                    dispatch(setSelectedSchool(obj))
-                    dispatch(setLoading(true));
+    // const renderData = (obj) => {
+    //     return (
+    //         <li key={`schoolItem.${obj.id}`}
+    //             className="py-2 border-bottom border-separator-light d-flex school-option" onClick={() => {
+    //                 dispatch(setSelectedSchool(obj))
+    //                 dispatch(setLoading(true));
 
-                    setTimeout(() => {
-                        window.location.href = "/";
-                    }, 100)
-                    // 
-                }}>
-                <span className="label">{obj?.name}</span>
-            </li>
-        )
-    }
+    //                 setTimeout(() => {
+    //                     window.location.href = "/";
+    //                 }, 100)
+    //                 // 
+    //             }}>
+    //             <span className="label">{obj?.name}</span>
+    //         </li>
+    //     )
+    // }
 
 
     if (tickets && tickets.length > 0) {
@@ -93,10 +89,10 @@ const Tickets = () => {
                 <div className="position-relative d-inline-flex m-1">
                     <div className='d-flex align-items-center'>
                         <Link to={{
-                            pathname: `/ticket/view/1`,
+                            pathname: `/admin/index`,
                         }}
                         >
-                            <img src='../img/ticket/icon/book.png' alt='school-icon'  className='color-info me-1' /><span style={{ color: 'white', fontFamily: 'Mulish' }}> Гарын авлага</span>
+                            <img src='../img/ticket/icon/book.png' alt='school-icon'  className='color-info me-1' /><span style={{ color: 'white', fontFamily: 'Mulish' }}> Admin</span>
                             <img src='../img/ticket/icon/chevron-right.png' alt='school-icon'  className='color-info me-1' />
                         </Link>
                     </div>

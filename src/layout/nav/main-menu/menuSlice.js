@@ -2,13 +2,18 @@ import { createSlice } from '@reduxjs/toolkit';
 import { DEFAULT_SETTINGS } from 'config.js';
 
 export const BREAKPOINTS = { sm: 576, md: 768, lg: 992, xl: 1200, xxl: 1400 };
-
+console.log('DEFAULT_SETTINGS: ',DEFAULT_SETTINGS)
 const initialState = {
   behaviour: DEFAULT_SETTINGS.MENU_BEHAVIOUR,
   placement: DEFAULT_SETTINGS.MENU_PLACEMENT,
   useSidebar: DEFAULT_SETTINGS.USE_SIDEBAR,
   pinButtonEnable: true,
-  placementStatus: {},
+  placementStatus: {
+    status: 2,
+    placementHtmlData: 'horizontal',
+    dimensionHtmlData: 'desktop',
+    view: 'horizontal'
+  },
   behaviourStatus: {},
   navClasses: {},
   attrMobile: false,
@@ -30,8 +35,8 @@ const menuSlice = createSlice({
       state.placement = action.payload;
     },
     menuChangePlacementStatus(state, action) {
-      state.placementStatus = action.payload;
-    },
+        state.placementStatus= action.payload
+    },    
     menuChangeBehaviour(state, action) {
       state.behaviour = action.payload;
     },
@@ -96,5 +101,4 @@ export const {
   menuChangeMenuPadding,
 } = menuSlice.actions;
 const menuReducer = menuSlice.reducer;
-
 export default menuReducer;

@@ -6,15 +6,14 @@ import CollectionsIcon from '@mui/icons-material/Collections';
 import { setLoading } from 'utils/redux/action';
 import { useDispatch } from 'react-redux';
 import { fetchRequest } from 'utils/fetchRequest';
-import { ticketCreate } from 'utils/fetchRequest/Urls';
+import { ticketCreate, ticketMenu, ticketSubMenu } from 'utils/fetchRequest/Urls';
 import showMessage from 'modules/message';
 import { useHistory } from 'react-router-dom/cjs/react-router-dom';
 
 const createTicketModal = ({
     show,
     setShow,
-    onSubmit,
-    // props
+    systemList
 }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
@@ -23,21 +22,74 @@ const createTicketModal = ({
     const formRefRequest = useRef();
 
     const [isIssue, setIsIssue] = useState(true);
-    console.log('issuess: ', isIssue)
     const [selectedSystem, setSelectedSystem] = useState(null);
-    // const [systems, setSystems] = useState([]);
-    const systems = [{ value: 1, text: 'ERP' }, { value: 2, text: 'd' }];
     const [selectedMenu, setSelectedMenu] = useState(null);
-    // const [menus, setMenu] = useState([]);
-    const menus = [{ value: 1, text: 'Нүүр хуудас' }, { value: 2, text: 'Санал хүсэлт' }];
     const [selectedSubMenu, setSelectedSubMenu] = useState(null);
-    // const [subMenus, setSubMenus] = useState([]);
-    const subMenus = [{ value: 1, text: 'Нүүр хуудас' }, { value: 2, text: 'Санал хүсэлт' }];
+    const [formKey, setFormKey] = useState(Date.now());
+    const [menuList, setMenuList] = useState([]);
+    const [subMenus, setSubMenus] = useState([]);
     const [file, setFile] = React.useState();
-    const [fileData, setFileData] = useState();
+    const [fileData, setFileData] = useState([]);
+
+    const fetchMenu = async (item) => {
+        dispatch(setLoading(true));
+        fetchRequest(ticketMenu, 'POST', {
+            systemId: item
+        })
+            .then((res) => {
+                const { success = false, message = null } = res;
+                if (success) {
+                    setMenuList(res?.menus);
+                    setFormKey(Date.now());
+                } else {
+                    showMessage(message || t('errorMessage.title'));
+                }
+                dispatch(setLoading(false));
+            })
+            .catch((e) => {
+                console.log(e);
+                dispatch(setLoading(false));
+                showMessage(t('errorMessage.title'));
+            });
+    };
+
+    const fetchSubMenu = async (item) => {
+        dispatch(setLoading(true));
+        fetchRequest(ticketSubMenu, 'POST', {
+            systemId: selectedSystem,
+            menuId: item
+        })
+            .then((res) => {
+                const { success = false, message = null } = res;
+                if (success) {
+                    setSubMenus(res?.subMenus);
+                    setFormKey(Date.now());
+                } else {
+                    showMessage(message || t('errorMessage.title'));
+                }
+                dispatch(setLoading(false));
+            })
+            .catch((e) => {
+                console.log(e);
+                dispatch(setLoading(false));
+                showMessage(t('errorMessage.title'));
+            });
+    };
+
     const onSystemChange = (e) => {
-        console.log('e: ', e)
-        setSelectedSystem(e)
+        setSelectedSystem(e);
+        if(isIssue){
+            fetchMenu(e);
+        }
+
+    }
+    const onChangeMenu = (e) => {
+        setSelectedMenu(e);
+        fetchSubMenu(e);
+
+    }
+    const onChangeSubMenu = (e) => {
+        setSelectedSubMenu(e);
     }
 
     const issueFields = [
@@ -49,7 +101,7 @@ const createTicketModal = ({
             required: true,
             errorMessage: t('errorMessage.enterValue'),
             labelBold: true,
-            options: systems,
+            options: systemList,
             onChange: onSystemChange,
         },
         {
@@ -62,7 +114,8 @@ const createTicketModal = ({
             labelBold: true,
             searchable: true,
             multiple: false,
-            options: menus,
+            options: menuList,
+            onChange: onChangeMenu,
         },
         {
             key: 'subMenu',
@@ -75,6 +128,7 @@ const createTicketModal = ({
             searchable: true,
             multiple: false,
             options: subMenus,
+            onChange: onChangeSubMenu
         },
         {
             key: 'description',
@@ -120,7 +174,6 @@ const createTicketModal = ({
             ),
             isClearButtonClass: 'btn btn-outline-danger m-btn m-btn--icon m-btn--icon-only m-btn--circle-28',
             onChange: (files) => {
-                // console.log('files: ', files)
                 const [image] = !files ? [] : files;
                 if (image) {
                     const reader = new FileReader();
@@ -147,7 +200,7 @@ const createTicketModal = ({
             required: true,
             errorMessage: t('errorMessage.enterValue'),
             labelBold: true,
-            options: systems,
+            options: systemList,
             onChange: onSystemChange,
         },
         {
@@ -165,7 +218,7 @@ const createTicketModal = ({
             type: 'fileUpload',
             required: false,
             fileName: '',
-            multiple: false,
+            multiple: true,
             isExtendedButton: true,
             isExtendedButtonText: (
                 <>
@@ -218,17 +271,18 @@ const createTicketModal = ({
                 typeId: isIssue === true ? 1 : 2,
                 statusId: 1,
                 example: values.example,
-              };
-          
-              if (fileData) {
+            };
+
+            if (fileData) {
                 postData.file = {
-                  name: fileData.name,
-                  type: fileData.type,
-                  size: fileData.size,
-                  path: '/',
+                    name: fileData.name,
+                    type: fileData.type,
+                    size: fileData.size,
+                    path: '/',
+                    content: file
                 };
-              }
-          
+            }
+
             console.log('postData: ', postData);
             fetchRequest(ticketCreate, 'POST', postData)
                 .then((res) => {
@@ -236,7 +290,7 @@ const createTicketModal = ({
                     const { success = false, message = null } = res;
                     if (success) {
                         history.replace(`/ticket/index`);
-                        window.location.reload()
+                        window.location.reload();
                         showMessage(message, true);
                     } else {
                         console.log('res: ', res);
@@ -253,6 +307,7 @@ const createTicketModal = ({
     };
     return (
         <Modal
+            key={formKey}
             centered
             show={show}
             onHide={() => setShow(false)}

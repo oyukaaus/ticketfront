@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useHistory } from 'react-router-dom';
-import { Card, Row, Col, Button, Dropdown } from 'react-bootstrap';
+import {  useHistory } from 'react-router-dom';
+import { Card, Row, Col, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
 import { useDispatch } from 'react-redux';
@@ -13,7 +13,7 @@ import DatePickerRange from 'modules/Form/DatePickerRange';
 import Select from 'modules/Form/Select';
 
 
-const AdminRequest = (props) => {
+const AdminRequest = () => {
     const history = useHistory();
     const { t } = useTranslation();
     const dispatch = useDispatch();
@@ -25,15 +25,16 @@ const AdminRequest = (props) => {
     const [selectedTypesIds, setSelectedTypes] = useState([]);
     const types = [{ value: 1, text: 'Алдаа' }, { value: 2, text: 'Санал хүсэлт' }];
     const [selectedRequestersIds, setSelectedRequesters] = useState([]);
-    const requesters = [{ value: 1, text: 'Алдаа' }, { value: 2, text: 'Санал хүсэлт' }];
+    const requesters =  [{ value: 1, text: 'Oyuka' }, { value: 2, text: 'Sodoo' }];
     const [selectedAssigneeIds, setSelectedAssignees] = useState([]);
-    const assignees = [{ value: 1, text: 'Алдаа' }, { value: 2, text: 'Санал хүсэлт' }];
+    const assignees = [{ value: 1, text: 'Oyuka' }, { value: 2, text: 'Sodoo' }];
     const [selectedSystemIds, setSelectedSystems] = useState([]);
-    const systems = [{ value: 1, text: 'Алдаа' }, { value: 2, text: 'Санал хүсэлт' }];
+    const [systems, setSystems] = useState([]);
     const [selectedSchoolIds, setSelectedSchools] = useState([]);
     const schools = [{ value: 1, text: 'Алдаа' }, { value: 2, text: 'Санал хүсэлт' }];
     const [selectedStatusIds, setSelectedStatus] = useState([]);
-    const statuses = [{ value: 1, text: 'Алдаа' }, { value: 2, text: 'Санал хүсэлт' }];
+    const [statuses, setStatuses] = useState([]);
+
     useEffect(() => {
         dispatch(setLoading(true));
 
@@ -55,10 +56,9 @@ const AdminRequest = (props) => {
             case 'Цуцласан':
                 return { backgroundColor: 'red', color: '#FFFFFF', fontFamily: 'Mulish' };
             default:
-                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish' }; // Default button color
+                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish' }; 
         }
     };
-    const [dropdownStates, setDropdownStates] = useState(Array(data.length).fill(false));
 
 
     const handleInspectionDateChange = (value) => {
@@ -67,7 +67,7 @@ const AdminRequest = (props) => {
             setEndDate(value[0]?.endDate || '')
         }
     }
-    const loadDetails = (type = null, start = null, end = null, page = 1, pageSize = 10, query = null, sortBy = null, order = null) => {
+    const loadDetails = ( start = null, end = null, page = 1, pageSize = 10, query = null, sortBy = null, order = null) => {
         dispatch(setLoading(true));
         const postData = {
             type: selectedTypesIds,
@@ -83,20 +83,15 @@ const AdminRequest = (props) => {
             query,
             sortBy,
             order
-        }
+        };
+        console.log('postData: ', postData)
         fetchRequest(ticketList, 'POST', postData)
             .then(res => {
-                const { list = [], totalCount = 0, success = false, message = null } = res
+                const {success = false, message = null } = res
                 if (success) {
-                    if (type === 'MEDICINE') {
-                        // setMedicineCurrentPage(res.page);
-                        // setMedicineTableData(list);
-                        // setMedicineTableCount(totalCount);
-                    } else if (type === 'INSPECTION') {
-                        // setInspectionCurrentPage(res.page);
-                        // setInspectionTableCount(totalCount);
-                        // setInspectionTableData(list);
-                    }
+                    console.log('res list: ', res)
+                    setData(res?.tickets);
+                    showMessage(message || t('successMessage.title'), false)
                 } else {
                     showMessage(message || t('errorMessage.title'), false)
                 }
@@ -129,7 +124,10 @@ const AdminRequest = (props) => {
     const handleStatusChange = (value) => {
         setSelectedStatus(value)
     }
-
+    const getSystemName = (systemId) => {
+        const system = systems.find((sys) => sys.value === systemId);
+        return system ? system.text : 'Unknown System';
+    };
     const onSeeClick = () => {
         if (startDate && endDate) {
             setErrorDueDate(false);
@@ -149,14 +147,15 @@ const AdminRequest = (props) => {
                 if (success) {
                     console.log('res: ', res)
                     setData(res?.tickets);
-                    // setData(res?.survey)
-                    // setQuestionTypes(res?.questionTypes)
+                    setSystems(res?.systems);
+                    setStatuses(res?.statuses);
                 } else {
                     showMessage(message || t('errorMessage.title'));
                 }
                 dispatch(setLoading(false));
             })
             .catch((e) => {
+                console.log(e);
                 dispatch(setLoading(false));
                 showMessage(t('errorMessage.title'));
             });
@@ -429,7 +428,7 @@ const AdminRequest = (props) => {
                                     </Row>
 
                                     <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold' }}>
-                                    {(item.createdDate?.date).replace(/\.\d+$/, '')} | {item.type} | {item.systemId}
+                                    {(item.createdDate?.date).replace(/\.\d+$/, '')} | {item.type} | {getSystemName(item.systemId)}
                                     </div>
                                 </Col>
                                 </Row>

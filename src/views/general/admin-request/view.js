@@ -19,7 +19,8 @@ const view = (props) => {
     const [showReplyTicket, setShowReplyTicket] = useState(false);
     const [showCloseTicket, setShowCloseTicket] = useState(false);
     const [showAssignTicket, setShowAssignTicket] = useState(false);
-
+    const [files, setFiles] = useState([]);
+    const [users, setUsers] = useState([]);
     const { t } = useTranslation();
     const dispatch = useDispatch();
 
@@ -31,17 +32,17 @@ const view = (props) => {
     const getButtonColor = (type) => {
         switch (type) {
             case 'Шинэ':
-                return { backgroundColor: '#FF003D', color: '#FFFFFF' };
+                return { backgroundColor: 'green', color: '#FFFFFF', fontFamily: 'Mulish' };
             case 'eSchool хүлээж авсан':
-                return { backgroundColor: 'green', color: '#FFFFFF' };
+                return { backgroundColor: 'blue', color: '#FFFFFF', fontFamily: 'Mulish' };
             case 'Хаагдсан':
-                return { backgroundColor: 'blue', color: '#FFFFFF' };
+                return { backgroundColor: 'grey', color: '#FFFFFF', fontFamily: 'Mulish' };
+            case 'Цуцласан':
+                return { backgroundColor: 'red', color: '#FFFFFF', fontFamily: 'Mulish' };
             default:
-                return { backgroundColor: '#FFFFFF', color: '#000000' }; // Default button color
+                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish' }; 
         }
     };
-    const [dropdownStates, setDropdownStates] = useState([]);
-    const [dropdownStatesSecond, setDropdownStatesSecond] = useState([]);
 
     const ticketAssign = () => {
         setShowAssignTicket(true);
@@ -55,6 +56,10 @@ const view = (props) => {
         setShowCloseTicket(true);
     };
 
+    const openImageInNewWindow = (path) => {
+        window.open(path, '_blank');
+    };
+
     const fetchInfo = async () => {
         dispatch(setLoading(true));
         fetchRequest(ticketInfo, 'POST', {
@@ -66,19 +71,22 @@ const view = (props) => {
                 if (success) {
                     setData(res?.ticket);
                     setReplyData(res?.ticketDtlList);
+                    setFiles(res?.files);
+                    setUsers(res?.users);
                 } else {
                     showMessage(message || t('errorMessage.title'));
                 }
                 dispatch(setLoading(false));
             })
             .catch((e) => {
+                console.log(e);
                 dispatch(setLoading(false));
                 showMessage(t('errorMessage.title'));
             });
     };
-
+    console.log('reply: ', replyData)
     useEffect(() => {
-        setDropdownStates(new Array(data.length).fill(false));
+        // setDropdownStates(new Array(data.length).fill(false));
     }, [data]);
 
     useEffect(() => {
@@ -172,6 +180,17 @@ const view = (props) => {
                                         {/* </div> */}
                                     </Col>
                                 </Row>
+                                <Row className="d-flex align-items-end justify-content-end " >
+                                        <Col lg={1}>
+                                        {files&&files.map((dtlItem, index) => (
+                                            <div key={index}  className="text-center">
+                                                 <img src={dtlItem.path} alt={`Image ${index}`} width='60' onClick={() => openImageInNewWindow(dtlItem.path)} />
+                                                {/* {dtlItem.name} */}
+                                            </div>
+                                        ))}
+                                        </Col>
+                                        <Col lg={11}></Col>
+                                    </Row>
                             </Card.Body>
                         </Card>
                     </Row>
@@ -179,9 +198,10 @@ const view = (props) => {
             </Row>
 
             <Row>
-                <Col lg={1}></Col>
                 {replyData.map((item, i) => (
-                    <Col key={i} lg={11}>
+                    <>
+                <Col key={i} lg={1}></Col>
+                    <Col  lg={11}>
                         <Card className="mb-3">
                             <Card.Body className="d-flex flex-row align-content-center align-items-center position-relative mb-3">
                                 <Col xs={12}>
@@ -218,11 +238,23 @@ const view = (props) => {
                                             Хариу тайлбар. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}> {item.description}</span>
                                         </div>
                                     </Row>
+                                    <Row className="d-flex align-items-end justify-content-end " >
+                                        <Col lg={1}>
+                                        {item.file&&item.file.map((dItem, index) => (
+                                            <div key={index}  className="text-center">
+                                                  <img src={dItem.path} alt={`Image ${index}`} width='60' onClick={() => openImageInNewWindow(dItem.path)} />
+                                                {/* {dItem.name} */}
+                                            </div>
+                                        ))}
+                                        </Col>
+                                        <Col lg={11}></Col>
+                                    </Row>
                                 </Col>
 
                             </Card.Body>
                         </Card>
                     </Col>
+                    </>
                 ))}
             </Row>
             <Row>
@@ -230,6 +262,7 @@ const view = (props) => {
                     showAssignTicket &&
                     <AssignRequest
                         selectedId={id}
+                        userlist={users}
                         show={showAssignTicket}
                         setShow={setShowAssignTicket}
                     />
@@ -240,6 +273,7 @@ const view = (props) => {
                     showReplyTicket &&
                     <ReplyRequest
                         selectedId={id}
+                        tag='admin'
                         show={showReplyTicket}
                         setShow={setShowReplyTicket}
                     />
@@ -250,6 +284,7 @@ const view = (props) => {
                     showCloseTicket &&
                     <CloseTicket
                         selectedId={id}
+                        tag='admin'
                         show={showCloseTicket}
                         setShow={setShowCloseTicket}
                     />
