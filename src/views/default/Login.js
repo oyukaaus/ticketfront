@@ -90,9 +90,10 @@ const Login = () => {
         fetchRequest(auth, 'POST', values)
             .then((res) => {
                 if (res.success) {
-                    const { token, schools, person } = res;
+                    const { token, schools, user } = res;
+                    console.log('schools: ', schools)
                     dispatch(setAuth(token));
-                    dispatch(setPersonInfo(person))
+                    dispatch(setPersonInfo(user))
                     dispatch(setSchools(schools));
                     history.push('/home')
                 }

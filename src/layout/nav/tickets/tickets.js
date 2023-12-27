@@ -81,8 +81,8 @@ const Tickets = () => {
                             pathname: `/ticket/index`,
                         }}
                         >
-                            <img src='../img/ticket/icon/send.png' alt='school-icon' className='color-info me-1' /><span style={{ color: 'white', fontFamily: 'Mulish' }}> Санал хүсэлт</span>
-                            <img src='../img/ticket/icon/chevron-right.png' alt='school-icon'  className='color-info me-1' />
+                            <img src='/img/ticket/icon/send.png' alt='icon147' className='color-info me-1' /><span style={{ color: 'white', fontFamily: 'Mulish' }}> Санал хүсэлт</span>
+                            <img src='/img/ticket/icon/chevron-right.png' alt='icon148'  className='color-info me-1' />
                         </Link>
                     </div>
                 </div>
@@ -92,8 +92,8 @@ const Tickets = () => {
                             pathname: `/admin/index`,
                         }}
                         >
-                            <img src='../img/ticket/icon/book.png' alt='school-icon'  className='color-info me-1' /><span style={{ color: 'white', fontFamily: 'Mulish' }}> Admin</span>
-                            <img src='../img/ticket/icon/chevron-right.png' alt='school-icon'  className='color-info me-1' />
+                            <img src='/img/ticket/icon/book.png' alt='icon149'  className='color-info me-1' /><span style={{ color: 'white', fontFamily: 'Mulish' }}> Admin</span>
+                            <img src='/img/ticket/icon/chevron-right.png' alt='icon150'  className='color-info me-1' />
                         </Link>
                     </div>
                 </div>
@@ -103,8 +103,8 @@ const Tickets = () => {
                             pathname: `/ticket/index`,
                         }}
                         >
-                          <img src='../img/ticket/icon/file-question.png' alt='school-icon'  className='color-info me-1' /><span style={{ color: 'white', fontFamily: 'Mulish' }}>Түгээмэл асуулт</span>
-                          <img src='../img/ticket/icon/chevron-right.png' alt='school-icon'  className='color-info me-1' />
+                          <img src='/img/ticket/icon/file-question.png' alt='icon151'  className='color-info me-1' /><span style={{ color: 'white', fontFamily: 'Mulish' }}>Түгээмэл асуулт</span>
+                          <img src='/img/ticket/icon/chevron-right.png' alt='icon152'  className='color-info me-1' />
                         </Link>
                     </div>
                 </div>

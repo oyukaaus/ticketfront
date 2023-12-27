@@ -16,7 +16,7 @@ const view = (props) => {
     const [data, setData] = useState([]);
     const [systems, setSystems] = useState([]);
     const [replyData, setReplyData] = useState([]);
-    const [files, setFiles] = useState([]);
+    // const [files, setFiles] = useState([]);
     const [showReplyTicket, setShowReplyTicket] = useState(false);
     const [showCloseTicket, setShowCloseTicket] = useState(false);
 
@@ -69,7 +69,7 @@ const view = (props) => {
                 const { success = false, message = null } = res;
                 if (success) {
                     setData(res?.ticket);
-                    setFiles(res?.files);
+                    // setFiles(res?.ticket?.files);
                     setSystems(res?.systems)
                     setReplyData(res?.ticketDtlList);
                 } else {
@@ -116,7 +116,7 @@ const view = (props) => {
                                                 {(item.createdDate?.date).replace(/\.\d+$/, '')} | {item.type} | {getSystemName(item.systemId)}
                                             </div>
                                         </Col>
-                                        <Col lg={2} align="end">
+                                        <Col xs={2} className="d-flex justify-content-end ">
                                             <Row>
                                                 <Link to={{ pathname: `/ticket/index` }} style={{ textAlign: 'center', color: '#FD7845', fontSize: 12, fontWeight: 'bold', fontFamily: 'Mulish' }}>
                                                     Жагсаалт руу буцах
@@ -146,7 +146,7 @@ const view = (props) => {
                                     </Row>
                                     <Row className="d-flex align-items-end justify-content-end " >
                                         <Col lg={1}>
-                                            {files && files.map((dtlItem, index) => (
+                                            {item.files && item.files.map((dtlItem, index) => (
                                                 <div key={index} className="text-center">
                                                     <img src={dtlItem.path} alt={`Image ${index}`} width='60' onClick={() => openImageInNewWindow(dtlItem.path)} />
                                                     {/* {dtlItem.name} */}
@@ -164,11 +164,11 @@ const view = (props) => {
             </Row>
 
             {replyData.map((item, i) => (
-                <Row key={i} >
+                <Row key={i} style={{width:'100.8%'}}>
                     <Col lg={1}></Col>
-                    <Col lg={11}>
-                        <Card className="mb-4">
-                            <Card.Body className="d-flex flex-row align-content-center align-items-center position-relative mb-3">
+                    <Col className="mb-3">
+                        <Card className="mb-3">
+                            <Card.Body className="d-flex flex-row position-relative">
                                 <Col xs={12}>
                                     <Row>
                                         <Col xs={1} className="text-center">
@@ -198,16 +198,6 @@ const view = (props) => {
                                             </Row>
                                         </Col>
                                         <Col xs="1" className="d-flex align-items-end justify-content-end mb-2 mb-sm-0 order-sm-3">
-                                            {/* <Dropdown align="end"> */}
-                                            {/* <Dropdown.Toggle className="dropdown-toggle dropdown-toggle-split" size="sm" onClick={() => handleDropdownToggle(i)} style={{ color: '#FD7845', border: '1px solid' }}> */}
-                                            {/* <CsLineIcons icon="more-vertical" /> */}
-                                            {/* </Dropdown.Toggle> */}
-                                            {/* <Dropdown.Menu show={dropdownStates[i]}> */}
-                                            {/* <Dropdown.Item onClick={() => ticketReply(item.id)}>Хариу бичих */}
-                                            {/* </Dropdown.Item> */}
-                                            {/* </Dropdown.Menu> */}
-                                            {/* </Dropdown> */}
-                                            {/* </div> */}
                                         </Col>
                                     </Row>
                                     <Row xs={11} style={{ width: "100%" }}>

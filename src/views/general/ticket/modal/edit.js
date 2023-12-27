@@ -1,5 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import { Modal, Button, Row, Col, ListGroup } from 'react-bootstrap';
+import { Modal, Button, Row, Col, Form, ListGroup } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import Forms from 'modules/Form/Forms';
 import 'css/addInvoice.css';
@@ -9,6 +9,8 @@ import { setLoading } from 'utils/redux/action';
 import { fetchRequest } from 'utils/fetchRequest';
 import { ticketEdit, ticketInfo, ticketMenu, ticketSubMenu } from 'utils/fetchRequest/Urls';
 import showMessage from 'modules/message';
+import Select from 'modules/Form/Select';
+import { useHistory } from 'react-router-dom/cjs/react-router-dom.min';
 
 const editTicket = ({
     selectedData,
@@ -17,45 +19,48 @@ const editTicket = ({
     systemList
 }) => {
     const { t } = useTranslation();
-    const formRefIssue = useRef();
     const formRefRequest = useRef();
     const dispatch = useDispatch();
+    const history = useHistory();
+
     const [isIssue, setIsIssue] = useState(true);
     const selectedOne = selectedData[0];
+    console.log('selectedOne: ', selectedOne)
     const [selectedSystem, setSelectedSystem] = useState(null);
     const [selectedMenu, setSelectedMenu] = useState(null);
     const [selectedSubMenu, setSelectedSubMenu] = useState(null);
-    const [file, setFile] = React.useState();
-    const [fileData, setFileData] = useState();
+    const [description, setDescription] = useState(selectedOne?.description);
+    const [example, setExample] = useState(selectedOne?.example);
     const [menuList, setMenuList] = useState([]);
     const [subMenus, setSubMenus] = useState([]);
-    const [formKey, setFormKey] = useState(Date.now());
-    
+    const [file, setFile] = React.useState();
+    const [fileData, setFileData] = useState(selectedOne?.file || []);
+
+    const [systemErrorMsg, setSystemErrorMsg] = useState(false);
+    const [menuErrorMsg, setMenuErrorMsg] = useState(false);
+    const [subMenuErrorMsg, setSubMenuErrorMsg] = useState(false);
+    const [descriptionErrorMsg, setDescriptionErrorMsg] = useState(false);
+
     const fetchMenu = async (item) => {
         console.log('item: ', item)
-        dispatch(setLoading(true));
         fetchRequest(ticketMenu, 'POST', {
-            systemId: selectedOne.systemId
+            systemId: item
         })
             .then((res) => {
                 const { success = false, message = null } = res;
                 if (success) {
                     setMenuList(res?.menus);
-                    setFormKey(Date.now());
                 } else {
                     showMessage(message || t('errorMessage.title'));
                 }
-                dispatch(setLoading(false));
             })
             .catch((e) => {
                 console.log('e', e)
-                dispatch(setLoading(false));
                 showMessage(t('errorMessage.title'));
             });
     };
 
     const fetchSubMenu = async (item, item2) => {
-        dispatch(setLoading(true));
         fetchRequest(ticketSubMenu, 'POST', {
             systemId: item,
             menuId: item2
@@ -64,163 +69,53 @@ const editTicket = ({
                 const { success = false, message = null } = res;
                 if (success) {
                     setSubMenus(res?.subMenus);
-                    setFormKey(Date.now());
                 } else {
                     showMessage(message || t('errorMessage.title'));
                 }
-                dispatch(setLoading(false));
             })
             .catch((e) => {
                 console.log('e', e)
-                dispatch(setLoading(false));
                 showMessage(t('errorMessage.title'));
             });
     };
 
     const onSystemChange = (e) => {
         setSelectedSystem(e);
-        if(isIssue){
+        setSystemErrorMsg(false)
+        if (isIssue) {
             fetchMenu(e);
         }
 
     }
     const onChangeMenu = (e) => {
         setSelectedMenu(e);
+        setMenuErrorMsg(false);
         fetchSubMenu(e);
 
     }
     const onChangeSubMenu = (e) => {
         setSelectedSubMenu(e);
+        setSubMenuErrorMsg(false);
     }
 
+    const onChangeDescription = (e) => {
+        setDescription(e.target.value);
+        setDescriptionErrorMsg(false)
+    }
 
-    const issueFields = [
-        {
-            key: 'system',
-            value:  selectedSystem,
-            label: `${t('ticket.system')}*`,
-            type: 'dropdown',
-            required: true,
-            errorMessage: t('errorMessage.enterValue'),
-            labelBold: true,
-            options: systemList,
-            onChange: onSystemChange,
-        },
-        {
-            key: 'menu',
-            value:  selectedMenu,
-            label: `${t('ticket.menu')}*`,
-            type: 'dropdown',
-            required: true,
-            errorMessage: t('errorMessage.enterValue'),
-            labelBold: true,
-            searchable: true,
-            multiple: false,
-            options: menuList.map(menu => ({ value: menu.value, text: menu.text })),
-            onChange: onChangeMenu,
-        },
-        {
-            key: 'subMenu',
-            value: selectedSubMenu,
-            label: `${t('ticket.subMenu')}*`,
-            type: 'dropdown',
-            required: true,
-            errorMessage: t('errorMessage.enterValue'),
-            labelBold: true,
-            searchable: true,
-            multiple: false,
-            options: subMenus.map(menu => ({ value: menu.value, text: menu.text })),
-            onChange: onChangeSubMenu
-        },
-        {
-            key: 'description',
-            value: selectedOne?.description,
-            label: `${t('ticket.issue')}*`,
-            type: 'textArea',
-            required: true,
-            labelBold: true,
-        },
-        {
-            key: 'example',
-            value: selectedOne?.title,
-            label: `${t('ticket.example')}*`,
-            type: 'text',
-            required: true,
-            labelBold: true,
-            placeHolder: 'Жишээ болгож алдаа гарч байгаа хэрэглэгчийн мэдээллийг оруулна уу.'
-        },
-        {
-            key: 'image',
-            label: 'Файл хавсаргах',
-            value: '',
-            type: 'fileUpload',
-            required: false,
-            fileName: '',
-            multiple: false,
-            isExtendedButton: true,
-            isExtendedButtonText: (
-                <>
-                    <CollectionsIcon /> {t('survey.selectImage')}
-                </>
-            ),
-            isExtendedButtonClass: 'btn btn-outline-warning mr-5',
-            altImage: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>',
-            altImageClass: 'd-none',
-            accept: 'image/*',
-            fileType: 'image',
-            clearButton: true,
-            isClearButtonText: (
-                <>
-                    <CollectionsIcon style={{ opacity: 0, width: 0 }} /> {t('foodManagement.deletePhoto')}
-                </>
-            ),
-            isClearButtonClass: 'btn btn-outline-danger m-btn m-btn--icon m-btn--icon-only m-btn--circle-28',
-            onChange: (files) => {
-                console.log('files: ', files)
-                const [image] = !files ? [] : files;
-                if (image) {
-                    const reader = new FileReader();
-                    reader.addEventListener(
-                        'load',
-                        () => {
-                            setFile(reader.result);
-                        },
-                        false
-                    );
-                    reader.readAsDataURL(image);
-                    setFileData(image);
-                }
-            },
-        },
-    ];
+    const onChangeExample = (e) => {
+        setExample(e.target.value);
+    }
+
     const requestFields = [
         {
-            key: 'system',
-            value: selectedOne?.systemId,
-            label: `${t('ticket.system')}*`,
-            type: 'dropdown',
-            required: true,
-            errorMessage: t('errorMessage.enterValue'),
-            labelBold: true,
-            options: systemList,
-            onChange: onSystemChange,
-        },
-        {
-            key: 'description',
-            value: selectedOne?.description,
-            label: `${t('ticket.idea')}*`,
-            type: 'textArea',
-            required: true,
-            labelBold: true,
-        },
-        {
             key: 'image',
             label: 'Файл хавсаргах',
             value: '',
             type: 'fileUpload',
             required: false,
             fileName: '',
-            multiple: false,
+            multiple: true,
             isExtendedButton: true,
             isExtendedButtonText: (
                 <>
@@ -252,55 +147,91 @@ const editTicket = ({
                     );
                     reader.readAsDataURL(image);
                     setFileData(image);
+                    console.log('image: ', image);
                 }
             },
         },
     ];
+
     const onSaveClick = () => {
-        const formRef = isIssue ? formRefIssue : formRefRequest;
-        const [isValid, , values] = formRef.current.validate();
+        const [isValid, values] = formRefRequest.current.validate();
         if (isValid) {
-            dispatch(setLoading(true));
-            const postData = {
-                ticketId: selectedOne.id,
-                systemId: values.system,
-                menuId: selectedMenu,
-                subMenuId: selectedSubMenu,
-                title: 'Title',
-                description: values.description,
-                typeId: isIssue === true ? 1 : 2,
-                statusId: 1,
-                example: values.example,
-              };
-          
-              if (fileData) {
-                postData.file = {
-                  name: fileData.name,
-                  type: fileData.type,
-                  size: fileData.size,
-                  path: '/',
-                  content: file
+
+            let hasError = false;
+
+            // Check required fields based on issue type
+            if (isIssue) {
+                if (selectedSystem === null) {
+                    setSystemErrorMsg(true);
+                    hasError = true;
+                }
+                if (selectedMenu === null) {
+                    setMenuErrorMsg(true);
+                    hasError = true;
+                }
+                if (selectedSubMenu === null) {
+                    setSubMenuErrorMsg(true);
+                    hasError = true;
+                }
+                if (description === '') {
+                    setDescriptionErrorMsg(true);
+                    hasError = true;
+                }
+            } else {
+                if (selectedSystem === null) {
+                    setSystemErrorMsg(true);
+                    hasError = true;
+                }
+                if (description === '') {
+                    setDescriptionErrorMsg(true);
+                    hasError = true;
+                }
+            }
+
+            if (!hasError) {
+                const postData = {
+                    ticketId: selectedOne.id,
+                    systemId: selectedSystem,
+                    menuId: selectedMenu,
+                    submenuId: selectedSubMenu,
+                    // title: 'Title',
+                    description: description,
+                    typeId: isIssue ? 1 : 2,
+                    statusId: 1,
+                    example: example,
                 };
-              }
-          
-            console.log('postData: ', postData);
-            fetchRequest(ticketEdit, 'POST', postData)
-                .then((res) => {
-                    const { success = false, message = null } = res;
-                    if (success) {
-                        window.location.reload();
-                        showMessage(message, true);
-                    } else {
-                        console.log('res: ', res);
-                        showMessage(message || t('errorMessage.title'));
-                    }
-                    dispatch(setLoading(false));
-                })
-                .catch((e) => {
-                    console.log('e', e)
-                    dispatch(setLoading(false));
-                    showMessage(t('errorMessage.title'));
-                });
+                console.log('fileData: ', fileData.length)
+                if (fileData && fileData.name) {
+                    postData.file = {
+                        name: fileData.name,
+                        type: fileData.type,
+                        size: fileData.size,
+                        path: '/',
+                        content: file,
+                    };
+                }
+
+                console.log('postDatas: ', postData);
+                fetchRequest(ticketEdit, 'POST', postData)
+                    .then((res) => {
+                        console.log('response: ', res)
+                        const { success = false, message = null } = res;
+                        if (success) {
+                            history.replace(`/ticket/index`);
+                            window.location.reload();
+                            showMessage(message, true);
+                        } else {
+                            console.log('res: ', res);
+                            showMessage(message || t('errorMessage.title'));
+                        }
+                        dispatch(setLoading(false));
+                    })
+                    .catch((e) => {
+                        console.log('e', e)
+                        dispatch(setLoading(false));
+                        showMessage(t('errorMessage.title'));
+                    });
+            }
         }
     };
 
@@ -331,9 +262,232 @@ const editTicket = ({
         loadInfo()
     }, []);
 
+
+    const renderIssue = () => {
+        return (
+            <>
+
+                <div className='d-flex mt-08'>
+                    <label className='modal-label'>
+                        {t('ticket.system')}*
+                    </label>
+                    <div className='modal-content-container'>
+                        <table className='w-100'>
+                            <thead>
+                                <tr>
+                                    <th className='width-equal pe-2'>
+                                        <Select
+                                            value={selectedSystem}
+                                            searchable="true"
+                                            options={systemList}
+                                            placeholder={t('ticket.system')}
+                                            required
+                                            className={systemErrorMsg ? 'fs-14 is-invalid' : 'fs-14'}
+                                            onChange={onSystemChange}
+                                        />   {
+                                            systemErrorMsg ?
+                                                <div className='invalid-feedback d-block'>
+                                                    {t('errorMessage.systemErrorMsg')}
+                                                </div>
+                                                :
+                                                null
+                                        }
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div className='modal-end'></div>
+                </div>
+                <div className='d-flex mt-08'>
+                    <label className='modal-label'>
+                        {t('ticket.menu')}*
+                    </label>
+                    <div className='modal-content-container'>
+                        <table className='w-100'>
+                            <thead>
+                                <tr>
+                                    <th className='width-equal pe-2'>
+                                        <Select
+                                            value={selectedMenu}
+                                            searchable="true"
+                                            options={menuList}
+                                            placeholder={t('ticket.menu')}
+                                            required
+                                            className={menuErrorMsg ? 'fs-14 is-invalid' : 'fs-14'}
+                                            onChange={onChangeMenu}
+                                        />
+                                        {
+                                            menuErrorMsg ?
+                                                <div className='invalid-feedback d-block'>
+                                                    {t('errorMessage.menuErrorMsg')}
+                                                </div>
+                                                :
+                                                null
+                                        }
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div className='modal-end'></div>
+                </div>
+                <div className='d-flex mt-08'>
+                    <label className='modal-label'>
+                        {t('ticket.subMenu')}*
+                    </label>
+                    <div className='modal-content-container'>
+                        <table className='w-100'>
+                            <thead>
+                                <tr>
+                                    <th className='width-equal pe-2'>
+                                        <Select
+                                            value={selectedSubMenu}
+                                            searchable="true"
+                                            options={subMenus}
+                                            required
+                                            placeholder={t('ticket.subMenu')}
+                                            className={subMenuErrorMsg ? 'fs-14 is-invalid' : 'fs-14'}
+                                            onChange={onChangeSubMenu}
+                                        />
+                                        {
+                                            subMenuErrorMsg ?
+                                                <div className='invalid-feedback d-block'>
+                                                    {t('errorMessage.subMenuErrorMsg')}
+                                                </div>
+                                                :
+                                                null
+                                        }
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div className='modal-end'></div>
+                </div>
+                <div className='d-flex mt-08'>
+                    <label className='modal-label'>
+                        {t('ticket.issue')}*
+                    </label>
+                    <div className='modal-content-container'>
+                        <Row className='gx-0'>
+                            <Col className='pe-2'>
+                                <Form.Control
+                                    className={descriptionErrorMsg && 'is-invalid form-control'}
+                                    as="textarea" rows="3"
+                                    onChange={onChangeDescription}
+                                    placeholder={t('ticket.issue')}
+                                    value={description}
+                                    required
+                                />
+                                {
+                                    descriptionErrorMsg ?
+                                        <div className='invalid-feedback d-block'>
+                                            {t('errorMessage.descriptionErrorMsg')}
+                                        </div>
+                                        :
+                                        null
+                                }
+                            </Col>
+                        </Row>
+                    </div>
+                    <div className='modal-end'></div>
+                </div>
+                <div className='d-flex mt-08'>
+                    <label className='modal-label'>
+                        {t('ticket.example')}*
+                    </label>
+                    <div className='modal-content-container'>
+                        <Row className='gx-0'>
+                            <Col className='pe-2'>
+                                <Form.Control
+                                    type='text'
+                                    onInput={(e) => onChangeExample(e)}
+                                    placeholder={t('ticket.example')}
+                                    value={example}
+                                />
+                            </Col>
+                        </Row>
+                    </div>
+                    <div className='modal-end'></div>
+                </div>
+            </>
+        )
+    }
+
+
+    const renderIdea = () => {
+        return (
+            <>
+                <div className='d-flex mt-08'>
+                    <label className='modal-label'>
+                        {t('ticket.system')}*
+                    </label>
+                    <div className='modal-content-container'>
+                        <table className='w-100'>
+                            <thead>
+                                <tr>
+                                    <th className='width-equal pe-2'>
+                                        <Select
+                                            value={selectedSystem}
+                                            searchable="true"
+                                            options={systemList}
+                                            placeholder={t('ticket.system')}
+                                            required
+                                            className={systemErrorMsg ? 'fs-14 is-invalid' : 'fs-14'}
+                                            onChange={onSystemChange}
+                                        />   {
+                                            systemErrorMsg ?
+                                                <div className='invalid-feedback d-block'>
+                                                    {t('errorMessage.systemErrorMsg')}
+                                                </div>
+                                                :
+                                                null
+                                        }
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div className='modal-end'></div>
+                </div>
+                <div className='d-flex mt-08'>
+                    <label className='modal-label'>
+                        {t('ticket.idea')}*
+                    </label>
+                    <div className='modal-content-container'>
+                        <Row className='gx-0'>
+                            <Col className='pe-2'>
+                                <Form.Control
+                                    className={descriptionErrorMsg && 'is-invalid form-control'}
+                                    as="textarea" rows="3"
+                                    onChange={onChangeDescription}
+                                    placeholder={t('ticket.idea')}
+                                    value={description}
+                                    required
+                                />
+                                {
+                                    descriptionErrorMsg ?
+                                        <div className='invalid-feedback d-block'>
+                                            {t('errorMessage.descriptionErrorMsg')}
+                                        </div>
+                                        :
+                                        null
+                                }
+                            </Col>
+                        </Row>
+                    </div>
+                    <div className='modal-end'></div>
+                </div>
+
+            </>
+        )
+    }
+
+
+
     return (
         <Modal
-        key={formKey}
             centered
             show={show}
             onHide={() => setShow(false)}
@@ -368,12 +522,11 @@ const editTicket = ({
                 {
                     isIssue
                         ?
-                        <div>
-                            <Forms ref={formRefIssue} fields={issueFields} />
-                        </div>
+                        renderIssue()
                         :
-                        <Forms ref={formRefRequest} fields={requestFields} />
+                        renderIdea()
                 }
+                <Forms ref={formRefRequest} fields={requestFields} />
             </Modal.Body>
             <Modal.Footer className='d-flex justify-content-center'>
                 <Button

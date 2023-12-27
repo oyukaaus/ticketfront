@@ -3,7 +3,7 @@ import {  useHistory } from 'react-router-dom';
 import { Card, Row, Col, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from 'utils/redux/action';
 import showMessage from "modules/message";
 import { fetchRequest } from 'utils/fetchRequest';
@@ -17,23 +17,33 @@ const AdminRequest = () => {
     const history = useHistory();
     const { t } = useTranslation();
     const dispatch = useDispatch();
+    const { schools } = useSelector(state => state.schoolData);
+    const schoolData = [];
+    schools.map((param) =>
+    schoolData.push({
+            value: param?.id,
+            text: param?.name,
+        })
+    )
+    // console.log('selectedSchool: ', schools)
     const [data, setData] = useState([]);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
     const [errorDueDate, setErrorDueDate] = useState(false);
-    const [searchValue, setSearchValue] = useState('');
+    const [searchInput, setSearchInput] = useState('');
     const [selectedTypesIds, setSelectedTypes] = useState([]);
     const types = [{ value: 1, text: 'Алдаа' }, { value: 2, text: 'Санал хүсэлт' }];
     const [selectedRequestersIds, setSelectedRequesters] = useState([]);
-    const requesters =  [{ value: 1, text: 'Oyuka' }, { value: 2, text: 'Sodoo' }];
     const [selectedAssigneeIds, setSelectedAssignees] = useState([]);
-    const assignees = [{ value: 1, text: 'Oyuka' }, { value: 2, text: 'Sodoo' }];
     const [selectedSystemIds, setSelectedSystems] = useState([]);
     const [systems, setSystems] = useState([]);
     const [selectedSchoolIds, setSelectedSchools] = useState([]);
-    const schools = [{ value: 1, text: 'Алдаа' }, { value: 2, text: 'Санал хүсэлт' }];
+    // const schools = [{ value: 1, text: 'Алдаа' }, { value: 2, text: 'Санал хүсэлт' }];
     const [selectedStatusIds, setSelectedStatus] = useState([]);
     const [statuses, setStatuses] = useState([]);
+    const [assignees, setAssignees] = useState([]);
+    const [requesters, setRequester] = useState([]);
+    const [avatars, setUserAvatars] = useState([]);
 
     useEffect(() => {
         dispatch(setLoading(true));
@@ -91,7 +101,6 @@ const AdminRequest = () => {
                 if (success) {
                     console.log('res list: ', res)
                     setData(res?.tickets);
-                    showMessage(message || t('successMessage.title'), false)
                 } else {
                     showMessage(message || t('errorMessage.title'), false)
                 }
@@ -131,7 +140,42 @@ const AdminRequest = () => {
     const onSeeClick = () => {
         if (startDate && endDate) {
             setErrorDueDate(false);
-            loadDetails('INSPECTION', startDate, endDate);
+            loadDetails(startDate, endDate);
+        } else {
+            setErrorDueDate(true);
+        }
+    };
+
+    const loadDetailsClear = ( start = null, end = null, page = 1, pageSize = 10, query = null, sortBy = null, order = null) => {
+        dispatch(setLoading(true));
+        const postData = {
+            startDate: start,
+            endDate: end,
+            page,
+            pageSize,
+            query,
+            sortBy,
+            order
+        };
+        fetchRequest(ticketList, 'POST', postData)
+            .then(res => {
+                const {success = false, message = null } = res
+                if (success) {
+                    setData(res?.tickets);
+                } else {
+                    showMessage(message || t('errorMessage.title'), false)
+                }
+                dispatch(setLoading(false));
+            })
+            .catch(() => {
+                dispatch(setLoading(false));
+                showMessage(t('errorMessage.title'))
+            });
+    }
+    
+    const onclickClear = () => {
+        if (startDate && endDate) {
+            loadDetailsClear(startDate, endDate);
         } else {
             setErrorDueDate(true);
         }
@@ -145,10 +189,36 @@ const AdminRequest = () => {
             .then((res) => {
                 const { success = false, message = null } = res;
                 if (success) {
+                    const assigneeOption = [];
+                    res?.assignees.map((param) =>
+                    assigneeOption.push({
+                            value: param?.id,
+                            text: param?.firstName,
+                        })
+                    );
+                    const userOption = [];
+                    res?.users.map((param) =>
+                    userOption.push({
+                            value: param?.id,
+                            text: param?.firstName,
+                        })
+                    )
+
+                    const useravatar = [];
+                    res?.users.map((param) =>
+                    useravatar.push({
+                            id: param?.userId,
+                            avatar: param?.avatar,
+                        })
+                    )
+                    setUserAvatars(useravatar)
+
                     console.log('res: ', res)
                     setData(res?.tickets);
                     setSystems(res?.systems);
                     setStatuses(res?.statuses);
+                    setAssignees(assigneeOption);
+                    setRequester(userOption);
                 } else {
                     showMessage(message || t('errorMessage.title'));
                 }
@@ -165,6 +235,30 @@ const AdminRequest = () => {
     useEffect(() => {
         fetchInfo()
     }, []);
+    
+    const handleSearch = (e) => {
+        const inputValue = e.target.value.toLowerCase();
+        setSearchInput(inputValue);
+        if (inputValue) {
+            const filtered = data.filter((item) => {
+              return item.description.toLowerCase().indexOf(inputValue) !== -1;
+            });
+            setData(filtered)
+        } else {
+            fetchInfo()
+        }
+    };
+
+    const downloadExcel = () =>{
+        console.log('called');
+    }
+
+    const getUserAvatar = (userId) => {
+        const user = avatars.find((sys) => sys.id === userId);
+        return user?.avatar || '/img/system/default-profile.png';
+    };
+    
+
     return (
         <>
             <Row>
@@ -182,9 +276,9 @@ const AdminRequest = () => {
                 <Row>
                     <Col>
                         <Col lg={12}>
-                            <Card className='mb-3 no-border-radius'>
+                            <Card className=' no-border-radius' style={{width:'100.5%'}}>
                                 <Card.Body>
-                                    <Row lg={12} className='d-flex justify-content-between align-items-center'>
+                                <Row lg={12}className="d-flex flex-row align-content-center align-items-center position-relative">
                                         <Col lg={4}>
                                             <Row className='d-flex justify-content-between align-items-center'>
                                                 <Col>
@@ -283,9 +377,9 @@ const AdminRequest = () => {
                                                 </Col>
                                                 <Col>
                                                     <Select
-                                                        multiple
+                                                        multipleaa
                                                         clearable={false}
-                                                        options={schools}
+                                                        options={schoolData}
                                                         value={selectedSchoolIds}
                                                         onChange={(value) => handleSchoolChange(value)}
                                                     />
@@ -319,7 +413,7 @@ const AdminRequest = () => {
                                             <Button
                                                 variant="outline-info"
                                                 className='text-red text-uppercase br-8 py-2'
-                                                onClick={onSeeClick}
+                                                onClick={onclickClear}
                                             >
                                                 <TuneRounded />
                                                 {t('common.clear')}
@@ -357,7 +451,22 @@ const AdminRequest = () => {
                         {/* </Row> */}
                     </Col>
                 </Row>
-                <Row style={{ marginTop: 20 }}>
+                <Row style={{ marginTop: 20}}>
+                    <Col style={{ color: '#FD7845', fontSize: 16, fontWeight: 'bolder', fontFamily: 'Mulish' }}>Ирсэн санал хүсэлтүүд</Col>
+                    <Col md={3} className="d-flex align-items-end justify-content-end ">
+                        <input
+                            className="form-control datatable-search align-items-end justify-content-end "
+                            value={searchInput}
+                            onChange={handleSearch}
+                            placeholder="Хайх..."
+                            style={{ fontFamily: 'Mulish' }}
+                        />
+                    </Col>
+                    <Col xs={1} className="d-flex align-items-end justify-content-end ">
+                        <img src="../img/ticket/icon/xls.png" alt="dot-icon" className="color-info me-1" onClick={downloadExcel}/>
+                    </Col>
+                </Row>
+                {/* <Row style={{ marginTop: 20 }} >
                     <Col style={{ color: '#FD7845', fontSize: 16, fontWeight: 'bolder' }}>Ирсэн санал хүсэлтүүд</Col>
                     <Col lg={2} className='d-flex justify-content-between align-items-center'>
                         <Row >
@@ -373,16 +482,16 @@ const AdminRequest = () => {
                             <i className='flaticon-alert' />
                         </Row>
                     </Col>
-                </Row>
+                </Row> */}
                 {data.map((item, i) => (
                     <Row key={i} style={{ marginTop: 10 }}  onClick={() => history.push(`/admin/view/${item.id}`)}>
-                        <Card className="mb-1">
+                        <Card className="mb-3">
                             <Card.Body>
-                                <Row className="d-flex flex-row align-content-center align-items-center position-relative mb-">
+                                <Row className="d-flex flex-row align-content-center align-items-center position-relative">
                                 <Col lg={1} className="text-center flex-row">
                                     <Row style={{ display: 'flex' }}>
                                         <div style={{ textAlign: 'center' }}>
-                                            <img src="../img/ticket/avatar.png" alt="school-icon" className="color-info me-1"/>
+                                        <img  className="profile d-inline me-3  rounded-circle" width={70} alt={item.createdUser} src={getUserAvatar(item.createdUser) ? `${getUserAvatar(item.createdUser)}` : '../img/system/default-profile.png'} />
                                         </div>
                                     </Row>
                                 </Col>

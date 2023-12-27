@@ -52,7 +52,7 @@ const CancelRequest = ({id, show, setShow }) => {
                         {t('common.cancel')}
                     </Button>
                     <Button variant="success" className="text-uppercase fs-12 br-8 ps-4 pe-4" size="sm" onClick={onSaveClick}>
-                        {t('common.send')}
+                        {t('ticket.ok')}
                     </Button>
                 </div>
             </Modal.Footer>

@@ -402,6 +402,10 @@ export const TRANSLATIONS_MN = {
         repeatPassword: 'Тухайн оруулсан шинэ нууц үг давтан оруулсан нууц үгтэй тохирохгүй байна',
         paymentAmountIsDifferent: 'Төлөх дүн зөрүүтэй байна',
         payValueIsTooMuch: 'Төлөх дүн их байна',
+        descriptionErrorMsg: 'Тайлбар оруулна уу',
+        systemErrorMsg: 'Систем сонгоно уу',
+        menuErrorMsg: 'Меню сонгоно уу',
+        subMenuErrorMsg: 'Туслах меню сонгоно уу'
     },
     home: {
         'title': 'Нүүр хуудас',
@@ -1256,6 +1260,7 @@ export const TRANSLATIONS_MN = {
       ticketEdit: 'Хүсэлт засах',
       comment: 'Тайлбар',
       selectAssignee: 'Хариуцагчийг солих',
-      requester: 'Хүсэлт гаргагч'
+      requester: 'Хүсэлт гаргагч',
+      ok: 'Тийм'
     }
 };

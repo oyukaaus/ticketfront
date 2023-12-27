@@ -107,14 +107,12 @@ const NavUserMenuContent = ({ userObj }) => {
                 showMessage(t('errorMessage.title'))
             });
     }
-
     return (
         <div>
             <Row className="m-0">
                 <Col xs="12" className="ps-1 mb-2">
                     <img className="profile d-inline me-3" width={70} alt='avatar'
-                    src = '../img/ticket/avatar.png'></img>
-                         {/* src={userObj?.avatar ? 'https://api.eschool.mn/' + userObj?.avatar : '../img/system/default-profile.png'}  */}
+                         src={person?.avatar ?  person?.avatar : '../img/system/default-profile.png'} ></img>
                     <div className="fs-14 font-weight-bold text-dark d-inline">{userObj?.firstName}</div>
                 </Col>
                 <Col xs="12" className="ps-1 pe-1">
@@ -155,7 +153,8 @@ const NavUserMenuContent = ({ userObj }) => {
 };
 
 const NavUserMenuDropdownToggle = React.memo(
-    React.forwardRef(({ onClick, expanded = false, user = {} }, ref) => (
+    React.forwardRef(({ onClick, expanded = false, user = {} }, ref) => 
+    (
         <a
             href='#!'
             style={{ color: '#fff' }}
@@ -169,8 +168,8 @@ const NavUserMenuDropdownToggle = React.memo(
                 onClick(e);
             }}
         >
-            {/* <img className="profile" alt={user.firstName} src={user?.avatar ? `https://api.eschool.mn/${user?.avatar}` : '../img/system/default-profile.png'} /> */}
-            <img className="profile" alt={user.firstName} src='../img/ticket/avatar.png' />
+            <img className="profile" alt={user.firstName} src={user?.avatar ? `${user?.avatar}` : '../img/system/default-profile.png'} />
+            {/* <img className="profile" alt={user.firstName} src={person?.avatar ?  person?.avatar : '../img/system/default-profile.png'} /> */}
         </a>
     ))
 );

@@ -40,7 +40,7 @@ const view = (props) => {
             case 'Цуцласан':
                 return { backgroundColor: 'red', color: '#FFFFFF', fontFamily: 'Mulish' };
             default:
-                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish' }; 
+                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish' };
         }
     };
 
@@ -80,11 +80,17 @@ const view = (props) => {
             })
             .catch((e) => {
                 console.log(e);
+
                 dispatch(setLoading(false));
                 showMessage(t('errorMessage.title'));
             });
     };
-    console.log('reply: ', replyData)
+
+    const getAssigneeName = (userId) => {
+        const name = users.find((sys) => sys.id === userId);
+        return name ? name.firstname : 'Unknown user';
+    };
+
     useEffect(() => {
         // setDropdownStates(new Array(data.length).fill(false));
     }, [data]);
@@ -92,6 +98,8 @@ const view = (props) => {
     useEffect(() => {
         fetchInfo()
     }, []);
+
+
     return (
         <>
             <Row>
@@ -103,7 +111,7 @@ const view = (props) => {
                                     <Link to={{ pathname: `/admin/index` }} style={{ textAlign: 'right', color: '#FD7845', fontSize: 12, fontWeight: 'bold', fontFamily: 'Mulish' }}>
                                         Жагсаалт руу буцах
                                     </Link></Row>
-                                <Row className="d-flex flex-row align-content-center align-items-center position-relative mb-">
+                                <Row className="d-flex flex-row align-content-center align-items-center position-relative ">
                                     <Col lg={1} className="text-center flex-row">
                                         <Row style={{ display: 'flex' }}>
                                             <div style={{ textAlign: 'center' }}>
@@ -161,8 +169,15 @@ const view = (props) => {
                                     <Col>
                                         <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
                                             #{item.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {item.description}</span>
-                                        </div></Col>
+                                        </div>
+                                    </Col>
+                                    {/* <Col xs={1}>
+                                    </Col> */}
                                     <Col xs="1" className="d-flex align-items-end justify-content-end mb-2 mb-sm-0 order-sm-3">
+                                        
+                                    <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold', marginRight:10 }}>
+                                        {getAssigneeName(item.assigneeId)}
+                                        </div>
                                         <Dropdown align="end">
                                             {/* <Dropdown.Toggle className="dropdown-toggle dropdown-toggle-split" size="sm"
                                                 style={{ color: '#FD7845', border: '1px solid' }}>
@@ -181,79 +196,79 @@ const view = (props) => {
                                     </Col>
                                 </Row>
                                 <Row className="d-flex align-items-end justify-content-end " >
-                                        <Col lg={1}>
-                                        {files&&files.map((dtlItem, index) => (
-                                            <div key={index}  className="text-center">
-                                                 <img src={dtlItem.path} alt={`Image ${index}`} width='60' onClick={() => openImageInNewWindow(dtlItem.path)} />
+                                    <Col lg={1}>
+                                        {item.files && item.files.map((dtlItem, index) => (
+                                            <div key={index} className="text-center">
+                                                <img src={dtlItem.path} alt={`Image ${index}`} width='60' onClick={() => openImageInNewWindow(dtlItem.path)} />
                                                 {/* {dtlItem.name} */}
                                             </div>
                                         ))}
-                                        </Col>
-                                        <Col lg={11}></Col>
-                                    </Row>
+                                    </Col>
+                                    <Col lg={11}></Col>
+                                </Row>
                             </Card.Body>
                         </Card>
                     </Row>
                 ))}
             </Row>
 
-            <Row>
-                {replyData.map((item, i) => (
+            <Row style={{width:'100.5%'}}>
+                {replyData.map((item1, i) => (
                     <>
-                <Col key={i} lg={1}></Col>
-                    <Col  lg={11}>
-                        <Card className="mb-3">
-                            <Card.Body className="d-flex flex-row align-content-center align-items-center position-relative mb-3">
-                                <Col xs={12}>
-                                    <Row>
-                                        <Col xs={1} className="text-center">
-                                            <Row style={{ display: 'flex' }}>
-                                                <div style={{ textAlign: 'center' }}>
-                                                    <img src="../../img/ticket/avatar.png" alt="school-icon" className="color-info me-1" />
-                                                </div>
-                                            </Row>
-
-                                        </Col>
-                                        <Col xs={10}>
-                                            <Row>
-                                                <Col>
-                                                    <Button
-                                                        type="button"
-                                                        size="sm"
-                                                        disabled
-                                                        style={getButtonColor(item.status)}
-                                                    >
-                                                        {item.status}
-                                                    </Button>
-                                                    <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold', fontFamily: 'Mulish' }}>
-                                                        {item.createdUser} | {(item.createdDate?.date).replace(/\.\d+$/, '')} | {item.type} | {item.systemId}
+                        <Col key={i} lg={1}></Col>
+                        <Col lg={11}>
+                            <Card className="mb-3">
+                                <Card.Body className="d-flex flex-row align-content-center align-items-center position-relative mb-3">
+                                    <Col xs={12}>
+                                        <Row>
+                                            <Col xs={1} className="text-center">
+                                                <Row style={{ display: 'flex' }}>
+                                                    <div style={{ textAlign: 'center' }}>
+                                                        <img src="../../img/ticket/avatar.png" alt="school-icon" className="color-info me-1" />
                                                     </div>
-                                                </Col>
+                                                </Row>
 
-                                            </Row>
-                                        </Col>
-                                    </Row>
-                                    <Row xs={11} style={{ width: "100%" }}>
-                                        <div style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold', maxWidth: '100%', fontFamily: 'Mulish' }}>
-                                            Хариу тайлбар. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}> {item.description}</span>
-                                        </div>
-                                    </Row>
-                                    <Row className="d-flex align-items-end justify-content-end " >
-                                        <Col lg={1}>
-                                        {item.file&&item.file.map((dItem, index) => (
-                                            <div key={index}  className="text-center">
-                                                  <img src={dItem.path} alt={`Image ${index}`} width='60' onClick={() => openImageInNewWindow(dItem.path)} />
-                                                {/* {dItem.name} */}
+                                            </Col>
+                                            <Col xs={10}>
+                                                <Row>
+                                                    <Col>
+                                                        <Button
+                                                            type="button"
+                                                            size="sm"
+                                                            disabled
+                                                            style={getButtonColor(item1.status)}
+                                                        >
+                                                            {item1.status}
+                                                        </Button>
+                                                        <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold', fontFamily: 'Mulish' }}>
+                                                            {item1.createdUser} | {(item1.createdDate?.date).replace(/\.\d+$/, '')} | {item1.type} | {item1.systemId}
+                                                        </div>
+                                                    </Col>
+
+                                                </Row>
+                                            </Col>
+                                        </Row>
+                                        <Row xs={11} style={{ width: "100%" }}>
+                                            <div style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold', maxWidth: '100%', fontFamily: 'Mulish' }}>
+                                                Хариу тайлбар. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}> {item1.description}</span>
                                             </div>
-                                        ))}
-                                        </Col>
-                                        <Col lg={11}></Col>
-                                    </Row>
-                                </Col>
+                                        </Row>
+                                        <Row className="d-flex align-items-end justify-content-end " >
+                                            <Col lg={1}>
+                                                {item1.file && item1.file.map((dItem, index) => (
+                                                    <div key={index} className="text-center">
+                                                        <img src={dItem.path} alt={`Image ${index}`} width='60' onClick={() => openImageInNewWindow(dItem.path)} />
+                                                        {/* {dItem.name} */}
+                                                    </div>
+                                                ))}
+                                            </Col>
+                                            <Col lg={11}></Col>
+                                        </Row>
+                                    </Col>
 
-                            </Card.Body>
-                        </Card>
-                    </Col>
+                                </Card.Body>
+                            </Card>
+                        </Col>
                     </>
                 ))}
             </Row>

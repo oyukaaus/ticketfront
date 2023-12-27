@@ -85,7 +85,7 @@ const ReplyTicket = ({
                 description: values.description,
                 statusId: 1,
             };
-            if (fileData) {
+            if (fileData && fileData.name) {
                 postData.file = {
                     name: fileData.name,
                     type: fileData.type,
