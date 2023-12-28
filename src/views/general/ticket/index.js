@@ -25,6 +25,7 @@ const TicketPage = () => {
     const [showEdit, setShowEdit] = useState(false);
     const [itemId, setItemId] = useState();
     const [searchInput, setSearchInput] = useState('');
+    const types = [{ value: 1, text: 'Алдаа' }, { value: 2, text: 'Санал хүсэлт' }];
 
     const breadcrumbs = [
         { to: '', text: t('menu.home') },
@@ -97,23 +98,6 @@ const TicketPage = () => {
         setShowEdit(true);
     };
 
-    // const handleSearch = (e) => {
-    //     console.log('e', e)
-    //     const searchValue = e.toLowerCase();
-    //     if (e.le) {
-    //         setValue(searchValue);
-    //         const dataList = data.filter((item) => {
-    //             return (
-    //                 item.description.toLowerCase().includes(searchValue)
-    //             )
-    //         });
-    //         setData(dataList)
-    //     } else {
-    //         fetchInfo()
-    //     }
-
-    // }
-
     const handleSearch = (e) => {
         const inputValue = e.target.value.toLowerCase();
         setSearchInput(inputValue);
@@ -133,11 +117,16 @@ const TicketPage = () => {
     };
 
     const getUserAvatar = (userId) => {
+        console.log('users: ', users, 'userid: ', userId)
         const user = users.find((sys) => sys.id === userId);
         return user?.avatar || '/img/system/default-profile.png';
     };
     
-    
+    const getTypeName = (typeId) => {
+        const system = types.find((sys) => sys.value === typeId);
+        return system ? system.text : 'Unknown Type';
+    };
+  
     const cancelFetch = () => {
         console.log(itemId, 'cancelled')
     }
@@ -207,7 +196,7 @@ const TicketPage = () => {
                                         <Col xs={1} className="text-center">
                                             <Row style={{ display: 'flex' }}>
                                                 <div style={{ textAlign: 'center' }}>
-                                                    <img  className="profile d-inline me-3  rounded-circle" width={70} alt={item.createdUser} src={getUserAvatar(item.createdUser) ? `${getUserAvatar(item.createdUser)}` : '../img/system/default-profile.png'} />
+                                                    <img  className="profile d-inline me-3  rounded-circle" width={70} alt={item.createdUserId} src={getUserAvatar(item.createdUserId) ? `${getUserAvatar(item.createdUserId)}` : '../img/system/default-profile.png'} />
                                                      </div>
                                             </Row>
                                         </Col>
@@ -222,7 +211,7 @@ const TicketPage = () => {
                                             </Button>
 
                                             <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold', fontFamily: 'Mulish' }}>
-                                                {(item.createdDate?.date).replace(/\.\d+$/, '')} | {item.type} | {getSystemName(item.systemId)}
+                                                {(item.createdDate?.date).replace(/\.\d+$/, '')} | {getTypeName(item.typeId)} | {getSystemName(item.systemId)}
                                             </div>
                                         </Col>
                                     </Row>

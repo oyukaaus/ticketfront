@@ -9,7 +9,7 @@ import { fetchRequest } from 'utils/fetchRequest';
 import { ticketInfo } from 'utils/fetchRequest/Urls';
 import ReplyRequest from '../ticket/modal/reply';
 import CloseTicket from '../ticket/modal/close';
-import AssignRequest from '../ticket/modal/assign'
+import AssignRequest from '../ticket/modal/assign';
 
 const view = (props) => {
     const { match } = props;
@@ -119,8 +119,7 @@ const view = (props) => {
     useEffect(() => {
         fetchInfo()
     }, []);
-
-
+      
     return (
         <>
             <Row>

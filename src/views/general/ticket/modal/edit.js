@@ -193,7 +193,7 @@ const editTicket = ({
                     ticketId: selectedOne.id,
                     systemId: selectedSystem,
                     menuId: selectedMenu,
-                    submenuId: selectedSubMenu,
+                    subMenuId: selectedSubMenu,
                     // title: 'Title',
                     description: description,
                     typeId: isIssue ? 1 : 2,

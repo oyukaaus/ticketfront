@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {  useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { Card, Row, Col, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
@@ -11,7 +11,7 @@ import { ticketIndex, ticketList } from 'utils/fetchRequest/Urls';
 import { TuneRounded } from '@mui/icons-material';
 import DatePickerRange from 'modules/Form/DatePickerRange';
 import Select from 'modules/Form/Select';
-
+import * as XLSX from 'xlsx';
 
 const AdminRequest = () => {
     const history = useHistory();
@@ -20,7 +20,7 @@ const AdminRequest = () => {
     const { schools } = useSelector(state => state.schoolData);
     const schoolData = [];
     schools.map((param) =>
-    schoolData.push({
+        schoolData.push({
             value: param?.id,
             text: param?.name,
         })
@@ -45,6 +45,30 @@ const AdminRequest = () => {
     const [requesters, setRequester] = useState([]);
     const [avatars, setUserAvatars] = useState([]);
 
+    const generateExcelFile = (reportData, filename) => {
+        const workbook = XLSX.utils.book_new();
+        const worksheet = XLSX.utils.json_to_sheet(reportData);
+
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+        const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+        const blob = new Blob([excelBuffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    };
+
+    const handleDownloadExcel = () => {
+        const reportData = data;
+
+        generateExcelFile(reportData, 'requests.xlsx');
+    };
+
     useEffect(() => {
         dispatch(setLoading(true));
 
@@ -57,16 +81,16 @@ const AdminRequest = () => {
     ];
     const getButtonColor = (type) => {
         switch (type) {
-            case 'Шинэ':
+            case 1:
                 return { backgroundColor: 'green', color: '#FFFFFF', fontFamily: 'Mulish' };
-            case 'eSchool хүлээж авсан':
+            case 2:
                 return { backgroundColor: 'blue', color: '#FFFFFF', fontFamily: 'Mulish' };
-            case 'Хаагдсан':
+            case 3:
                 return { backgroundColor: 'grey', color: '#FFFFFF', fontFamily: 'Mulish' };
-            case 'Цуцласан':
+            case 4:
                 return { backgroundColor: 'red', color: '#FFFFFF', fontFamily: 'Mulish' };
             default:
-                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish' }; 
+                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish' };
         }
     };
 
@@ -77,7 +101,7 @@ const AdminRequest = () => {
             setEndDate(value[0]?.endDate || '')
         }
     }
-    const loadDetails = ( start = null, end = null, page = 1, pageSize = 10, query = null, sortBy = null, order = null) => {
+    const loadDetails = (start = null, end = null, page = 1, pageSize = 10, query = null, sortBy = null, order = null) => {
         dispatch(setLoading(true));
         const postData = {
             type: selectedTypesIds,
@@ -94,13 +118,12 @@ const AdminRequest = () => {
             sortBy,
             order
         };
-        console.log('postData: ', postData)
         fetchRequest(ticketList, 'POST', postData)
             .then(res => {
-                const {success = false, message = null } = res
+                const { success = false, message = null } = res
                 if (success) {
-                    console.log('res list: ', res)
                     setData(res?.tickets);
+                    console.log('ticketList: ', res);
                 } else {
                     showMessage(message || t('errorMessage.title'), false)
                 }
@@ -133,10 +156,7 @@ const AdminRequest = () => {
     const handleStatusChange = (value) => {
         setSelectedStatus(value)
     }
-    const getSystemName = (systemId) => {
-        const system = systems.find((sys) => sys.value === systemId);
-        return system ? system.text : 'Unknown System';
-    };
+
     const onSeeClick = () => {
         if (startDate && endDate) {
             setErrorDueDate(false);
@@ -146,7 +166,7 @@ const AdminRequest = () => {
         }
     };
 
-    const loadDetailsClear = ( start = null, end = null, page = 1, pageSize = 10, query = null, sortBy = null, order = null) => {
+    const loadDetailsClear = (start = null, end = null, page = 1, pageSize = 10, query = null, sortBy = null, order = null) => {
         dispatch(setLoading(true));
         const postData = {
             startDate: start,
@@ -159,7 +179,7 @@ const AdminRequest = () => {
         };
         fetchRequest(ticketList, 'POST', postData)
             .then(res => {
-                const {success = false, message = null } = res
+                const { success = false, message = null } = res
                 if (success) {
                     setData(res?.tickets);
                 } else {
@@ -172,7 +192,7 @@ const AdminRequest = () => {
                 showMessage(t('errorMessage.title'))
             });
     }
-    
+
     const onclickClear = () => {
         if (startDate && endDate) {
             loadDetailsClear(startDate, endDate);
@@ -181,24 +201,24 @@ const AdminRequest = () => {
         }
     };
 
-    const fetchInfo = async () => {
+    const fetchInfo = async (start = null, end = null, page = 1, pageSize = 10, query = null, sortBy = null, order = null) => {
         dispatch(setLoading(true));
-        fetchRequest(ticketIndex, 'POST', {
-
-        })
+        fetchRequest(ticketIndex, 'POST', {})
             .then((res) => {
                 const { success = false, message = null } = res;
                 if (success) {
+                    setData(res?.tickets);  
+                             console.log('ticketIndex: ', res);
                     const assigneeOption = [];
                     res?.assignees.map((param) =>
-                    assigneeOption.push({
+                        assigneeOption.push({
                             value: param?.id,
                             text: param?.firstName,
                         })
                     );
                     const userOption = [];
                     res?.users.map((param) =>
-                    userOption.push({
+                        userOption.push({
                             value: param?.id,
                             text: param?.firstName,
                         })
@@ -206,15 +226,12 @@ const AdminRequest = () => {
 
                     const useravatar = [];
                     res?.users.map((param) =>
-                    useravatar.push({
+                        useravatar.push({
                             id: param?.userId,
                             avatar: param?.avatar,
                         })
                     )
-                    setUserAvatars(useravatar)
-
-                    console.log('res: ', res)
-                    setData(res?.tickets);
+                    setUserAvatars(useravatar);
                     setSystems(res?.systems);
                     setStatuses(res?.statuses);
                     setAssignees(assigneeOption);
@@ -229,29 +246,26 @@ const AdminRequest = () => {
                 dispatch(setLoading(false));
                 showMessage(t('errorMessage.title'));
             });
+
     };
 
 
     useEffect(() => {
         fetchInfo()
     }, []);
-    
+
     const handleSearch = (e) => {
         const inputValue = e.target.value.toLowerCase();
         setSearchInput(inputValue);
         if (inputValue) {
             const filtered = data.filter((item) => {
-              return item.description.toLowerCase().indexOf(inputValue) !== -1;
+                return item.description.toLowerCase().indexOf(inputValue) !== -1;
             });
             setData(filtered)
         } else {
             fetchInfo()
         }
     };
-
-    const downloadExcel = () =>{
-        console.log('called');
-    }
 
     const getUserAvatar = (userId) => {
         const user = avatars.find((sys) => sys.id === userId);
@@ -262,6 +276,21 @@ const AdminRequest = () => {
         window.open(path, '_blank');
     };
 
+    const getSystemName = (systemId) => {
+        const system = systems.find((sys) => sys.value === systemId);
+        return system ? system.text : 'Unknown System';
+    };
+    
+    const getTypeName = (typeId) => {
+        const system = types.find((sys) => sys.value === typeId);
+        return system ? system.text : 'Unknown Type';
+    };
+  
+    const getStatusName = (statusId) => {
+        const status = statuses.find((sys) => sys.value === statusId);
+        return status ? status.text : 'Unknown Status';
+    };
+    
     return (
         <>
             <Row>
@@ -279,9 +308,9 @@ const AdminRequest = () => {
                 <Row>
                     <Col>
                         <Col lg={12}>
-                            <Card className=' no-border-radius' style={{width:'100.5%'}}>
+                            <Card className=' no-border-radius' style={{ width: '100.5%' }}>
                                 <Card.Body>
-                                <Row lg={12}className="d-flex flex-row align-content-center align-items-center position-relative">
+                                    <Row lg={12} className="d-flex flex-row align-content-center align-items-center position-relative">
                                         <Col lg={4}>
                                             <Row className='d-flex justify-content-between align-items-center'>
                                                 <Col>
@@ -361,7 +390,7 @@ const AdminRequest = () => {
                                                         selectedStartDate={startDate}
                                                         selectedEndDate={endDate}
                                                         isDisabled={false}
-                                                        clearable={true}
+                                                        clearable={false}
                                                         disableWithFirst={true}
                                                         disableWithLast={true}
                                                     />
@@ -454,7 +483,7 @@ const AdminRequest = () => {
                         {/* </Row> */}
                     </Col>
                 </Row>
-                <Row style={{ marginTop: 20}}>
+                <Row style={{ marginTop: 20 }}>
                     <Col style={{ color: '#FD7845', fontSize: 16, fontWeight: 'bolder', fontFamily: 'Mulish' }}>Ирсэн санал хүсэлтүүд</Col>
                     <Col md={3} className="d-flex align-items-end justify-content-end ">
                         <input
@@ -466,83 +495,94 @@ const AdminRequest = () => {
                         />
                     </Col>
                     <Col xs={1} className="d-flex align-items-end justify-content-end ">
-                        <img src="../img/ticket/icon/xls.png" alt="dot-icon" className="color-info me-1" onClick={downloadExcel}/>
+                        <img src="../img/ticket/icon/xls.png" alt="dot-icon" className="color-info me-1" onClick={handleDownloadExcel} />
                     </Col>
                 </Row>
                 {data.map((item, i) => (
-                    <Row key={i} style={{ marginTop: 10 }}  onClick={() => history.push(`/admin/view/${item.id}`)}>
+                    <Row key={i} style={{ marginTop: 10 }} onClick={() => history.push(`/admin/view/${item.id}`)}>
                         <Card className="mb-3">
                             <Card.Body>
                                 <Row className="d-flex flex-row align-content-center align-items-center position-relative">
-                                <Col lg={1} className="text-center flex-row">
-                                    <Row style={{ display: 'flex' }}>
-                                        <div style={{ textAlign: 'center' }}>
-                                        <img  className="profile d-inline me-3  rounded-circle" width={70} alt={item.createdUser} src={getUserAvatar(item.createdUser) ? `${getUserAvatar(item.createdUser)}` : '../img/system/default-profile.png'} />
-                                        </div>
-                                    </Row>
-                                </Col>
-                                <Col>
-                                    <Row>
-                                        <Col>
-                                            <Button className='position-relative d-inline-flex m-1'
-                                                type="button"
-                                                size="sm"
-                                                disabled
-                                                style={getButtonColor(item.status)}
-                                            >
-                                                {item.status}
-                                            </Button>
-                                            <Button className='position-relative d-inline-flex m-1'
-                                                type="button"
-                                                size="sm"
-                                                disabled
-                                                style={{backgroundColor:'#FD7845', fontFamily: 'Mulish'}}
-                                            >
-                                                {/* {item.status} */}
-                                                Тестийн сургууль
-                                            </Button>
-                                            <Button className='position-relative d-inline-flex m-1'
-                                                type="button"
-                                                size="sm"
-                                                disabled
-                                                style={{backgroundColor:'#3B82F6', fontFamily: 'Mulish'}}
-                                            >
-                                                {/* {item.status} */}
-                                                Сургалтын менежер, Багш
-                                            </Button>
-                                            <Button className='position-relative d-inline-flex m-1'
-                                                type="button"
-                                                size="sm"
-                                                disabled
-                                                style={{backgroundColor:'#047857', fontFamily: 'Mulish'}}
-                                            >
-                                                {/* {item.status} */}
-                                                99887766
-                                            </Button>
-                                        </Col>
-                                    </Row>
+                                    <Col lg={1} className="text-center flex-row">
+                                        <Row style={{ display: 'flex' }}>
+                                            <div style={{ textAlign: 'center' }}>
+                                                <img
+                                                    className="profile d-inline me-3 rounded-circle"
+                                                    width={70}
+                                                    alt={item?.createdUserId}
+                                                    src={
+                                                        getUserAvatar(item?.createdUserId)
+                                                            ? `${getUserAvatar(item?.createdUserId)}`
+                                                            : '../img/system/default-profile.png'
+                                                    }
+                                                />
 
-                                    <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold' }}>
-                                    {(item.createdDate?.date).replace(/\.\d+$/, '')} | {item.type} | {getSystemName(item.systemId)}
-                                    </div>
-                                </Col>
+                                            </div>
+                                        </Row>
+                                    </Col>
+                                    <Col>
+                                        <Row>
+                                            <Col>
+
+                                                <Button className='position-relative d-inline-flex m-1'
+                                                    type="button"
+                                                    size="sm"
+                                                    disabled
+                                                    style={getButtonColor(item?.statusId)}
+                                                >
+                                                    {getStatusName(item?.statusId)}
+                                                </Button>
+                                                <Button className='position-relative d-inline-flex m-1'
+                                                    type="button"
+                                                    size="sm"
+                                                    disabled
+                                                    style={{ backgroundColor: '#FD7845', fontFamily: 'Mulish' }}
+                                                >
+                                                    {/* {item.status} */}
+                                                    Тестийн сургууль
+                                                </Button>
+                                                <Button className='position-relative d-inline-flex m-1'
+                                                    type="button"
+                                                    size="sm"
+                                                    disabled
+                                                    style={{ backgroundColor: '#3B82F6', fontFamily: 'Mulish' }}
+                                                >
+                                                    {/* {item.status} */}
+                                                    Сургалтын менежер, Багш
+                                                </Button>
+                                                <Button className='position-relative d-inline-flex m-1'
+                                                    type="button"
+                                                    size="sm"
+                                                    disabled
+                                                    style={{ backgroundColor: '#047857', fontFamily: 'Mulish' }}
+                                                >
+                                                    {/* {item.status} */}
+                                                    99887766
+                                                </Button>
+                                            </Col>
+                                        </Row>
+
+                                        <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold' }}>
+                                            {item?.createdDate?.date && (item?.createdDate?.date).replace(/\.\d+$/, '')} | {getTypeName(item?.typeId)} | {getSystemName(item?.systemId)}
+                                        </div>
+                                    </Col>
                                 </Row>
                                 <Row>
-                                <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
-                                        #{item.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {item.description}</span>
-                                        </div>
+                                    <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
+                                        #{item?.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {item?.description}</span>
+                                    </div>
                                 </Row>
                                 <Row className="d-flex align-items-end justify-content-end " >
-                                        <Col lg={1}>
-                                            {item.files && item.files.map((dtlItem, index) => (
-                                                <div key={index} className="text-center">
-                                                    <img src={dtlItem.path} alt={`Image ${index}`} width='100' onClick={() => openImageInNewWindow(dtlItem.path)} />
-                                                    {/* {dtlItem.name} */}
-                                                </div>
-                                            ))}
-                                        </Col>
-                                        <Col lg={11}></Col>
-                                    </Row>
+                                    <Col lg={1}>
+                                        {item?.files && item?.files.map((dtlItem, index) => (
+                                            <div key={index} className="text-center">
+                                                <img src={dtlItem.path} alt={`Image ${index}`} width='100' onClick={() => openImageInNewWindow(dtlItem.path)} />
+                                                {/* {dtlItem.name} */}
+                                            </div>
+                                        ))}
+                                    </Col>
+                                    <Col lg={11}></Col>
+                                </Row>
                             </Card.Body>
                         </Card>
                     </Row>
