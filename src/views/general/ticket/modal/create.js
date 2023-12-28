@@ -1,4 +1,4 @@
-import React, {  useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Modal, Button, Row, Col, Form, ListGroup } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import Forms from 'modules/Form/Forms';
@@ -18,7 +18,7 @@ const createTicketModal = ({
 }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-const history = useHistory();
+    const history = useHistory();
     const formRefRequest = useRef();
     const { person } = useSelector((state) => state.auth);
     const [isIssue, setIsIssue] = useState(true);
@@ -331,7 +331,7 @@ const history = useHistory();
                         const { success = false, message = null } = res;
                         if (success) {
                             history.replace(`/ticket/index`);
-                            // window.location.reload();
+                            window.location.reload();
                             showMessage(message, true);
                         } else {
                             console.log('res: ', res);

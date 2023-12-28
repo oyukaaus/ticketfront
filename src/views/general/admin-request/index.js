@@ -257,7 +257,10 @@ const AdminRequest = () => {
         const user = avatars.find((sys) => sys.id === userId);
         return user?.avatar || '/img/system/default-profile.png';
     };
-    
+
+    const openImageInNewWindow = (path) => {
+        window.open(path, '_blank');
+    };
 
     return (
         <>
@@ -466,23 +469,6 @@ const AdminRequest = () => {
                         <img src="../img/ticket/icon/xls.png" alt="dot-icon" className="color-info me-1" onClick={downloadExcel}/>
                     </Col>
                 </Row>
-                {/* <Row style={{ marginTop: 20 }} >
-                    <Col style={{ color: '#FD7845', fontSize: 16, fontWeight: 'bolder' }}>Ирсэн санал хүсэлтүүд</Col>
-                    <Col lg={2} className='d-flex justify-content-between align-items-center'>
-                        <Row >
-                            <input
-                                className="form-control datatable-search"
-                                value={searchValue || ''}
-                                onChange={(e) => {
-                                    setSearchValue(e.target.value);
-                                }}
-                                placeholder="Хайх..."
-                            /></Row>
-                        <Row>
-                            <i className='flaticon-alert' />
-                        </Row>
-                    </Col>
-                </Row> */}
                 {data.map((item, i) => (
                     <Row key={i} style={{ marginTop: 10 }}  onClick={() => history.push(`/admin/view/${item.id}`)}>
                         <Card className="mb-3">
@@ -546,6 +532,17 @@ const AdminRequest = () => {
                                         #{item.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {item.description}</span>
                                         </div>
                                 </Row>
+                                <Row className="d-flex align-items-end justify-content-end " >
+                                        <Col lg={1}>
+                                            {item.files && item.files.map((dtlItem, index) => (
+                                                <div key={index} className="text-center">
+                                                    <img src={dtlItem.path} alt={`Image ${index}`} width='100' onClick={() => openImageInNewWindow(dtlItem.path)} />
+                                                    {/* {dtlItem.name} */}
+                                                </div>
+                                            ))}
+                                        </Col>
+                                        <Col lg={11}></Col>
+                                    </Row>
                             </Card.Body>
                         </Card>
                     </Row>

@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import Forms from 'modules/Form/Forms';
 import CollectionsIcon from '@mui/icons-material/Collections';
 import { setLoading } from 'utils/redux/action';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchRequest } from 'utils/fetchRequest';
 import { ticketDtlCreate } from 'utils/fetchRequest/Urls';
 import showMessage from 'modules/message';
@@ -20,6 +20,7 @@ const ReplyTicket = ({
     const dispatch = useDispatch();
     const history = useHistory();
     const formRef = useRef();
+    const { person } = useSelector((state) => state.auth);
     const [file, setFile] = React.useState();
     const [fileData, setFileData] = useState([]);
 
@@ -78,12 +79,14 @@ const ReplyTicket = ({
 
     const onSaveClick = () => {
         const [isValid, , values] = formRef.current.validate();
+        console.log('person.id: ', person.id)
         if (isValid) {
             dispatch(setLoading(true));
             const postData = {
                 ticketId: selectedId,
                 description: values.description,
                 statusId: 1,
+                createdBy: person.id
             };
             if (fileData && fileData.name) {
                 postData.file = {

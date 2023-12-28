@@ -19,8 +19,10 @@ const view = (props) => {
     const [showReplyTicket, setShowReplyTicket] = useState(false);
     const [showCloseTicket, setShowCloseTicket] = useState(false);
     const [showAssignTicket, setShowAssignTicket] = useState(false);
-    const [files, setFiles] = useState([]);
     const [users, setUsers] = useState([]);
+    const [systems, setSystems] = useState([]);
+    const [assignees, setAssignees] = useState([]);
+    const [userlist, setUserList] = useState([]);
     const { t } = useTranslation();
     const dispatch = useDispatch();
 
@@ -71,8 +73,17 @@ const view = (props) => {
                 if (success) {
                     setData(res?.ticket);
                     setReplyData(res?.ticketDtlList);
-                    setFiles(res?.files);
                     setUsers(res?.users);
+                    setAssignees(res?.assignees);
+                    setSystems(res?.systems);
+                    const userOption = [];
+                    res?.assignees.map((param) =>
+                    userOption.push({
+                        value: param?.userId,
+                        text: param?.username,
+                        })
+                    )
+                    setUserList(userOption)
                 } else {
                     showMessage(message || t('errorMessage.title'));
                 }
@@ -86,15 +97,25 @@ const view = (props) => {
             });
     };
 
-    const getAssigneeName = (userId) => {
-        const name = users.find((sys) => sys.id === userId);
-        return name ? name.firstname : 'Unknown user';
+    const getUserAvatar = (userId) => {
+        const user = users.find((sys) => sys.userId === userId);
+        return user?.avatar || '/img/system/default-profile.png';
+    };
+    
+    const getAssigneeAvatar = (userId) => {
+        const user = assignees.find((sys) => sys.userId === userId);
+        return user?.avatar || '/img/system/default-profile.png';
+    };
+    
+    const getSystemName = (systemId) => {
+        const system = systems.find((sys) => sys.value === systemId);
+        return system ? system.text : 'Unknown System';
     };
 
-    useEffect(() => {
-        // setDropdownStates(new Array(data.length).fill(false));
-    }, [data]);
-
+    const getUsername = (userId) => {
+        const user = users.find((sys) => sys.userId === userId);
+        return user ? user.username : 'Unknown user';
+    };
     useEffect(() => {
         fetchInfo()
     }, []);
@@ -115,8 +136,8 @@ const view = (props) => {
                                     <Col lg={1} className="text-center flex-row">
                                         <Row style={{ display: 'flex' }}>
                                             <div style={{ textAlign: 'center' }}>
-                                                <img src="../../img/ticket/avatar.png" alt="school-icon" className="color-info me-1" />
-                                            </div>
+                                            <img  className="profile d-inline me-3  rounded-circle" width={70} alt={item.createdUser} src={getUserAvatar(item.createdUser) ? `${getUserAvatar(item.createdUser)}` : '../img/system/default-profile.png'} />
+                                                     </div>
                                         </Row>
                                     </Col>
                                     <Col>
@@ -161,7 +182,7 @@ const view = (props) => {
                                         </Row>
 
                                         <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold' }}>
-                                            {(item.createdDate?.date).replace(/\.\d+$/, '')} | {item.type} | {item.systemId}
+                                            {(item.createdDate?.date).replace(/\.\d+$/, '')} | {item.type} | {getSystemName(item.systemId)}
                                         </div>
                                     </Col>
                                 </Row>
@@ -175,9 +196,8 @@ const view = (props) => {
                                     </Col> */}
                                     <Col xs="1" className="d-flex align-items-end justify-content-end mb-2 mb-sm-0 order-sm-3">
                                         
-                                    <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold', marginRight:10 }}>
-                                        {getAssigneeName(item.assigneeId)}
-                                        </div>
+                                    <img  className="profile d-inline me-3  rounded-circle" width={50} alt={item.assigneeId} 
+                                    src={getAssigneeAvatar(item.assigneeId) ? `${getAssigneeAvatar(item.assigneeId)}` : '../img/system/default-profile.png'} />
                                         <Dropdown align="end">
                                             {/* <Dropdown.Toggle className="dropdown-toggle dropdown-toggle-split" size="sm"
                                                 style={{ color: '#FD7845', border: '1px solid' }}>
@@ -199,7 +219,7 @@ const view = (props) => {
                                     <Col lg={1}>
                                         {item.files && item.files.map((dtlItem, index) => (
                                             <div key={index} className="text-center">
-                                                <img src={dtlItem.path} alt={`Image ${index}`} width='60' onClick={() => openImageInNewWindow(dtlItem.path)} />
+                                                <img src={dtlItem.path} alt={`Image ${index}`} width='100' onClick={() => openImageInNewWindow(dtlItem.path)} />
                                                 {/* {dtlItem.name} */}
                                             </div>
                                         ))}
@@ -224,8 +244,8 @@ const view = (props) => {
                                             <Col xs={1} className="text-center">
                                                 <Row style={{ display: 'flex' }}>
                                                     <div style={{ textAlign: 'center' }}>
-                                                        <img src="../../img/ticket/avatar.png" alt="school-icon" className="color-info me-1" />
-                                                    </div>
+                                                    <img  className="profile d-inline me-3  rounded-circle" width={70} alt={item1.createdUser} src={getUserAvatar(item1.createdUser) ? `${getUserAvatar(item1.createdUser)}` : '../img/system/default-profile.png'} />
+                                                   </div>
                                                 </Row>
 
                                             </Col>
@@ -241,7 +261,7 @@ const view = (props) => {
                                                             {item1.status}
                                                         </Button>
                                                         <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold', fontFamily: 'Mulish' }}>
-                                                            {item1.createdUser} | {(item1.createdDate?.date).replace(/\.\d+$/, '')} | {item1.type} | {item1.systemId}
+                                                            {getUsername(item1.createdUser)} | {(item1.createdDate?.date).replace(/\.\d+$/, '')} 
                                                         </div>
                                                     </Col>
 
@@ -257,8 +277,7 @@ const view = (props) => {
                                             <Col lg={1}>
                                                 {item1.file && item1.file.map((dItem, index) => (
                                                     <div key={index} className="text-center">
-                                                        <img src={dItem.path} alt={`Image ${index}`} width='60' onClick={() => openImageInNewWindow(dItem.path)} />
-                                                        {/* {dItem.name} */}
+                                                        <img src={dItem.path} alt={`Image ${index}`} width='100' onClick={() => openImageInNewWindow(dItem.path)} />
                                                     </div>
                                                 ))}
                                             </Col>
@@ -277,7 +296,7 @@ const view = (props) => {
                     showAssignTicket &&
                     <AssignRequest
                         selectedId={id}
-                        userlist={users}
+                        userlist={userlist}
                         show={showAssignTicket}
                         setShow={setShowAssignTicket}
                     />

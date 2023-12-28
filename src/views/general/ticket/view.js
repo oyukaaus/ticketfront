@@ -16,10 +16,10 @@ const view = (props) => {
     const [data, setData] = useState([]);
     const [systems, setSystems] = useState([]);
     const [replyData, setReplyData] = useState([]);
+    const [users, setUsers] = useState([]);
     // const [files, setFiles] = useState([]);
     const [showReplyTicket, setShowReplyTicket] = useState(false);
     const [showCloseTicket, setShowCloseTicket] = useState(false);
-
     const { t } = useTranslation();
     const dispatch = useDispatch();
 
@@ -72,6 +72,15 @@ const view = (props) => {
                     // setFiles(res?.ticket?.files);
                     setSystems(res?.systems)
                     setReplyData(res?.ticketDtlList);
+                    const userOption = [];
+                    res?.users.map((param) =>
+                    userOption.push({
+                            id: param?.userId,
+                            avatar: param?.avatar,
+                            name: param?.username
+                        })
+                    )
+                    setUsers(userOption)
                 } else {
                     showMessage(message || t('errorMessage.title'));
                 }
@@ -84,6 +93,17 @@ const view = (props) => {
             });
     };
 
+    
+    const getUserAvatar = (userId) => {
+        const user = users.find((sys) => sys.id === userId);
+        return user?.avatar || '/img/system/default-profile.png';
+    };
+    
+    const getUsername = (userId) => {
+        const user = users.find((sys) => sys.id === userId);
+        return user ? user.name : 'Unknown user';
+    };
+    
     useEffect(() => {
         fetchInfo()
     }, []);
@@ -99,7 +119,8 @@ const view = (props) => {
                                         <Col xs={1} className="text-center">
                                             <Row style={{ display: 'flex' }}>
                                                 <div style={{ textAlign: 'center' }}>
-                                                    <img src="../../img/ticket/avatar.png" alt="avatar-icon" className="color-info me-1" />
+                                                <img  className="profile d-inline me-3  rounded-circle" width={70} alt={item.createdUser} 
+                                                src={getUserAvatar(item.createdUser) ? `${getUserAvatar(item.createdUser)}` : '../img/system/default-profile.png'} />
                                                 </div>
                                             </Row>
                                         </Col>
@@ -113,7 +134,7 @@ const view = (props) => {
                                                 {item.status}
                                             </Button>
                                             <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold' }}>
-                                                {(item.createdDate?.date).replace(/\.\d+$/, '')} | {item.type} | {getSystemName(item.systemId)}
+                                            {getUsername(item.createdUser)} | {(item.createdDate?.date).replace(/\.\d+$/, '')} | {item.type} | {getSystemName(item.systemId)}
                                             </div>
                                         </Col>
                                         <Col xs={2} className="d-flex justify-content-end ">
@@ -148,7 +169,7 @@ const view = (props) => {
                                         <Col lg={1}>
                                             {item.files && item.files.map((dtlItem, index) => (
                                                 <div key={index} className="text-center">
-                                                    <img src={dtlItem.path} alt={`Image ${index}`} width='60' onClick={() => openImageInNewWindow(dtlItem.path)} />
+                                                    <img src={dtlItem.path} alt={`Image ${index}`} width='100' onClick={() => openImageInNewWindow(dtlItem.path)} />
                                                     {/* {dtlItem.name} */}
                                                 </div>
                                             ))}
@@ -174,7 +195,8 @@ const view = (props) => {
                                         <Col xs={1} className="text-center">
                                             <Row style={{ display: 'flex' }}>
                                                 <div style={{ textAlign: 'center' }}>
-                                                    <img src="../../img/ticket/avatar.png" alt="school-icon" className="color-info me-1" />
+                                                <img  className="profile d-inline me-3  rounded-circle" width={70} alt={item.createdUser} 
+                                                src={getUserAvatar(item.createdUser) ? `${getUserAvatar(item.createdUser)}` : '../img/system/default-profile.png'} />
                                                 </div>
                                             </Row>
 
@@ -191,7 +213,7 @@ const view = (props) => {
                                                         {item.status}
                                                     </Button>
                                                     <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold', fontFamily: 'Mulish' }}>
-                                                        {item.createdUser} username | {(item.createdDate?.date).replace(/\.\d+$/, '')}
+                                                        {getUsername(item.createdUser)} | {(item.createdDate?.date).replace(/\.\d+$/, '')}
                                                     </div>
                                                 </Col>
 
@@ -209,7 +231,7 @@ const view = (props) => {
                                         <Col lg={1}>
                                             {item.file && item.file.map((dItem, index) => (
                                                 <div key={index} className="text-center">
-                                                    <img src={dItem.path} alt={`Image ${index}`} width='60' onClick={() => openImageInNewWindow(dItem.path)} />
+                                                    <img src={dItem.path} alt={`Image ${index}`} width='100' onClick={() => openImageInNewWindow(dItem.path)} />
                                                     {/* {dItem.name} */}
                                                 </div>
                                             ))}

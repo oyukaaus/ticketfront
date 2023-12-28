@@ -20,8 +20,6 @@ const AssignTicket = ({
     const history = useHistory();
     const formRef = useRef();
     const [selectedAssignee, setSelectedAssignee] = useState(null);
-    const assignees = userlist&&userlist.map(user => ({ value: user.id, text: user.firstname }));
-
     const onAssigneeChange = (e) => {
         setSelectedAssignee(e)
     }
@@ -35,7 +33,7 @@ const AssignTicket = ({
             required: true,
             errorMessage: t('errorMessage.enterValue'),
             labelBold: true,
-            options: assignees,
+            options: userlist,
             onChange: onAssigneeChange,
         },
         {
