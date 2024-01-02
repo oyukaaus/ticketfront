@@ -198,6 +198,10 @@ const view = (outerProps) => {
                                             )}
                                             // user={person}
                                             className="dropdown-menu dropdown-menu-start wide"
+                                            style={{
+                                                position: 'absolute',
+                                                transform: 'translate(-200px, 40.6667px)'
+                                            }}
                                             popperConfig={{
                                                 modifiers: [
                                                     {

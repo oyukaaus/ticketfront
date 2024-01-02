@@ -126,7 +126,7 @@ const view = (outerProps) => {
     const NavUserMenuDropdownMenu = React.memo(
         React.forwardRef(({ style, className, item }, ref) => {
             return (
-                <div ref={ref} style={style} className={classNames('dropdown-menu dropdown-menu-end user-menu wide', className)}>
+                <div ref={ref} style={style} className={classNames('dropdown-menu dropdown-menu-start user-menu wide', className)}>
                     <Dropdown.Item onClick={() => {
                         ticketAssign();
                     }}><img src="../../img/ticket/icon/user-profile-add.png" alt="view-icon" /> Хариуцагчийг солих</Dropdown.Item>
@@ -245,7 +245,11 @@ const view = (outerProps) => {
                                                     <NavUserMenuDropdownMenu {...props} item={item} />
                                                 )}
                                                 // user={person}
-                                                className="dropdown-menu dropdown-menu-start wide"
+                                                className="dropdown-menu dropdown-menu-end user-menu wide"
+                                                style={{
+                                                    position: 'absolute',
+                                                    transform: 'translate(-200px, 40.6667px)'
+                                                }}
                                                 popperConfig={{
                                                     modifiers: [
                                                         {
@@ -258,7 +262,7 @@ const view = (outerProps) => {
                                                                     if (window.innerWidth < 768) {
                                                                         return [-84, 7];
                                                                     }
-
+                                            
                                                                     return [-78, 7];
                                                                 },
                                                             },

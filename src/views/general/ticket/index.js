@@ -176,7 +176,6 @@ const TicketPage = () => {
             );
         })
     );
-    
     useEffect(() => {
         fetchInfo()
     }, []);
@@ -280,6 +279,10 @@ const TicketPage = () => {
                                             )}
                                             // user={person}
                                             className="dropdown-menu dropdown-menu-end user-menu wide"
+                                            style={{
+                                                position: 'absolute',
+                                                transform: 'translate(-200px, 40.6667px)'
+                                            }}
                                             popperConfig={{
                                                 modifiers: [
                                                     {
