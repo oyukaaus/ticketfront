@@ -28,7 +28,7 @@ const TicketPage = () => {
     const [itemId, setItemId] = useState();
     const [searchInput, setSearchInput] = useState('');
     const types = [{ value: 1, text: 'Алдаа' }, { value: 2, text: 'Санал хүсэлт' }];
-    const {placementStatus: { view: placement }} = useSelector((state) => state.menu);
+    const { placementStatus: { view: placement } } = useSelector((state) => state.menu);
     const MENU_PLACEMENT = {
         Vertical: 'vertical',
         Horizontal: 'horizontal',
@@ -201,10 +201,10 @@ const TicketPage = () => {
                                     <Row className='center'>
                                         <Col lg={3}></Col>
                                         <Col lg={2}>
-                                            <img src='../img/ticket/request.png' alt='school-icon' className='color-info me-1' /></Col>
-                                        <Col lg={4} className='d-flex align-items-center justify-content-center' style={{ color: '#000000', display: 'flex' }}>
+                                            <img src='../img/ticket/Group.png' alt='school-icon' className='color-info me-1' /></Col>
+                                        <Col lg={5} className='d-flex align-items-center justify-content-center' style={{ color: '#000000', display: 'flex' }}>
                                             <Row className='d-flex align-items-center'>
-                                                <div style={{ textAlign: 'center', color: '#000000', fontFamily: 'Mulish' }}>
+                                                <div style={{ textAlign: 'center', color: '#000000', fontFamily: 'Mulish', fontSize: 12 }}>
                                                     Системтэй холбоотой санал хүсэлт, алдааны мэдээллээ бидэнд илгээнэ үү.
                                                 </div>
                                                 <div className='ml-auto' style={{ marginTop: 20, textAlign: 'center', fontFamily: 'Mulish' }}>
@@ -220,28 +220,30 @@ const TicketPage = () => {
                     </Col>
                 </Row>
                 <Row style={{ marginTop: 20 }}  >
-                    <Col style={{ color: '#FD7845', fontSize: 16, fontWeight: 'bolder', fontFamily: 'Mulish' }}>Миний илгээсэн санал хүсэлтүүд</Col>
+                    <Col style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}>Миний илгээсэн санал хүсэлтүүд</Col>
                     <Col lg={2} className=" ">
                         <input
                             className="form-control datatable-search "
                             value={searchInput}
                             onChange={handleSearch}
                             placeholder="Хайх..."
-                            style={{ fontFamily: 'Mulish', width: '104%' }}
+                            style={{
+                                fontFamily: 'Mulish', width: '104%', color: 'black',
+                                opacity: 1,
+                            }}
                         />
                     </Col>
                 </Row>
                 {data.map((item, i) => (
-
                     <Row key={i} style={{ marginTop: 10 }}>
-                        <Card className="mb-3">
+                        <Card className="mb-2">
                             <Card.Body className="d-flex flex-row align-content-center align-items-center position-relative mb-3">
                                 <Col>
                                     <Row>
                                         <Col xs={1} className="text-center">
                                             <Row style={{ display: 'flex' }}>
                                                 <div style={{ textAlign: 'center' }}>
-                                                    <img className="profile d-inline me-3  rounded-circle" width={70} alt={item.createdUserId} src={getUserAvatar(item.createdUserId) ? `${getUserAvatar(item.createdUserId)}` : '../img/system/default-profile.png'} />
+                                                    <img className="profile rounded-circle" width='70%' alt={item.createdUserId} src={getUserAvatar(item.createdUserId) ? `${getUserAvatar(item.createdUserId)}` : '../img/system/default-profile.png'} />
                                                 </div>
                                             </Row>
                                         </Col>
@@ -255,55 +257,50 @@ const TicketPage = () => {
                                                 {item.status}
                                             </Button>
 
-                                            <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold', fontFamily: 'Mulish' }}>
-                                                {(item.createdDate?.date).replace(/\.\d+$/, '')} | {getTypeName(item.typeId)} | {getSystemName(item.systemId)}
+                                            <div style={{ color: 'black', fontSize: 14, fontFamily: 'Mulish' }}>
+                                                {(item.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight:'bold' }}> | </span> {getTypeName(item.typeId)} <span style={{ color: 'orange', fontWeight:'bold' }}> | </span> {getSystemName(item.systemId)}
                                             </div>
                                         </Col>
-                                    </Row>
-                                    <Row >
-                                        <Col>
-                                            <div style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold', marginLeft: 40 }}>
-                                                #{item.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}> {item.description}</span>
-                                            </div>
-                                        </Col>
+                                        <Col xs="1" className="d-flex align-items-start justify-content-end ">
+                                            <Dropdown as="div" bsPrefix="user-container d-flex" drop="down">
+                                                <Dropdown.Toggle as={NavUserMenuDropdownToggle} />
+                                                <Dropdown.Menu
+                                                    as={(props) => (
+                                                        <NavUserMenuDropdownMenu {...props} item={item} />
+                                                    )}
+                                                    className="dropdown-menu dropdown-menu-end user-menu wide"
+                                                    style={{
+                                                        position: 'absolute',
+                                                        transform: 'translate(-130px, 40px)'
+                                                    }}
+                                                    popperConfig={{
+                                                        modifiers: [
+                                                            {
+                                                                name: 'offset',
+                                                                options: {
+                                                                    offset: () => {
+                                                                        if (placement === MENU_PLACEMENT.Horizontal) {
+                                                                            return [0, 7];
+                                                                        }
+                                                                        if (window.innerWidth < 768) {
+                                                                            return [-84, 7];
+                                                                        }
 
-                                    </Row>
-
-                                </Col>
-                                <Col xs="1" className="d-flex align-items-start justify-content-end ">
-                                    <Dropdown as="div" bsPrefix="user-container d-flex" drop="down">
-                                        <Dropdown.Toggle as={NavUserMenuDropdownToggle} />
-                                        <Dropdown.Menu
-                                            as={(props) => (
-                                                <NavUserMenuDropdownMenu {...props} item={item} />
-                                            )}
-                                            // user={person}
-                                            className="dropdown-menu dropdown-menu-end user-menu wide"
-                                            style={{
-                                                position: 'absolute',
-                                                transform: 'translate(-200px, 40.6667px)'
-                                            }}
-                                            popperConfig={{
-                                                modifiers: [
-                                                    {
-                                                        name: 'offset',
-                                                        options: {
-                                                            offset: () => {
-                                                                if (placement === MENU_PLACEMENT.Horizontal) {
-                                                                    return [0, 7];
-                                                                }
-                                                                if (window.innerWidth < 768) {
-                                                                    return [-84, 7];
-                                                                }
-
-                                                                return [-78, 7];
+                                                                        return [-78, 7];
+                                                                    },
+                                                                },
                                                             },
-                                                        },
-                                                    },
-                                                ],
-                                            }}
-                                        />
-                                    </Dropdown>
+                                                        ],
+                                                    }}
+                                                />
+                                            </Dropdown>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
+                                            #{item?.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {item?.description}</span>
+                                        </div>
+                                    </Row>
                                 </Col>
                             </Card.Body>
                         </Card>

@@ -10,16 +10,27 @@ import { ticketInfo } from 'utils/fetchRequest/Urls';
 import ReplyRequest from '../ticket/modal/reply';
 import CloseTicket from '../ticket/modal/close';
 import AssignRequest from '../ticket/modal/assign';
+import ShowStatusLog from '../ticket/modal/showStatusLog';
 import classNames from '../../../../node_modules/classnames';
 
 const view = (outerProps) => {
     const { match } = outerProps;
     const { id } = match.params;
     const [data, setData] = useState([]);
+    const { schools } = useSelector(state => state.schoolData);
+    const schoolData = [];
+    schools.map((param) =>
+        schoolData.push({
+            value: param?.id,
+            text: param?.name,
+            longName: param?.longName,
+        })
+    )
     const [replyData, setReplyData] = useState([]);
     const [showReplyTicket, setShowReplyTicket] = useState(false);
     const [showCloseTicket, setShowCloseTicket] = useState(false);
     const [showAssignTicket, setShowAssignTicket] = useState(false);
+    const [showStatusLog, setShowStatusLog] = useState(false);
     const [users, setUsers] = useState([]);
     const [systems, setSystems] = useState([]);
     const [assignees, setAssignees] = useState([]);
@@ -61,6 +72,10 @@ const view = (outerProps) => {
 
     const ticketClose = () => {
         setShowCloseTicket(true);
+    };
+    
+    const statusLogShow = () => {
+        setShowStatusLog(true);
     };
 
     const openImageInNewWindow = (path) => {
@@ -122,6 +137,10 @@ const view = (outerProps) => {
         return user ? user.username : 'Unknown user';
     };
 
+    const getSchoolName = (schoolId) => {
+        const school = schoolData.find((sys) => sys.value === schoolId);
+        return school ? school.longName : 'Unknown School';
+    };
 
     const NavUserMenuDropdownMenu = React.memo(
         React.forwardRef(({ style, className, item }, ref) => {
@@ -132,6 +151,7 @@ const view = (outerProps) => {
                     }}><img src="../../img/ticket/icon/user-profile-add.png" alt="view-icon" /> Хариуцагчийг солих</Dropdown.Item>
                     <Dropdown.Item onClick={() => ticketReply()}><img src="../../img/ticket/icon/file-input.png" alt="fileinput-icon" /> Хариу бичих</Dropdown.Item>
                     <Dropdown.Item onClick={() => ticketClose()}><img src="../../img/ticket/icon/file-check-2.png" alt="filecheck-icon" /> Хүсэлтийг хаах</Dropdown.Item>
+                    <Dropdown.Item onClick={() => statusLogShow()}><img src="../../img/ticket/icon/file-check-2.png" alt="filecheck-icon" />Төлөв шилжилт харах</Dropdown.Item>
                 </div>
             );
         })
@@ -176,7 +196,7 @@ const view = (outerProps) => {
                                     <Col lg={1} className="text-center flex-row">
                                         <Row style={{ display: 'flex' }}>
                                             <div style={{ textAlign: 'center' }}>
-                                                <img className="profile d-inline me-3  rounded-circle" width={70} alt={item.createdUser} src={getUserAvatar(item.createdUser) ? `${getUserAvatar(item.createdUser)}` : '../img/system/default-profile.png'} />
+                                                <img className="profile d-inline me-3  rounded-circle" width='70%' alt={item.createdUser} src={getUserAvatar(item.createdUser) ? `${getUserAvatar(item.createdUser)}` : '../img/system/default-profile.png'} />
                                             </div>
                                         </Row>
                                     </Col>
@@ -197,32 +217,13 @@ const view = (outerProps) => {
                                                     disabled
                                                     style={{ backgroundColor: '#FD7845', fontFamily: 'Mulish' }}
                                                 >
-                                                    {/* {item.status} */}
-                                                    Тестийн сургууль
-                                                </Button>
-                                                <Button className='position-relative d-inline-flex m-1'
-                                                    type="button"
-                                                    size="sm"
-                                                    disabled
-                                                    style={{ backgroundColor: '#3B82F6', fontFamily: 'Mulish' }}
-                                                >
-                                                    {/* {item.status} */}
-                                                    Сургалтын менежер, Багш
-                                                </Button>
-                                                <Button className='position-relative d-inline-flex m-1'
-                                                    type="button"
-                                                    size="sm"
-                                                    disabled
-                                                    style={{ backgroundColor: '#047857', fontFamily: 'Mulish' }}
-                                                >
-                                                    {/* {item.status} */}
-                                                    99887766
+                                                    {getSchoolName(item.schoolId)}
                                                 </Button>
                                             </Col>
                                         </Row>
 
                                         <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold' }}>
-                                            {(item.createdDate?.date).replace(/\.\d+$/, '')} | {item.type} | {getSystemName(item.systemId)}
+                                            {(item.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight:'bold' }}> | </span> {item.type} <span style={{ color: 'orange', fontWeight:'bold' }}> | </span> {getSystemName(item.systemId)}
                                         </div>
                                     </Col>
                                 </Row>
@@ -236,7 +237,7 @@ const view = (outerProps) => {
                                     </Col> */}
                                     <Col xs="1" className="d-flex align-items-end justify-content-end mb-2 mb-sm-0 order-sm-3">
 
-                                        <img className="profile d-inline me-3  rounded-circle" width={50} alt={item.assigneeId}
+                                        <img className="profile d-inline me-3  rounded-circle"  width='70%'alt={item.assigneeId}
                                             src={getAssigneeAvatar(item.assigneeId) ? `${getAssigneeAvatar(item.assigneeId)}` : '../img/system/default-profile.png'} />
                                         <Dropdown as="div" bsPrefix="user-container d-flex" drop="down">
                                             <Dropdown.Toggle as={NavUserMenuDropdownToggle} />
@@ -262,7 +263,7 @@ const view = (outerProps) => {
                                                                     if (window.innerWidth < 768) {
                                                                         return [-84, 7];
                                                                     }
-                                            
+
                                                                     return [-78, 7];
                                                                 },
                                                             },
@@ -303,7 +304,7 @@ const view = (outerProps) => {
                                             <Col xs={1} className="text-center">
                                                 <Row style={{ display: 'flex' }}>
                                                     <div style={{ textAlign: 'center' }}>
-                                                        <img className="profile d-inline me-3  rounded-circle" width={70} alt={item1.createdUser} src={getUserAvatar(item1.createdUser) ? `${getUserAvatar(item1.createdUser)}` : '../img/system/default-profile.png'} />
+                                                        <img className="profile d-inline me-3  rounded-circle"  width='70%' alt={item1.createdUser} src={getUserAvatar(item1.createdUser) ? `${getUserAvatar(item1.createdUser)}` : '../img/system/default-profile.png'} />
                                                     </div>
                                                 </Row>
 
@@ -320,7 +321,7 @@ const view = (outerProps) => {
                                                             {item1.status}
                                                         </Button>
                                                         <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold', fontFamily: 'Mulish' }}>
-                                                            {getUsername(item1.createdUser)} | {(item1.createdDate?.date).replace(/\.\d+$/, '')}
+                                                            {getUsername(item1.createdUser)} <span style={{ color: 'orange', fontWeight:'bold' }}> | </span> {(item1.createdDate?.date).replace(/\.\d+$/, '')}
                                                         </div>
                                                     </Col>
 
@@ -383,6 +384,18 @@ const view = (outerProps) => {
                     />
                 }
             </Row>
+            <Row>
+                {
+                    showStatusLog &&
+                    <ShowStatusLog
+                        selectedId={id}
+                        tag='admin'
+                        show={showStatusLog}
+                        setShow={setShowStatusLog}
+                    />
+                }
+            </Row>
+            
         </>
     );
 };

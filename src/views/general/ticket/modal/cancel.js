@@ -41,7 +41,7 @@ const CancelRequest = ({id, show, setShow }) => {
             </Modal.Header>
             <Modal.Body className='px-0'>
                 <Col>
-                    <Row lg={12} className='d-flex justify-content-center' style={{ fontWeight: 'bold' }}>
+                    <Row lg={12} className='d-flex justify-content-center' style={{ fontWeight: 'bold', fontSize:12 }}>
                         Та хүсэлтээ цуцлахдаа итгэлтэй байна уу? Нэгэнт цуцалсан хүсэлтийг дахин сэргээх боломжгүйг анхаараарай.
                     </Row>
                 </Col>
@@ -51,7 +51,7 @@ const CancelRequest = ({id, show, setShow }) => {
                     <Button onClick={() => setShow(false)} size="sm" variant="link">
                         {t('common.cancel')}
                     </Button>
-                    <Button variant="success" className="text-uppercase fs-12 br-8 ps-4 pe-4" size="sm" onClick={onSaveClick}>
+                    <Button variant="success" className="text-uppercase fs-12 br-8 ps-4 pe-4 " style={{width:120}} size="sm" onClick={onSaveClick}>
                         {t('ticket.ok')}
                     </Button>
                 </div>

@@ -21,20 +21,29 @@ const createTicketModal = ({
     const history = useHistory();
     const formRefRequest = useRef();
     const { person } = useSelector((state) => state.auth);
+    const { schools } = useSelector((state) => state.schoolData);
+    const schoolData = [];
+    schools.map((param) =>
+        schoolData.push({
+            value: param?.id,
+            text: param?.name,
+        })
+    )
     const [isIssue, setIsIssue] = useState(true);
     const [selectedSystem, setSelectedSystem] = useState(null);
     const [selectedMenu, setSelectedMenu] = useState(null);
     const [selectedSubMenu, setSelectedSubMenu] = useState(null);
+    const [selectedSchool, setSelectedSchool] = useState(null);
     const [description, setDescription] = useState('');
     const [example, setExample] = useState('');
     const [menuList, setMenuList] = useState([]);
     const [subMenus, setSubMenus] = useState([]);
     const [file, setFile] = React.useState();
     const [fileData, setFileData] = useState([]);
-
     const [systemErrorMsg, setSystemErrorMsg] = useState(false);
     const [menuErrorMsg, setMenuErrorMsg] = useState(false);
     const [subMenuErrorMsg, setSubMenuErrorMsg] = useState(false);
+    const [schoolErrorMsg, setSchoolErrorMsg] = useState(false);
     const [descriptionErrorMsg, setDescriptionErrorMsg] = useState(false);
 
     const fetchMenu = async (item) => {
@@ -97,6 +106,10 @@ const createTicketModal = ({
         setSubMenuErrorMsg(false);
     }
 
+    const onChangeSchool = (e) => {
+        setSelectedSchool(e);
+        setSchoolErrorMsg(false);
+    }
     const onChangeDescription = (e) => {
         setDescription(e.target.value);
         setDescriptionErrorMsg(false)
@@ -106,125 +119,7 @@ const createTicketModal = ({
         setExample(e.target.value);
     }
 
-    const issueFields = [
-        // {
-        //     key: 'system',
-        //     value: selectedSystem,
-        //     label: `${t('ticket.system')}*`,
-        //     type: 'dropdown',
-        //     required: true,
-        //     errorMessage: t('errorMessage.enterValue'),
-        //     labelBold: true,
-        //     options: systemList,
-        //     onChange: onSystemChange,
-        // },
-        // {
-        //     key: 'menus',
-        //     value: selectedMenu,
-        //     label: `${t('ticket.menu')}*`,
-        //     type: 'dropdown',
-        //     required: true,
-        //     errorMessage: t('errorMessage.enterValue'),
-        //     labelBold: true,
-        //     searchable: true,
-        //     multiple: false,
-        //     options: menuList,
-        //     onChange: onChangeMenu,
-        // },
-        // {
-        //     key: 'subMenu',
-        //     value: selectedSubMenu,
-        //     label: `${t('ticket.subMenu')}*`,
-        //     type: 'dropdown',
-        //     required: true,
-        //     errorMessage: t('errorMessage.enterValue'),
-        //     labelBold: true,
-        //     searchable: true,
-        //     multiple: false,
-        //     options: subMenus,
-        //     onChange: onChangeSubMenu
-        // },
-        // {
-        //     key: 'description',
-        //     value: '',
-        //     label: `${t('ticket.issue')}*`,
-        //     type: 'textArea',
-        //     required: true,
-        //     labelBold: true,
-        // },
-        // {
-        //     key: 'example',
-        //     value: '',
-        //     label: `${t('ticket.example')}*`,
-        //     type: 'text',
-        //     required: true,
-        //     labelBold: true,
-        //     placeHolder: 'Жишээ болгож алдаа гарч байгаа хэрэглэгчийн мэдээллийг оруулна уу.'
-        // },
-        {
-            key: 'image',
-            label: 'Файл хавсаргах',
-            value: '',
-            type: 'fileUpload',
-            required: false,
-            fileName: '',
-            multiple: true,
-            isExtendedButton: true,
-            isExtendedButtonText: (
-                <>
-                    <CollectionsIcon /> {t('survey.selectImage')}
-                </>
-            ),
-            isExtendedButtonClass: 'btn btn-outline-warning mr-5',
-            altImage: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>',
-            altImageClass: 'd-none',
-            accept: 'image/*',
-            fileType: 'image',
-            clearButton: true,
-            isClearButtonText: (
-                <>
-                    <CollectionsIcon style={{ opacity: 0, width: 0 }} /> {t('foodManagement.deletePhoto')}
-                </>
-            ),
-            isClearButtonClass: 'btn btn-outline-danger m-btn m-btn--icon m-btn--icon-only m-btn--circle-28',
-            onChange: (files) => {
-                const [image] = !files ? [] : files;
-                if (image) {
-                    const reader = new FileReader();
-                    reader.addEventListener(
-                        'load',
-                        () => {
-                            setFile(reader.result);
-                        },
-                        false
-                    );
-                    reader.readAsDataURL(image);
-                    setFileData(image);
-                    console.log('image: ', image);
-                }
-            },
-        },
-    ];
     const requestFields = [
-        // {
-        //     key: 'system',
-        //     value: selectedSystem,
-        //     label: `${t('ticket.system')}*`,
-        //     type: 'dropdown',
-        //     required: true,
-        //     errorMessage: t('errorMessage.enterValue'),
-        //     labelBold: true,
-        //     options: systemList,
-        //     onChange: onSystemChange,
-        // },
-        // {
-        //     key: 'description',
-        //     value: '',
-        //     label: `${t('ticket.idea')}*`,
-        //     type: 'textArea',
-        //     required: true,
-        //     labelBold: true,
-        // },
         {
             key: 'image',
             label: 'Файл хавсаргах',
@@ -271,7 +166,7 @@ const createTicketModal = ({
     ];
 
     const onSaveClick = () => {
-        const [isValid, values] = formRefRequest.current.validate();
+        const [isValid] = formRefRequest.current.validate();
         if (isValid) {
             let hasError = false;
             if (isIssue) {
@@ -313,7 +208,8 @@ const createTicketModal = ({
                     statusId: 1,
                     example: example,
                     userData: person,
-                    createdBy: person.id
+                    createdBy: person.id,
+                    schoolId: selectedSchool
                 };
                 if (fileData && fileData.name) {
                     postData.file = {
@@ -351,7 +247,39 @@ const createTicketModal = ({
     const renderIssue = () => {
         return (
             <>
-
+                <div className='d-flex mt-08'>
+                    <label className='modal-label'>
+                        {t('ticket.school')}*
+                    </label>
+                    <div className='modal-content-container'>
+                        <table className='w-100'>
+                            <thead>
+                                <tr>
+                                    <th className='width-equal pe-2'>
+                                        <Select
+                                            value={selectedSchool}
+                                            searchable="true"
+                                            options={schoolData}
+                                            placeholder={t('ticket.school')}
+                                            required
+                                            className={schoolErrorMsg ? 'fs-14 is-invalid' : 'fs-14'}
+                                            onChange={onChangeSchool}
+                                        />
+                                        {
+                                            schoolErrorMsg ?
+                                                <div className='invalid-feedback d-block'>
+                                                    {t('errorMessage.schoolErrorMsg')}
+                                                </div>
+                                                :
+                                                null
+                                        }
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div className='modal-end'></div>
+                </div>
                 <div className='d-flex mt-08'>
                     <label className='modal-label'>
                         {t('ticket.system')}*

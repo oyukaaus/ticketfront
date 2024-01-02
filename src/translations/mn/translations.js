@@ -1261,6 +1261,13 @@ export const TRANSLATIONS_MN = {
       comment: 'Тайлбар',
       selectAssignee: 'Хариуцагчийг солих',
       requester: 'Хүсэлт гаргагч',
-      ok: 'Тийм'
+      ok: 'ok',
+      closeModal: 'Хаах',
+      school: 'Сургууль',
+      oldStatus: 'Өмнөх төлөв',
+      newStatus: 'Шинэ төлөв',
+      changedDate: 'Өөрчлөгдсөн огноо',
+      changedBy: 'Өөрчилсөн',
+      statusLog: 'Төлөв шилжилт'
     }
 };

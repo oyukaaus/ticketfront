@@ -4,7 +4,7 @@ import { useTranslation } from 'react-i18next';
 import Forms from 'modules/Form/Forms';
 import 'css/addInvoice.css';
 import CollectionsIcon from '@mui/icons-material/Collections';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from 'utils/redux/action';
 import { fetchRequest } from 'utils/fetchRequest';
 import { ticketEdit, ticketInfo, ticketMenu, ticketSubMenu } from 'utils/fetchRequest/Urls';
@@ -22,11 +22,18 @@ const editTicket = ({
     const formRefRequest = useRef();
     const dispatch = useDispatch();
     const history = useHistory();
-
+    const { schools } = useSelector((state) => state.schoolData);
+    const schoolData = [];
+    schools.map((param) =>
+        schoolData.push({
+            value: param?.id,
+            text: param?.name,
+        })
+    )
     const [isIssue, setIsIssue] = useState(true);
     const selectedOne = selectedData[0];
-    console.log('selectedOne: ', selectedOne)
     const [selectedSystem, setSelectedSystem] = useState(null);
+    const [selectedSchool, setSelectedSchool] = useState(null);
     const [selectedMenu, setSelectedMenu] = useState(null);
     const [selectedSubMenu, setSelectedSubMenu] = useState(null);
     const [description, setDescription] = useState(selectedOne?.description);
@@ -40,9 +47,9 @@ const editTicket = ({
     const [menuErrorMsg, setMenuErrorMsg] = useState(false);
     const [subMenuErrorMsg, setSubMenuErrorMsg] = useState(false);
     const [descriptionErrorMsg, setDescriptionErrorMsg] = useState(false);
+    const [schoolErrorMsg, setSchoolErrorMsg] = useState(false);
 
     const fetchMenu = async (item) => {
-        console.log('item: ', item)
         fetchRequest(ticketMenu, 'POST', {
             systemId: item
         })
@@ -85,13 +92,16 @@ const editTicket = ({
         if (isIssue) {
             fetchMenu(e);
         }
+    }
 
+    const onChangeSchool = (e) => {
+        setSelectedSchool(e);
+        setSchoolErrorMsg(false);
     }
     const onChangeMenu = (e) => {
         setSelectedMenu(e);
         setMenuErrorMsg(false);
         fetchSubMenu(e);
-
     }
     const onChangeSubMenu = (e) => {
         setSelectedSubMenu(e);
@@ -154,7 +164,7 @@ const editTicket = ({
     ];
 
     const onSaveClick = () => {
-        const [isValid, values] = formRefRequest.current.validate();
+        const [isValid] = formRefRequest.current.validate();
         if (isValid) {
 
             let hasError = false;
@@ -199,6 +209,7 @@ const editTicket = ({
                     typeId: isIssue ? 1 : 2,
                     statusId: 1,
                     example: example,
+                    schoolId: selectedSchool
                 };
                 console.log('fileData: ', fileData.length)
                 if (fileData && fileData.name) {
@@ -247,6 +258,7 @@ const editTicket = ({
                 setSelectedSystem(res?.ticket[0].systemId);
                 setSelectedMenu(res?.ticket[0].menuId);
                 setSelectedSubMenu(res?.ticket[0].subMenuId);
+                setSelectedSchool(res?.ticket[0].schoolId);
                 setFile(res?.ticket?.files)
             } else {
                 showMessage(res?.message || t('errorMessage.title'));
@@ -266,7 +278,39 @@ const editTicket = ({
     const renderIssue = () => {
         return (
             <>
-
+                <div className='d-flex mt-08'>
+                    <label className='modal-label'>
+                        {t('ticket.school')}*
+                    </label>
+                    <div className='modal-content-container'>
+                        <table className='w-100'>
+                            <thead>
+                                <tr>
+                                    <th className='width-equal pe-2'>
+                                        <Select
+                                            value={selectedSchool}
+                                            searchable="true"
+                                            options={schoolData}
+                                            placeholder={t('ticket.school')}
+                                            required
+                                            className={schoolErrorMsg ? 'fs-14 is-invalid' : 'fs-14'}
+                                            onChange={onChangeSchool}
+                                        />
+                                        {
+                                            schoolErrorMsg ?
+                                                <div className='invalid-feedback d-block'>
+                                                    {t('errorMessage.schoolErrorMsg')}
+                                                </div>
+                                                :
+                                                null
+                                        }
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div className='modal-end'></div>
+                </div>
                 <div className='d-flex mt-08'>
                     <label className='modal-label'>
                         {t('ticket.system')}*

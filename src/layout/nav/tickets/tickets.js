@@ -40,7 +40,7 @@ const Tickets = () => {
 
     if (tickets && tickets.length > 0) {
         return (
-            <Col>
+            <Col style={{marginLeft: 40}}>
                 <div className="position-relative d-inline-flex" >
                     <div className='d-flex align-items-center m-2'>
                         <Link to={{

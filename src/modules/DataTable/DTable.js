@@ -35,8 +35,6 @@ import showMessage from "../../modules/message";
 import { setLoading } from '../../utils/redux/action';
 import DatePickerRange from "modules/Form/DatePickerRange";
 
-import { doctorDashboardDetails } from '../../utils/fetchRequest/Urls';
-
 import './datatable.scss';
 import 'react-bootstrap-table-next/dist/react-bootstrap-table2.min.css';
 
@@ -142,8 +140,6 @@ const CustomToggleList = ({
 const exportUrlResponseHandler = (url) => {
 	if (url) {
 		switch (url) {
-			case doctorDashboardDetails:
-				return 'list';
 			default:
 				return null;
 		}

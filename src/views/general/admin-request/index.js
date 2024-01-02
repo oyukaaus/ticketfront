@@ -23,6 +23,7 @@ const AdminRequest = () => {
         schoolData.push({
             value: param?.id,
             text: param?.name,
+            longName: param?.longName,
         })
     )
     // console.log('selectedSchool: ', schools)
@@ -38,13 +39,13 @@ const AdminRequest = () => {
     const [selectedSystemIds, setSelectedSystems] = useState([]);
     const [systems, setSystems] = useState([]);
     const [selectedSchoolIds, setSelectedSchools] = useState([]);
-    // const schools = [{ value: 1, text: 'Алдаа' }, { value: 2, text: 'Санал хүсэлт' }];
     const [selectedStatusIds, setSelectedStatus] = useState([]);
     const [statuses, setStatuses] = useState([]);
     const [assignees, setAssignees] = useState([]);
     const [requesters, setRequester] = useState([]);
     const [avatars, setUserAvatars] = useState([]);
-
+    const current = new Date();
+    const dateTimeToday = current.getFullYear() + "-" + ("00" + (current.getMonth() + 1)).slice(-2) + "-" + ("00" + (current.getDate())).slice(-2) + " " + current.getHours() + ":" + ("00" + (current.getMinutes())).slice(-2) + ":" + ("00" + (current.getSeconds())).slice(-2);
     const generateExcelFile = (reportData, filename) => {
         const workbook = XLSX.utils.book_new();
         const worksheet = XLSX.utils.json_to_sheet(reportData);
@@ -66,7 +67,7 @@ const AdminRequest = () => {
     const handleDownloadExcel = () => {
         const reportData = data;
 
-        generateExcelFile(reportData, 'requests.xlsx');
+        generateExcelFile(reportData, `'requests'+ '_' + dateTimeToday+'.xlsx'`);
     };
 
     useEffect(() => {
@@ -118,6 +119,7 @@ const AdminRequest = () => {
             sortBy,
             order
         };
+        console.log('postdata: ', postData)
         fetchRequest(ticketList, 'POST', postData)
             .then(res => {
                 const { success = false, message = null } = res
@@ -207,8 +209,8 @@ const AdminRequest = () => {
             .then((res) => {
                 const { success = false, message = null } = res;
                 if (success) {
-                    setData(res?.tickets);  
-                             console.log('ticketIndex: ', res);
+                    setData(res?.tickets);
+                    console.log('ticketIndex: ', res);
                     const assigneeOption = [];
                     res?.assignees.map((param) =>
                         assigneeOption.push({
@@ -280,17 +282,22 @@ const AdminRequest = () => {
         const system = systems.find((sys) => sys.value === systemId);
         return system ? system.text : 'Unknown System';
     };
-    
+
     const getTypeName = (typeId) => {
         const system = types.find((sys) => sys.value === typeId);
         return system ? system.text : 'Unknown Type';
     };
-  
+
     const getStatusName = (statusId) => {
         const status = statuses.find((sys) => sys.value === statusId);
         return status ? status.text : 'Unknown Status';
     };
-    
+
+    const getSchoolName = (schoolId) => {
+        const school = schoolData.find((sys) => sys.value === parseInt(schoolId, 10));
+        return school ? school.longName : 'Unknown School';
+    };
+
     return (
         <>
             <Row>
@@ -409,7 +416,7 @@ const AdminRequest = () => {
                                                 </Col>
                                                 <Col>
                                                     <Select
-                                                        multipleaa
+                                                        multiple
                                                         clearable={false}
                                                         options={schoolData}
                                                         value={selectedSchoolIds}
@@ -503,12 +510,12 @@ const AdminRequest = () => {
                         <Card className="mb-3">
                             <Card.Body>
                                 <Row className="d-flex flex-row align-content-center align-items-center position-relative">
-                                    <Col lg={1} className="text-center flex-row">
+                                    <Col sm={1} className="text-center flex-row">
                                         <Row style={{ display: 'flex' }}>
                                             <div style={{ textAlign: 'center' }}>
                                                 <img
                                                     className="profile d-inline me-3 rounded-circle"
-                                                    width={70}
+                                                    width='70%'
                                                     alt={item?.createdUserId}
                                                     src={
                                                         getUserAvatar(item?.createdUserId)
@@ -516,15 +523,13 @@ const AdminRequest = () => {
                                                             : '../img/system/default-profile.png'
                                                     }
                                                 />
-
                                             </div>
                                         </Row>
                                     </Col>
                                     <Col>
                                         <Row>
                                             <Col>
-
-                                                <Button className='position-relative d-inline-flex m-1'
+                                                <Button className='position-relative d-inline-flex'
                                                     type="button"
                                                     size="sm"
                                                     disabled
@@ -532,38 +537,19 @@ const AdminRequest = () => {
                                                 >
                                                     {getStatusName(item?.statusId)}
                                                 </Button>
-                                                <Button className='position-relative d-inline-flex m-1'
+                                                <Button className='position-relative d-inline-flex'
                                                     type="button"
                                                     size="sm"
                                                     disabled
-                                                    style={{ backgroundColor: '#FD7845', fontFamily: 'Mulish' }}
+                                                    style={{ backgroundColor: '#FD7845', fontFamily: 'Mulish' , color:'#000000', marginLeft:10}}
                                                 >
-                                                    {/* {item.status} */}
-                                                    Тестийн сургууль
-                                                </Button>
-                                                <Button className='position-relative d-inline-flex m-1'
-                                                    type="button"
-                                                    size="sm"
-                                                    disabled
-                                                    style={{ backgroundColor: '#3B82F6', fontFamily: 'Mulish' }}
-                                                >
-                                                    {/* {item.status} */}
-                                                    Сургалтын менежер, Багш
-                                                </Button>
-                                                <Button className='position-relative d-inline-flex m-1'
-                                                    type="button"
-                                                    size="sm"
-                                                    disabled
-                                                    style={{ backgroundColor: '#047857', fontFamily: 'Mulish' }}
-                                                >
-                                                    {/* {item.status} */}
-                                                    99887766
+                                                    {getSchoolName(item.schoolId)}
                                                 </Button>
                                             </Col>
                                         </Row>
 
-                                        <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold' }}>
-                                            {item?.createdDate?.date && (item?.createdDate?.date).replace(/\.\d+$/, '')} | {getTypeName(item?.typeId)} | {getSystemName(item?.systemId)}
+                                        <div style={{ color: 'black', fontSize: 14, fontWeight: 'semibold' }}>
+                                            {item?.createdDate?.date && (item?.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight: 'bold' }}> <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> </span> {getTypeName(item?.typeId)} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {getSystemName(item?.systemId)}
                                         </div>
                                     </Col>
                                 </Row>
@@ -588,7 +574,6 @@ const AdminRequest = () => {
                     </Row>
                 ))}
             </Row>
-
         </>
     );
 };

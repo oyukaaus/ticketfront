@@ -18,11 +18,6 @@ const admin = {
   view: lazy(() => import('views/general/admin-request/view')),
 };
 
-// eslint-disable-next-line
-const integratedGroup = {
-  index: lazy(() => import('views/general/integrated-group/index')),
-};
-
 const appRoot = DEFAULT_PATHS.APP.endsWith('/') ? DEFAULT_PATHS.APP.slice(1, DEFAULT_PATHS.APP.length) : DEFAULT_PATHS.APP;
 const routesAndMenuItems = {
   defaultMenuItems: [
