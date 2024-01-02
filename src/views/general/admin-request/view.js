@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Card, Row, Col, Button, Dropdown } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from 'utils/redux/action';
 import showMessage from "modules/message";
 import { fetchRequest } from 'utils/fetchRequest';
@@ -10,9 +10,10 @@ import { ticketInfo } from 'utils/fetchRequest/Urls';
 import ReplyRequest from '../ticket/modal/reply';
 import CloseTicket from '../ticket/modal/close';
 import AssignRequest from '../ticket/modal/assign';
+import classNames from '../../../../node_modules/classnames';
 
-const view = (props) => {
-    const { match } = props;
+const view = (outerProps) => {
+    const { match } = outerProps;
     const { id } = match.params;
     const [data, setData] = useState([]);
     const [replyData, setReplyData] = useState([]);
@@ -25,7 +26,11 @@ const view = (props) => {
     const [userlist, setUserList] = useState([]);
     const { t } = useTranslation();
     const dispatch = useDispatch();
-
+    const { placementStatus: { view: placement } } = useSelector((state) => state.menu);
+    const MENU_PLACEMENT = {
+        Vertical: 'vertical',
+        Horizontal: 'horizontal',
+    };
     useEffect(() => {
         dispatch(setLoading(true));
 
@@ -78,9 +83,9 @@ const view = (props) => {
                     setSystems(res?.systems);
                     const userOption = [];
                     res?.assignees.map((param) =>
-                    userOption.push({
-                        value: param?.userId,
-                        text: param?.username,
+                        userOption.push({
+                            value: param?.userId,
+                            text: param?.username,
                         })
                     )
                     setUserList(userOption)
@@ -101,12 +106,12 @@ const view = (props) => {
         const user = users.find((sys) => sys.userId === userId);
         return user?.avatar || '/img/system/default-profile.png';
     };
-    
+
     const getAssigneeAvatar = (userId) => {
         const user = assignees.find((sys) => sys.userId === userId);
         return user?.avatar || '/img/system/default-profile.png';
     };
-    
+
     const getSystemName = (systemId) => {
         const system = systems.find((sys) => sys.value === systemId);
         return system ? system.text : 'Unknown System';
@@ -116,10 +121,46 @@ const view = (props) => {
         const user = users.find((sys) => sys.userId === userId);
         return user ? user.username : 'Unknown user';
     };
+
+
+    const NavUserMenuDropdownMenu = React.memo(
+        React.forwardRef(({ style, className, item }, ref) => {
+            return (
+                <div ref={ref} style={style} className={classNames('dropdown-menu dropdown-menu-end user-menu wide', className)}>
+                    <Dropdown.Item onClick={() => {
+                        ticketAssign();
+                    }}><img src="../../img/ticket/icon/user-profile-add.png" alt="view-icon" /> Хариуцагчийг солих</Dropdown.Item>
+                    <Dropdown.Item onClick={() => ticketReply()}><img src="../../img/ticket/icon/file-input.png" alt="fileinput-icon" /> Хариу бичих</Dropdown.Item>
+                    <Dropdown.Item onClick={() => ticketClose()}><img src="../../img/ticket/icon/file-check-2.png" alt="filecheck-icon" /> Хүсэлтийг хаах</Dropdown.Item>
+                </div>
+            );
+        })
+    );
+    const NavUserMenuDropdownToggle = React.memo(
+        React.forwardRef(({ onClick, expanded = false }, ref) =>
+        (
+            <a
+                href='#!'
+                style={{ color: '#fff' }}
+                ref={ref}
+                className="d-flex user position-relative"
+                data-toggle="dropdown"
+                aria-expanded={expanded}
+                onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onClick(e);
+                }}
+            >
+                <img src="/img/ticket/icon/dot.png" alt="dot-icon" />
+            </a>
+        ))
+    );
+
     useEffect(() => {
         fetchInfo()
     }, []);
-      
+
     return (
         <>
             <Row>
@@ -135,8 +176,8 @@ const view = (props) => {
                                     <Col lg={1} className="text-center flex-row">
                                         <Row style={{ display: 'flex' }}>
                                             <div style={{ textAlign: 'center' }}>
-                                            <img  className="profile d-inline me-3  rounded-circle" width={70} alt={item.createdUser} src={getUserAvatar(item.createdUser) ? `${getUserAvatar(item.createdUser)}` : '../img/system/default-profile.png'} />
-                                                     </div>
+                                                <img className="profile d-inline me-3  rounded-circle" width={70} alt={item.createdUser} src={getUserAvatar(item.createdUser) ? `${getUserAvatar(item.createdUser)}` : '../img/system/default-profile.png'} />
+                                            </div>
                                         </Row>
                                     </Col>
                                     <Col>
@@ -194,24 +235,39 @@ const view = (props) => {
                                     {/* <Col xs={1}>
                                     </Col> */}
                                     <Col xs="1" className="d-flex align-items-end justify-content-end mb-2 mb-sm-0 order-sm-3">
-                                        
-                                    <img  className="profile d-inline me-3  rounded-circle" width={50} alt={item.assigneeId} 
-                                    src={getAssigneeAvatar(item.assigneeId) ? `${getAssigneeAvatar(item.assigneeId)}` : '../img/system/default-profile.png'} />
-                                        <Dropdown align="end">
-                                            {/* <Dropdown.Toggle className="dropdown-toggle dropdown-toggle-split" size="sm"
-                                                style={{ color: '#FD7845', border: '1px solid' }}>
-                                            </Dropdown.Toggle> */}
-                                            <Dropdown.Toggle size='sm' active style={{ backgroundColor: '#FD7845' }} >
-                                            </Dropdown.Toggle>
-                                            <Dropdown.Menu >
-                                                <Dropdown.Item onClick={() => {
-                                                    ticketAssign();
-                                                }}><img src="../../img/ticket/icon/user-profile-add.png" alt="view-icon" /> Хариуцагчийг солих</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => ticketReply()}><img src="../../img/ticket/icon/file-input.png" alt="fileinput-icon" /> Хариу бичих</Dropdown.Item>
-                                                <Dropdown.Item onClick={() => ticketClose()}><img src="../../img/ticket/icon/file-check-2.png" alt="filecheck-icon" /> Хүсэлтийг хаах</Dropdown.Item>
-                                            </Dropdown.Menu>
+
+                                        <img className="profile d-inline me-3  rounded-circle" width={50} alt={item.assigneeId}
+                                            src={getAssigneeAvatar(item.assigneeId) ? `${getAssigneeAvatar(item.assigneeId)}` : '../img/system/default-profile.png'} />
+                                        <Dropdown as="div" bsPrefix="user-container d-flex" drop="down">
+                                            <Dropdown.Toggle as={NavUserMenuDropdownToggle} />
+                                            <Dropdown.Menu
+                                                as={(props) => (
+                                                    <NavUserMenuDropdownMenu {...props} item={item} />
+                                                )}
+                                                // user={person}
+                                                className="dropdown-menu dropdown-menu-start wide"
+                                                popperConfig={{
+                                                    modifiers: [
+                                                        {
+                                                            name: 'offset',
+                                                            options: {
+                                                                offset: () => {
+                                                                    if (placement === MENU_PLACEMENT.Horizontal) {
+                                                                        return [0, 7];
+                                                                    }
+                                                                    if (window.innerWidth < 768) {
+                                                                        return [-84, 7];
+                                                                    }
+
+                                                                    return [-78, 7];
+                                                                },
+                                                            },
+                                                        },
+                                                    ],
+                                                }}
+                                            />
                                         </Dropdown>
-                                        {/* </div> */}
+
                                     </Col>
                                 </Row>
                                 <Row className="d-flex align-items-end justify-content-end " >
@@ -231,7 +287,7 @@ const view = (props) => {
                 ))}
             </Row>
 
-            <Row style={{width:'100.5%'}}>
+            <Row style={{ width: '100.5%' }}>
                 {replyData.map((item1, i) => (
                     <>
                         <Col key={i} lg={1}></Col>
@@ -243,8 +299,8 @@ const view = (props) => {
                                             <Col xs={1} className="text-center">
                                                 <Row style={{ display: 'flex' }}>
                                                     <div style={{ textAlign: 'center' }}>
-                                                    <img  className="profile d-inline me-3  rounded-circle" width={70} alt={item1.createdUser} src={getUserAvatar(item1.createdUser) ? `${getUserAvatar(item1.createdUser)}` : '../img/system/default-profile.png'} />
-                                                   </div>
+                                                        <img className="profile d-inline me-3  rounded-circle" width={70} alt={item1.createdUser} src={getUserAvatar(item1.createdUser) ? `${getUserAvatar(item1.createdUser)}` : '../img/system/default-profile.png'} />
+                                                    </div>
                                                 </Row>
 
                                             </Col>
@@ -260,7 +316,7 @@ const view = (props) => {
                                                             {item1.status}
                                                         </Button>
                                                         <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold', fontFamily: 'Mulish' }}>
-                                                            {getUsername(item1.createdUser)} | {(item1.createdDate?.date).replace(/\.\d+$/, '')} 
+                                                            {getUsername(item1.createdUser)} | {(item1.createdDate?.date).replace(/\.\d+$/, '')}
                                                         </div>
                                                     </Col>
 

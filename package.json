@@ -51,7 +51,7 @@
     "lodash": "^4.17.21",
     "luxon": "^2.0.1",
     "overlayscrollbars": "^1.13.1",
-    "overlayscrollbars-react": "^0.2.3",
+    "overlayscrollbars-react": "^0.5.3",
     "pigeon-maps": "^0.21.0",
     "plyr-react": "^3.0.8",
     "prop-types": "^15.8.1",

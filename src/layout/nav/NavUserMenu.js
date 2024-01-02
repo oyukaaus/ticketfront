@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { Col, Dropdown, Row } from 'react-bootstrap';
+import { Col, Dropdown, NavLink, Row } from 'react-bootstrap';
 import { MENU_PLACEMENT } from 'constants.js';
 import { LogoutOutlined } from '@mui/icons-material';
 import { layoutShowingNavMenu } from 'layout/layoutSlice';
@@ -112,7 +113,7 @@ const NavUserMenuContent = ({ userObj }) => {
             <Row className="m-0">
                 <Col xs="12" className="ps-1 mb-2">
                     <img className="profile d-inline me-3" width={70} alt='avatar'
-                         src={person?.avatar ?  person?.avatar : '../img/system/default-profile.png'} ></img>
+                        src={person?.avatar ? person?.avatar : '../img/system/default-profile.png'} ></img>
                     <div className="fs-14 font-weight-bold text-dark d-inline">{userObj?.firstName}</div>
                 </Col>
                 <Col xs="12" className="ps-1 pe-1">
@@ -151,11 +152,32 @@ const NavUserMenuContent = ({ userObj }) => {
         </div>
     )
 };
+const NotificationItem = ({ img = '', link = '', detail = '' }) => (
+    <li className="mb-3 pb-3 border-bottom border-separator-light d-flex">
+        {/* <img src={img} className="me-3 sw-4 sh-4 rounded-xl align-self-center" alt="notification" /> */}
+        <div className="align-self-center">
+            {/* <NavLink to={link} activeClassName="">
+                {detail}
+            </NavLink> */}
+            Notification
+        </div>
+    </li>
+);
 
-const NavUserMenuDropdownToggle = React.memo(
-    React.forwardRef(({ onClick, expanded = false, user = {} }, ref) => 
+const NotificationsDropdownMenu = React.memo(
+    React.forwardRef(({ style, className, labeledBy, items }, ref) => {
+        return (
+            <div ref={ref} style={style} className={classNames('dropdown-menu dropdown-menu-end user-menu wide', className)}>
+            <NotificationItem/>
+        </div>
+        );
+    })
+);
+
+const NavNotifDropdownToggle = React.memo(
+    React.forwardRef(({ onClick, expanded = false, user = {} }, ref) =>
     (
-        <a
+        <>   <a
             href='#!'
             style={{ color: '#fff' }}
             ref={ref}
@@ -168,9 +190,32 @@ const NavUserMenuDropdownToggle = React.memo(
                 onClick(e);
             }}
         >
-            <img className="profile" alt={user.firstName} src={user?.avatar ? `${user?.avatar}` : '../img/system/default-profile.png'} />
-            {/* <img className="profile" alt={user.firstName} src={person?.avatar ?  person?.avatar : '../img/system/default-profile.png'} /> */}
+            <img className="profile" alt='notif' src='/img/ticket/icon/bell.png' style={{ marginRight: 20 }} />
         </a>
+        </>
+    ))
+);
+const NavUserMenuDropdownToggle = React.memo(
+    React.forwardRef(({ onClick, expanded = false, user = {} }, ref) =>
+    (
+        <>
+            <span style={{ fontFamily: 'Mulish', fontWeight: 'bold', fontSize: 14, color: 'white', marginRight: 20 }}>  {user.lastName}{' '}  {user.firstName.toUpperCase()} </span>
+            <a
+                href='#!'
+                style={{ color: '#fff' }}
+                ref={ref}
+                className="d-flex user position-relative"
+                data-toggle="dropdown"
+                aria-expanded={expanded}
+                onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onClick(e);
+                }}
+            >
+                <img className="profile" alt={user.firstName} src={user?.avatar ? `${user?.avatar}` : '../img/system/default-profile.png'} />
+            </a>
+        </>
     ))
 );
 
@@ -223,33 +268,60 @@ const NavUserMenu = () => {
         return <></>;
     }
     return (
-        <Dropdown as="div" bsPrefix="user-container d-flex" onToggle={onToggle} show={showingNavMenu === MENU_NAME} drop="down">
-            <Dropdown.Toggle as={NavUserMenuDropdownToggle} user={person} />
-            <Dropdown.Menu
-                as={NavUserMenuDropdownMenu}
-                user={person}
-                className="dropdown-menu dropdown-menu-end user-menu wide"
-                popperConfig={{
-                    modifiers: [
-                        {
-                            name: 'offset',
-                            options: {
-                                offset: () => {
-                                    if (placement === MENU_PLACEMENT.Horizontal) {
-                                        return [0, 7];
-                                    }
-                                    if (window.innerWidth < 768) {
-                                        return [-84, 7];
-                                    }
+        <>
+            <Dropdown as="div" bsPrefix="user-container d-flex" onToggle={onToggle} drop="down">
+                <Dropdown.Toggle as={NavNotifDropdownToggle} />
+                <Dropdown.Menu
+                    as={NotificationsDropdownMenu}
+                    className="dropdown-menu dropdown-menu-end user-menu wide"
+                    popperConfig={{
+                        modifiers: [
+                            {
+                                name: 'offset',
+                                options: {
+                                    offset: () => {
+                                        if (placement === MENU_PLACEMENT.Horizontal) {
+                                            return [0, 7];
+                                        }
+                                        if (window.innerWidth < 768) {
+                                            return [-84, 7];
+                                        }
 
-                                    return [-78, 7];
+                                        return [-78, 7];
+                                    },
                                 },
                             },
-                        },
-                    ],
-                }}
-            />
-        </Dropdown>
+                        ],
+                    }}
+                />
+            </Dropdown>
+            <Dropdown as="div" bsPrefix="user-container d-flex" onToggle={onToggle} drop="down">
+                <Dropdown.Toggle as={NavUserMenuDropdownToggle} user={person} />
+                <Dropdown.Menu
+                    as={NavUserMenuDropdownMenu}
+                    user={person}
+                    className="dropdown-menu dropdown-menu-end user-menu wide"
+                    popperConfig={{
+                        modifiers: [
+                            {
+                                name: 'offset',
+                                options: {
+                                    offset: () => {
+                                        if (placement === MENU_PLACEMENT.Horizontal) {
+                                            return [0, 7];
+                                        }
+                                        if (window.innerWidth < 768) {
+                                            return [-84, 7];
+                                        }
+
+                                        return [-78, 7];
+                                    },
+                                },
+                            },
+                        ],
+                    }}
+                />
+            </Dropdown></>
     );
 };
 export default React.memo(NavUserMenu);

@@ -38,43 +38,9 @@ const Tickets = () => {
         }
     }, [])
 
-    // const onSearch = (nameKey) => {
-    //     setSearchValue(nameKey)
-    // }
-
-    // const renderData = (obj) => {
-    //     return (
-    //         <li key={`schoolItem.${obj.id}`}
-    //             className="py-2 border-bottom border-separator-light d-flex school-option" onClick={() => {
-    //                 dispatch(setSelectedSchool(obj))
-    //                 dispatch(setLoading(true));
-
-    //                 setTimeout(() => {
-    //                     window.location.href = "/";
-    //                 }, 100)
-    //                 // 
-    //             }}>
-    //             <span className="label">{obj?.name}</span>
-    //         </li>
-    //     )
-    // }
-
-
     if (tickets && tickets.length > 0) {
         return (
             <Col>
-                {/* <a
-                ref={ref}
-                href="#/"
-                className="notification-button ms-5"
-                data-toggle="dropdown"
-                aria-expanded={expanded}
-                onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    onClick(e);
-                }}
-            > */}
                 <div className="position-relative d-inline-flex" >
                     <div className='d-flex align-items-center m-2'>
                         <Link to={{

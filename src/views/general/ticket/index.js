@@ -3,7 +3,7 @@ import { useHistory } from 'react-router-dom';
 import { Card, Row, Col, Button, Dropdown } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import BreadcrumbList from 'components/breadcrumb-list/BreadcrumbList';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from 'utils/redux/action';
 import showMessage from "modules/message";
 import { fetchRequest } from 'utils/fetchRequest';
@@ -11,6 +11,8 @@ import { ticketIndex } from 'utils/fetchRequest/Urls';
 import CreateTicket from './modal/create';
 import CancelRequest from './modal/cancel';
 import EditTicket from './modal/edit'
+import classNames from '../../../../node_modules/classnames';
+
 
 const TicketPage = () => {
     const history = useHistory();
@@ -26,7 +28,11 @@ const TicketPage = () => {
     const [itemId, setItemId] = useState();
     const [searchInput, setSearchInput] = useState('');
     const types = [{ value: 1, text: 'Алдаа' }, { value: 2, text: 'Санал хүсэлт' }];
-
+    const {placementStatus: { view: placement }} = useSelector((state) => state.menu);
+    const MENU_PLACEMENT = {
+        Vertical: 'vertical',
+        Horizontal: 'horizontal',
+    };
     const breadcrumbs = [
         { to: '', text: t('menu.home') },
         { to: '/ticket/index', text: 'Санал хүсэлт' },
@@ -64,7 +70,7 @@ const TicketPage = () => {
                     setSystems(res?.systems);
                     const userOption = [];
                     res?.users.map((param) =>
-                    userOption.push({
+                        userOption.push({
                             id: param?.userId,
                             avatar: param?.avatar,
                         })
@@ -103,7 +109,7 @@ const TicketPage = () => {
         setSearchInput(inputValue);
         if (inputValue) {
             const filtered = data.filter((item) => {
-              return item.description.toLowerCase().indexOf(inputValue) !== -1;
+                return item.description.toLowerCase().indexOf(inputValue) !== -1;
             });
             setData(filtered)
         } else {
@@ -117,20 +123,60 @@ const TicketPage = () => {
     };
 
     const getUserAvatar = (userId) => {
-        console.log('users: ', users, 'userid: ', userId)
         const user = users.find((sys) => sys.id === userId);
         return user?.avatar || '/img/system/default-profile.png';
     };
-    
+
     const getTypeName = (typeId) => {
         const system = types.find((sys) => sys.value === typeId);
         return system ? system.text : 'Unknown Type';
     };
-  
+
     const cancelFetch = () => {
         console.log(itemId, 'cancelled')
     }
 
+    const NavUserMenuDropdownToggle = React.memo(
+        React.forwardRef(({ onClick, expanded = false, user = {} }, ref) =>
+        (
+            <a
+                href='#!'
+                style={{ color: '#fff' }}
+                ref={ref}
+                className="d-flex user position-relative"
+                data-toggle="dropdown"
+                aria-expanded={expanded}
+                onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    onClick(e);
+                }}
+            >
+                <img src="../img/ticket/icon/dot.png" alt="dot-icon" />
+            </a>
+        ))
+    );
+
+    const NavUserMenuDropdownMenu = React.memo(
+        React.forwardRef(({ style, className, item }, ref) => {
+            return (
+                <div ref={ref} style={style} className={classNames('dropdown-menu dropdown-menu-end user-menu wide', className)}>
+                    <Dropdown.Item onClick={() => history.push(`/ticket/view/${item.id}`)}>
+                        <img src="/img/ticket/icon/view.png" alt="dot-icon" className="color-info me-1" />Дэлгэрэнгүй харах
+                    </Dropdown.Item>
+                    {item.status === 'Шинэ' && (
+                        <Dropdown.Item onClick={() => editTicket(item.id)}>
+                            <img src="/img/ticket/icon/edit.png" alt="dot-icon" className="color-info me-1" />Хүсэлтээ засах
+                        </Dropdown.Item>
+                    )}
+                    <Dropdown.Item onClick={() => cancelTicket(item.id)} >
+                        <img src="/img/ticket/icon/x-square.png" alt="dot-icon" className="color-info me-1" />Хүсэлтээ цуцлах
+                    </Dropdown.Item>
+                </div>
+            );
+        })
+    );
+    
     useEffect(() => {
         fetchInfo()
     }, []);
@@ -174,7 +220,7 @@ const TicketPage = () => {
                         </Row>
                     </Col>
                 </Row>
-                <Row style={{ marginTop: 20}}  >
+                <Row style={{ marginTop: 20 }}  >
                     <Col style={{ color: '#FD7845', fontSize: 16, fontWeight: 'bolder', fontFamily: 'Mulish' }}>Миний илгээсэн санал хүсэлтүүд</Col>
                     <Col lg={2} className=" ">
                         <input
@@ -182,7 +228,7 @@ const TicketPage = () => {
                             value={searchInput}
                             onChange={handleSearch}
                             placeholder="Хайх..."
-                            style={{ fontFamily: 'Mulish', width:'104%' }}
+                            style={{ fontFamily: 'Mulish', width: '104%' }}
                         />
                     </Col>
                 </Row>
@@ -196,8 +242,8 @@ const TicketPage = () => {
                                         <Col xs={1} className="text-center">
                                             <Row style={{ display: 'flex' }}>
                                                 <div style={{ textAlign: 'center' }}>
-                                                    <img  className="profile d-inline me-3  rounded-circle" width={70} alt={item.createdUserId} src={getUserAvatar(item.createdUserId) ? `${getUserAvatar(item.createdUserId)}` : '../img/system/default-profile.png'} />
-                                                     </div>
+                                                    <img className="profile d-inline me-3  rounded-circle" width={70} alt={item.createdUserId} src={getUserAvatar(item.createdUserId) ? `${getUserAvatar(item.createdUserId)}` : '../img/system/default-profile.png'} />
+                                                </div>
                                             </Row>
                                         </Col>
                                         <Col>
@@ -226,26 +272,34 @@ const TicketPage = () => {
 
                                 </Col>
                                 <Col xs="1" className="d-flex align-items-start justify-content-end ">
-                                    {/* <button type="button" className="btn-icon btn-icon-only position-relative btn btn-outline-primary btn-sm">
-                                    <img src="/img/ticket/icon/dot.png" alt="dot-icon" className="color-info me-1" />
-                                    </button> */}
-                                    <Dropdown style={{ width: 20 }}>
-                                        <Dropdown.Toggle size='sm' active style={{ backgroundColor: '#FD7845' }} >
-                                        </Dropdown.Toggle>
-                                        {/* <img src="../img/ticket/icon/dot.png" alt="dot-icon"/> */}
-                                        <Dropdown.Menu>
-                                            <Dropdown.Item onClick={() => history.push(`/ticket/view/${item.id}`)}>
-                                                <img src="/img/ticket/icon/view.png" alt="dot-icon" className="color-info me-1" />Дэлгэрэнгүй харах
-                                            </Dropdown.Item>
-                                            {item.status === 'Шинэ' && (
-                                                <Dropdown.Item onClick={() => editTicket(item.id)}>
-                                                    <img src="/img/ticket/icon/edit.png" alt="dot-icon" className="color-info me-1" />Хүсэлтээ засах
-                                                </Dropdown.Item>
+                                    <Dropdown as="div" bsPrefix="user-container d-flex" drop="down">
+                                        <Dropdown.Toggle as={NavUserMenuDropdownToggle} />
+                                        <Dropdown.Menu
+                                            as={(props) => (
+                                                <NavUserMenuDropdownMenu {...props} item={item} />
                                             )}
-                                            <Dropdown.Item onClick={() => cancelTicket(item.id)} >
-                                                <img src="/img/ticket/icon/x-square.png" alt="dot-icon" className="color-info me-1" />Хүсэлтээ цуцлах
-                                            </Dropdown.Item>
-                                        </Dropdown.Menu>
+                                            // user={person}
+                                            className="dropdown-menu dropdown-menu-end user-menu wide"
+                                            popperConfig={{
+                                                modifiers: [
+                                                    {
+                                                        name: 'offset',
+                                                        options: {
+                                                            offset: () => {
+                                                                if (placement === MENU_PLACEMENT.Horizontal) {
+                                                                    return [0, 7];
+                                                                }
+                                                                if (window.innerWidth < 768) {
+                                                                    return [-84, 7];
+                                                                }
+
+                                                                return [-78, 7];
+                                                            },
+                                                        },
+                                                    },
+                                                ],
+                                            }}
+                                        />
                                     </Dropdown>
                                 </Col>
                             </Card.Body>
