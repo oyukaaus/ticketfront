@@ -432,6 +432,39 @@ const createTicketModal = ({
     const renderIdea = () => {
         return (
             <>
+            <div className='d-flex mt-08'>
+                    <label className='modal-label'>
+                        {t('ticket.school')}*
+                    </label>
+                    <div className='modal-content-container'>
+                        <table className='w-100'>
+                            <thead>
+                                <tr>
+                                    <th className='width-equal pe-2'>
+                                        <Select
+                                            value={selectedSchool}
+                                            searchable="true"
+                                            options={schoolData}
+                                            placeholder={t('ticket.school')}
+                                            required
+                                            className={schoolErrorMsg ? 'fs-14 is-invalid' : 'fs-14'}
+                                            onChange={onChangeSchool}
+                                        />
+                                        {
+                                            schoolErrorMsg ?
+                                                <div className='invalid-feedback d-block'>
+                                                    {t('errorMessage.schoolErrorMsg')}
+                                                </div>
+                                                :
+                                                null
+                                        }
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div className='modal-end'></div>
+                </div>
                 <div className='d-flex mt-08'>
                     <label className='modal-label'>
                         {t('ticket.system')}*
