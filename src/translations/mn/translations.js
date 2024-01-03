@@ -1268,6 +1268,7 @@ export const TRANSLATIONS_MN = {
       newStatus: 'Шинэ төлөв',
       changedDate: 'Өөрчлөгдсөн огноо',
       changedBy: 'Өөрчилсөн',
-      statusLog: 'Төлөв шилжилт'
+      statusLog: 'Төлөв шилжилт',
+      search: 'Шүүх'
     }
 };

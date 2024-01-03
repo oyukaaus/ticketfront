@@ -18,7 +18,6 @@ const Layout = ({ children }) => {
 
   const getMenus = () => {
     let menus = [];
-    console.log('selected: ', selectedSchool)
     // if (selectedSchool && selectedSchool?.roleCodes && isLogin) {
     //   if (selectedSchool?.roleCodes.indexOf('ROLE_DOCTOR') > -1) {
     //     if (selectedSchool?.roleCodes.indexOf('ROLE_TEACHER') > -1) {
@@ -99,13 +98,6 @@ const Layout = ({ children }) => {
             <Nav />
             <main>
               <Row className="h-100">
-                {/* {
-                  hideSideMenu
-                    ?
-                    <></>
-                    :
-                    <SidebarMenu />
-                } */}
                 <Col className="h-100" id="contentArea">
                   {children}
                 </Col>

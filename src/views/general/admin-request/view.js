@@ -50,13 +50,13 @@ const view = (outerProps) => {
     const getButtonColor = (type) => {
         switch (type) {
             case 'Шинэ':
-                return { backgroundColor: 'green', color: '#FFFFFF', fontFamily: 'Mulish' };
+                return { backgroundColor: '#FF003D', color: '#FFFFFF', fontFamily: 'Mulish' };
             case 'eSchool хүлээж авсан':
-                return { backgroundColor: 'blue', color: '#FFFFFF', fontFamily: 'Mulish' };
+                return { backgroundColor: '#EDB414', color: '#000000', fontFamily: 'Mulish' };
             case 'Хаагдсан':
-                return { backgroundColor: 'grey', color: '#FFFFFF', fontFamily: 'Mulish' };
+                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish' };
             case 'Цуцласан':
-                return { backgroundColor: 'red', color: '#FFFFFF', fontFamily: 'Mulish' };
+                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish' };
             default:
                 return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish' };
         }
@@ -73,7 +73,7 @@ const view = (outerProps) => {
     const ticketClose = () => {
         setShowCloseTicket(true);
     };
-    
+
     const statusLogShow = () => {
         setShowStatusLog(true);
     };
@@ -183,7 +183,7 @@ const view = (outerProps) => {
 
     return (
         <>
-            <Row>
+            <>
                 {data.map((item, i) => (
                     <Row key={i} style={{ marginTop: 10 }}>
                         <Card className="mb-4">
@@ -223,7 +223,7 @@ const view = (outerProps) => {
                                         </Row>
 
                                         <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold' }}>
-                                            {(item.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight:'bold' }}> | </span> {item.type} <span style={{ color: 'orange', fontWeight:'bold' }}> | </span> {getSystemName(item.systemId)}
+                                            {(item.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {item.type} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {getSystemName(item.systemId)}
                                         </div>
                                     </Col>
                                 </Row>
@@ -233,11 +233,19 @@ const view = (outerProps) => {
                                             #{item.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {item.description}</span>
                                         </div>
                                     </Col>
-                                    {/* <Col xs={1}>
-                                    </Col> */}
-                                    <Col xs="1" className="d-flex align-items-end justify-content-end mb-2 mb-sm-0 order-sm-3">
-
-                                        <img className="profile d-inline me-3  rounded-circle"  width='70%'alt={item.assigneeId}
+                                </Row>
+                                <Row className="d-flex align-items-end justify-content-end " >
+                                    <Col lg={1}>
+                                        {item.files && item.files.map((dtlItem, index) => (
+                                            <div key={index} className="text-center">
+                                                <img src={dtlItem.path} alt={`Image ${index}`} width='100' onClick={() => openImageInNewWindow(dtlItem.path)} />
+                                            </div>
+                                        ))}
+                                    </Col>
+                                    <Col lg={10}></Col>
+                                    
+                                    <Col xs={1} className="d-flex align-items-end justify-content-end ">
+                                        <img className="profile d-inline me-3  rounded-circle" width='60%' alt={item.assigneeId}
                                             src={getAssigneeAvatar(item.assigneeId) ? `${getAssigneeAvatar(item.assigneeId)}` : '../img/system/default-profile.png'} />
                                         <Dropdown as="div" bsPrefix="user-container d-flex" drop="down">
                                             <Dropdown.Toggle as={NavUserMenuDropdownToggle} />
@@ -245,7 +253,6 @@ const view = (outerProps) => {
                                                 as={(props) => (
                                                     <NavUserMenuDropdownMenu {...props} item={item} />
                                                 )}
-                                                // user={person}
                                                 className="dropdown-menu dropdown-menu-end user-menu wide"
                                                 style={{
                                                     position: 'absolute',
@@ -275,28 +282,17 @@ const view = (outerProps) => {
 
                                     </Col>
                                 </Row>
-                                <Row className="d-flex align-items-end justify-content-end " >
-                                    <Col lg={1}>
-                                        {item.files && item.files.map((dtlItem, index) => (
-                                            <div key={index} className="text-center">
-                                                <img src={dtlItem.path} alt={`Image ${index}`} width='100' onClick={() => openImageInNewWindow(dtlItem.path)} />
-                                                {/* {dtlItem.name} */}
-                                            </div>
-                                        ))}
-                                    </Col>
-                                    <Col lg={11}></Col>
-                                </Row>
                             </Card.Body>
                         </Card>
                     </Row>
                 ))}
-            </Row>
+            </>
 
-            <Row style={{ width: '100.5%' }}>
+            <>
                 {replyData.map((item1, i) => (
-                    <>
-                        <Col key={i} lg={1}></Col>
-                        <Col lg={11}>
+                    <div key={i} style={{ marginLeft: '5%', width: '95.7%' }}>
+                        {/* <Col lg={1}><div></div></Col> */}
+                        <Col >
                             <Card className="mb-3">
                                 <Card.Body className="d-flex flex-row align-content-center align-items-center position-relative mb-3">
                                     <Col xs={12}>
@@ -304,7 +300,7 @@ const view = (outerProps) => {
                                             <Col xs={1} className="text-center">
                                                 <Row style={{ display: 'flex' }}>
                                                     <div style={{ textAlign: 'center' }}>
-                                                        <img className="profile d-inline me-3  rounded-circle"  width='70%' alt={item1.createdUser} src={getUserAvatar(item1.createdUser) ? `${getUserAvatar(item1.createdUser)}` : '../img/system/default-profile.png'} />
+                                                        <img className="profile d-inline me-3  rounded-circle" width='70%' alt={item1.createdUser} src={getUserAvatar(item1.createdUser) ? `${getUserAvatar(item1.createdUser)}` : '../img/system/default-profile.png'} />
                                                     </div>
                                                 </Row>
 
@@ -321,7 +317,7 @@ const view = (outerProps) => {
                                                             {item1.status}
                                                         </Button>
                                                         <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold', fontFamily: 'Mulish' }}>
-                                                            {getUsername(item1.createdUser)} <span style={{ color: 'orange', fontWeight:'bold' }}> | </span> {(item1.createdDate?.date).replace(/\.\d+$/, '')}
+                                                            {getUsername(item1.createdUser)} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {(item1.createdDate?.date).replace(/\.\d+$/, '')}
                                                         </div>
                                                     </Col>
 
@@ -348,9 +344,9 @@ const view = (outerProps) => {
                                 </Card.Body>
                             </Card>
                         </Col>
-                    </>
+                    </div>
                 ))}
-            </Row>
+            </>
             <Row>
                 {
                     showAssignTicket &&
@@ -395,7 +391,7 @@ const view = (outerProps) => {
                     />
                 }
             </Row>
-            
+
         </>
     );
 };

@@ -83,13 +83,13 @@ const AdminRequest = () => {
     const getButtonColor = (type) => {
         switch (type) {
             case 1:
-                return { backgroundColor: 'green', color: '#FFFFFF', fontFamily: 'Mulish' };
+                return { backgroundColor: '#FF003D', color: '#FFFFFF', fontFamily: 'Mulish' };
             case 2:
-                return { backgroundColor: 'blue', color: '#FFFFFF', fontFamily: 'Mulish' };
+                return { backgroundColor: '#EDB414', color: '#000000', fontFamily: 'Mulish' };
             case 3:
-                return { backgroundColor: 'grey', color: '#FFFFFF', fontFamily: 'Mulish' };
+                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish' };
             case 4:
-                return { backgroundColor: 'red', color: '#FFFFFF', fontFamily: 'Mulish' };
+                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish' };
             default:
                 return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish' };
         }
@@ -300,7 +300,7 @@ const AdminRequest = () => {
 
     return (
         <>
-            <Row>
+            <>
                 <Col lg={12} className="mb-3">
                     <h2 className='font-standard mb-0'>
                         {/* {t('dashboard.appointment')} */}
@@ -445,27 +445,18 @@ const AdminRequest = () => {
 
                                         </Col>
                                     </Row>
-                                    <Row style={{ marginTop: 10 }}>
+                                    <Row style={{ marginTop: 30, marginBottom:10 }} className=' border-separator-light border-top d-flex'></Row>
+                                    <Row >
                                         <Col lg={5}>
                                         </Col>
                                         <Col lg={3} className='d-flex p-2  align-items-center'>
-                                            <Button
-                                                variant="outline-info"
-                                                className='text-red text-uppercase br-8 py-2'
-                                                onClick={onclickClear}
-                                            >
-                                                <TuneRounded />
+                                            <Button  onClick={onclickClear} size="sm" variant="link">
                                                 {t('common.clear')}
                                             </Button>
-                                            <Button
-                                                variant="aqua"
-                                                className='text-white text-uppercase br-8 py-2'
-                                                onClick={onSeeClick}
-                                                style={{ marginLeft: 20 }}
-                                            >
-                                                <TuneRounded />
-                                                {t('common.search')}
+                                            <Button  variant="aqua" className="fs-12 br-8 ps-4 pe-4 " style={{ width: 120, color:'white', marginLeft:20 }} size="sm"  onClick={onSeeClick}>
+                                            <img src='../img/ticket/icon/filter.png' alt='school-icon' className='color-info me-1' />{t('ticket.search')}
                                             </Button>
+
                                         </Col>
                                         <Col lg={4}>
 
@@ -491,18 +482,17 @@ const AdminRequest = () => {
                     </Col>
                 </Row>
                 <Row style={{ marginTop: 20 }}>
-                    <Col style={{ color: '#FD7845', fontSize: 16, fontWeight: 'bolder', fontFamily: 'Mulish' }}>Ирсэн санал хүсэлтүүд</Col>
-                    <Col md={3} className="d-flex align-items-end justify-content-end ">
+                    <Col lg={4} style={{ color: '#FD7845', fontSize: 16, fontWeight: 'bolder', fontFamily: 'Mulish' }}>Ирсэн санал хүсэлтүүд</Col>
+                    <Col lg={5}></Col>
+                    <Col lg={3} className="d-flex align-items-end justify-content-end ">
                         <input
                             className="form-control datatable-search align-items-end justify-content-end "
                             value={searchInput}
                             onChange={handleSearch}
                             placeholder="Хайх..."
-                            style={{ fontFamily: 'Mulish' }}
+                            style={{ fontFamily: 'Mulish', borderRadius:10 }}
                         />
-                    </Col>
-                    <Col xs={1} className="d-flex align-items-end justify-content-end ">
-                        <img src="../img/ticket/icon/xls.png" alt="dot-icon" className="color-info me-1" onClick={handleDownloadExcel} />
+                        <img src="../img/ticket/icon/xls.png" alt="dot-icon" className="color-info me-1" style={{marginLeft:10}} onClick={handleDownloadExcel} />
                     </Col>
                 </Row>
                 {data.map((item, i) => (
@@ -541,7 +531,7 @@ const AdminRequest = () => {
                                                     type="button"
                                                     size="sm"
                                                     disabled
-                                                    style={{ backgroundColor: '#FD7845', fontFamily: 'Mulish' , color:'#000000', marginLeft:10}}
+                                                    style={{ backgroundColor: '#FD7845', fontFamily: 'Mulish', color: '#000000', marginLeft: 10 }}
                                                 >
                                                     {getSchoolName(item.schoolId)}
                                                 </Button>
@@ -573,7 +563,7 @@ const AdminRequest = () => {
                         </Card>
                     </Row>
                 ))}
-            </Row>
+            </>
         </>
     );
 };

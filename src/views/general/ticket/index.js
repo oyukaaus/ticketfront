@@ -46,13 +46,13 @@ const TicketPage = () => {
     const getButtonColor = (type) => {
         switch (type) {
             case 'Шинэ':
-                return { backgroundColor: 'green', color: '#FFFFFF', fontFamily: 'Mulish' };
+                return { backgroundColor: '#FF003D', color: '#FFFFFF', fontFamily: 'Mulish' };
             case 'eSchool хүлээж авсан':
-                return { backgroundColor: 'blue', color: '#FFFFFF', fontFamily: 'Mulish' };
+                return { backgroundColor: '#EDB414', color: '#000000', fontFamily: 'Mulish' };
             case 'Хаагдсан':
-                return { backgroundColor: 'grey', color: '#FFFFFF', fontFamily: 'Mulish' };
+                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish' };
             case 'Цуцласан':
-                return { backgroundColor: 'red', color: '#FFFFFF', fontFamily: 'Mulish' };
+                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish' };
             default:
                 return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish' };
         }
@@ -181,7 +181,7 @@ const TicketPage = () => {
     }, []);
     return (
         <>
-            <Row>
+            <>
                 <Col lg={12} className="mb-3">
                     <h2 className='font-standard mb-0'>
                         {t('ticket.idea')}
@@ -306,7 +306,7 @@ const TicketPage = () => {
                         </Card>
                     </Row>
                 ))}
-            </Row>
+            </>
             <Row>
                 {
                     showCreateTicket &&

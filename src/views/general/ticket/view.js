@@ -36,13 +36,13 @@ const view = (outerProps) => {
     const getButtonColor = (type) => {
         switch (type) {
             case 'Шинэ':
-                return { backgroundColor: 'green', color: '#FFFFFF', fontFamily: 'Mulish' };
+                return { backgroundColor: '#FF003D', color: '#FFFFFF', fontFamily: 'Mulish' };
             case 'eSchool хүлээж авсан':
-                return { backgroundColor: 'blue', color: '#FFFFFF', fontFamily: 'Mulish' };
+                return { backgroundColor: '#EDB414', color: '#000000', fontFamily: 'Mulish' };
             case 'Хаагдсан':
-                return { backgroundColor: 'grey', color: '#FFFFFF', fontFamily: 'Mulish' };
+                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish' };
             case 'Цуцласан':
-                return { backgroundColor: 'red', color: '#FFFFFF', fontFamily: 'Mulish' };
+                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish' };
             default:
                 return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish' }; // Default button color
         }
@@ -149,7 +149,7 @@ const view = (outerProps) => {
     }, []);
     return (
         <>
-            <Row>
+            <>
                 {data.map((item, i) => (
                     <Row key={i} style={{ marginTop: 10 }}>
                         <Card className="mb-3">
@@ -175,8 +175,8 @@ const view = (outerProps) => {
                                             </Button>
                                             <div style={{ color: 'black', fontSize: 14 }}>
                                                 <div>
-                                                    {getUsername(item.createdUser)} <span style={{ color: 'orange', fontWeight:'bold' }}> | </span>{' '}
-                                                    {(item.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight:'bold' }}> | </span>{item.type} <span style={{ color: 'orange', fontWeight:'bold' }}> | </span>{' '}
+                                                    {getUsername(item.createdUser)} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span>{' '}
+                                                    {(item.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span>{item.type} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span>{' '}
                                                     {getSystemName(item.systemId)}
                                                 </div>
 
@@ -244,10 +244,10 @@ const view = (outerProps) => {
                     </Row>
 
                 ))}
-            </Row>
+            </>
 
             {replyData.map((item, i) => (
-                <Row key={i} style={{ width: '100.8%' }}>
+                <div key={i} style={{ marginLeft: '5%', width: '95.7%' }}>
                     <Col lg={1}></Col>
                     <Col className="mb-3">
                         <Card className="mb-3">
@@ -268,7 +268,7 @@ const view = (outerProps) => {
                                                 <Col>
 
                                                     <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold', fontFamily: 'Mulish' }}>
-                                                        {getUsername(item.createdUser)} <span style={{ color: 'orange', fontWeight:'bold' }}> | </span> {(item.createdDate?.date).replace(/\.\d+$/, '')}
+                                                        {getUsername(item.createdUser)} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {(item.createdDate?.date).replace(/\.\d+$/, '')}
                                                     </div>
                                                 </Col>
                                             </Row>
@@ -296,7 +296,7 @@ const view = (outerProps) => {
                             </Card.Body>
                         </Card>
                     </Col>
-                </Row>
+                </div>
 
             ))}
             <Row>
