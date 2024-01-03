@@ -190,7 +190,7 @@ const NavNotifDropdownToggle = React.memo(
                 onClick(e);
             }}
         >
-            <img className="profile" alt='notif' src='/img/ticket/icon/bell.png' style={{ marginRight: 20 }} />
+            <img alt='notif' src='/img/ticket/icon/bell.png' style={{ marginRight: 20 }} width="50%" />
         </a>
         </>
     ))
