@@ -50,15 +50,15 @@ const view = (outerProps) => {
     const getButtonColor = (type) => {
         switch (type) {
             case 'Шинэ':
-                return { backgroundColor: '#FF003D', color: '#FFFFFF', fontFamily: 'Mulish' };
+                return { backgroundColor: '#FF003D', color: '#FFFFFF', fontFamily: 'Mulish', opacity:1 };
             case 'eSchool хүлээж авсан':
-                return { backgroundColor: '#EDB414', color: '#000000', fontFamily: 'Mulish' };
+                return { backgroundColor: '#EDB414', color: '#000000', fontFamily: 'Mulish', opacity:1 };
             case 'Хаагдсан':
-                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish' };
+                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity:1 };
             case 'Цуцласан':
-                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish' };
+                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity:1 };
             default:
-                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish' };
+                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish', opacity:1 };
         }
     };
 
@@ -146,11 +146,12 @@ const view = (outerProps) => {
         React.forwardRef(({ style, className, item }, ref) => {
             return (
                 <div ref={ref} style={style} className={classNames('dropdown-menu dropdown-menu-start user-menu wide', className)}>
-                    <Dropdown.Item onClick={() => {
-                        ticketAssign();
-                    }}><img src="../../img/ticket/icon/user-profile-add.png" alt="view-icon" /> Хариуцагчийг солих</Dropdown.Item>
-                    <Dropdown.Item onClick={() => ticketReply()}><img src="../../img/ticket/icon/file-input.png" alt="fileinput-icon" /> Хариу бичих</Dropdown.Item>
-                    <Dropdown.Item onClick={() => ticketClose()}><img src="../../img/ticket/icon/file-check-2.png" alt="filecheck-icon" /> Хүсэлтийг хаах</Dropdown.Item>
+                    {(item.status === 'Шинэ' || item.status === 'eSchool хүлээж авсан') && (
+                        <>
+                            <Dropdown.Item onClick={() => ticketAssign()}><img src="../../img/ticket/icon/user-profile-add.png" alt="view-icon" /> Хариуцагчийг солих</Dropdown.Item>
+                            <Dropdown.Item onClick={() => ticketReply()}><img src="../../img/ticket/icon/file-input.png" alt="fileinput-icon" /> Хариу бичих</Dropdown.Item>
+                            <Dropdown.Item onClick={() => ticketClose()}><img src="../../img/ticket/icon/file-check-2.png" alt="filecheck-icon" /> Хүсэлтийг хаах</Dropdown.Item>
+                        </>)}
                     <Dropdown.Item onClick={() => statusLogShow()}><img src="../../img/ticket/icon/file-check-2.png" alt="filecheck-icon" />Төлөв шилжилт харах</Dropdown.Item>
                 </div>
             );
@@ -243,7 +244,7 @@ const view = (outerProps) => {
                                         ))}
                                     </Col>
                                     <Col lg={10}></Col>
-                                    
+
                                     <Col xs={1} className="d-flex align-items-end justify-content-end ">
                                         <img className="profile d-inline me-3  rounded-circle" width='60%' alt={item.assigneeId}
                                             src={getAssigneeAvatar(item.assigneeId) ? `${getAssigneeAvatar(item.assigneeId)}` : '../img/system/default-profile.png'} />

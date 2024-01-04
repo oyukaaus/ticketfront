@@ -45,6 +45,8 @@ const createTicketModal = ({
     const [subMenuErrorMsg, setSubMenuErrorMsg] = useState(false);
     const [schoolErrorMsg, setSchoolErrorMsg] = useState(false);
     const [descriptionErrorMsg, setDescriptionErrorMsg] = useState(false);
+    const [exampleErrorMsg, setExampleErrorMsg] = useState(false);
+    const [imageError, setImageError] = useState(false);
 
     const fetchMenu = async (item) => {
         fetchRequest(ticketMenu, 'POST', {
@@ -117,6 +119,7 @@ const createTicketModal = ({
 
     const onChangeExample = (e) => {
         setExample(e.target.value);
+        setExampleErrorMsg(false)
     }
 
     const requestFields = [
@@ -125,7 +128,8 @@ const createTicketModal = ({
             label: 'Файл хавсаргах',
             value: '',
             type: 'fileUpload',
-            required: false,
+            // required: true,
+            error: imageError,
             fileName: '',
             multiple: true,
             isExtendedButton: true,
@@ -169,7 +173,12 @@ const createTicketModal = ({
         const [isValid] = formRefRequest.current.validate();
         if (isValid) {
             let hasError = false;
+            console.log('fileData.length: ', fileData.length)
             if (isIssue) {
+                if (selectedSchool === null) {
+                    setSchoolErrorMsg(true);
+                    hasError = true;
+                }
                 if (selectedSystem === null) {
                     setSystemErrorMsg(true);
                     hasError = true;
@@ -186,13 +195,28 @@ const createTicketModal = ({
                     setDescriptionErrorMsg(true);
                     hasError = true;
                 }
+                if (example === '') {
+                    setExampleErrorMsg(true);
+                    hasError = true;
+                }
+                console.log('fileData', fileData)
+                if (fileData.length === 0) {
+                    setImageError(true);
+                }
             } else {
+                if (selectedSchool === null) {
+                    setSchoolErrorMsg(true);
+                    hasError = true;
+                }
                 if (selectedSystem === null) {
                     setSystemErrorMsg(true);
                     hasError = true;
                 }
                 if (description === '') {
                     setDescriptionErrorMsg(true);
+                    hasError = true;
+                } if (fileData.length === 0) {
+                    setImageError(true);
                     hasError = true;
                 }
             }
@@ -378,9 +402,9 @@ const createTicketModal = ({
                     </div>
                     <div className='modal-end'></div>
                 </div>
-                <div className='d-flex mt-08'>
-                    <label className='modal-label'>
-                        {t('ticket.issue')}*
+                <div className='d-flex flex-wrap mt-08'> 
+                <label className='modal-label mb-2 mt-2 mt-md-2' >
+                        <span style={{marginLeft:20}}>{t('ticket.issue')}*</span>
                     </label>
                     <div className='modal-content-container'>
                         <Row className='gx-0'>
@@ -414,25 +438,48 @@ const createTicketModal = ({
                         <Row className='gx-0'>
                             <Col className='pe-2'>
                                 <Form.Control
+                                    className={exampleErrorMsg && 'is-invalid form-control'}
                                     type='text'
                                     onInput={(e) => onChangeExample(e)}
                                     placeholder={t('ticket.example')}
                                     value={example}
+                                    required
                                 />
+                                {
+                                    exampleErrorMsg ?
+                                        <div className='invalid-feedback d-block'>
+                                            {t('errorMessage.exampleErrorMsg')}
+                                        </div>
+                                        :
+                                        null
+                                }
                             </Col>
                         </Row>
                     </div>
                     <div className='modal-end'></div>
                 </div>
+                <div className='d-flex mt-08'>
+                    <label className='modal-label'>
+                    </label>
+                    <div className='modal-content-container'>
+                        <Row className='gx-0'>
+                            <Col className='pe-2' style={{ color: '#000000', fontSize: 14, fontFamily: 'Mulish' }}>
+                            Жишээ болгож алдаа гарч байгаа хэрэглэгчийн мэдээллийг оруулна уу.
+                            </Col>
+                        </Row>
+                    </div>
+                    <div className='modal-end'></div>
+                </div>
+                
+                <span></span>
             </>
         )
     }
 
-
     const renderIdea = () => {
         return (
             <>
-            <div className='d-flex mt-08'>
+                <div className='d-flex mt-08'>
                     <label className='modal-label'>
                         {t('ticket.school')}*
                     </label>
@@ -572,24 +619,30 @@ const createTicketModal = ({
                         renderIdea()
                 }
                 <Forms ref={formRefRequest} fields={requestFields} />
-                {/* {
-                    isIssue
-                        ?
-
-                        <div>
-                             <Select
-                                            value={selectedMenu}
-                                            searchable="true"
-                                            options={menuList}
-                                            placeholder={t('common.chooseClass')}
-                                            className='fs-14'
-                                            onChange={onChangeMenu}
-                                        />
-                            <Forms  ref={formRefIssue} fields={issueFields} />
-                        </div>
-                        :
-                        <Forms ref={formRefRequest} fields={requestFields} />
-                } */}
+                <div className='d-flex mt-08'>
+                    <label className='modal-label'>
+                        {/* {t('ticket.school')}* */}
+                    </label>
+                    <div className='modal-content-container'>
+                        <table className='w-100'>
+                            <thead>
+                                <tr>
+                                    <th className='width-equal pe-2  d-flex align-items-center text-right'>
+                                        {
+                                            imageError ?
+                                                <div className='invalid-feedback d-block'>
+                                                    {t('errorMessage.imageError')}
+                                                </div>
+                                                :
+                                                null
+                                        }
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div className='modal-end'></div>
+                </div>
             </Modal.Body>
             <Modal.Footer className='d-flex justify-content-center'>
                 <Button

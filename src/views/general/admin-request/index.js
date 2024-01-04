@@ -8,7 +8,6 @@ import { setLoading } from 'utils/redux/action';
 import showMessage from "modules/message";
 import { fetchRequest } from 'utils/fetchRequest';
 import { ticketIndex, ticketList } from 'utils/fetchRequest/Urls';
-import { TuneRounded } from '@mui/icons-material';
 import DatePickerRange from 'modules/Form/DatePickerRange';
 import Select from 'modules/Form/Select';
 import * as XLSX from 'xlsx';
@@ -45,6 +44,10 @@ const AdminRequest = () => {
     const [requesters, setRequester] = useState([]);
     const [avatars, setUserAvatars] = useState([]);
     const current = new Date();
+    const [dateRange, setDateRange] = useState({
+        startDate: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000),
+        endDate: new Date(), 
+    });
     const dateTimeToday = current.getFullYear() + "-" + ("00" + (current.getMonth() + 1)).slice(-2) + "-" + ("00" + (current.getDate())).slice(-2) + " " + current.getHours() + ":" + ("00" + (current.getMinutes())).slice(-2) + ":" + ("00" + (current.getSeconds())).slice(-2);
     const generateExcelFile = (reportData, filename) => {
         const workbook = XLSX.utils.book_new();
@@ -83,15 +86,15 @@ const AdminRequest = () => {
     const getButtonColor = (type) => {
         switch (type) {
             case 1:
-                return { backgroundColor: '#FF003D', color: '#FFFFFF', fontFamily: 'Mulish' };
+                return { backgroundColor: '#FF003D', color: '#FFFFFF', fontFamily: 'Mulish', opacity:1 };
             case 2:
-                return { backgroundColor: '#EDB414', color: '#000000', fontFamily: 'Mulish' };
+                return { backgroundColor: '#EDB414', color: '#000000', fontFamily: 'Mulish' , opacity:1};
             case 3:
-                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish' };
+                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish' , opacity:1};
             case 4:
-                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish' };
+                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity:1 };
             default:
-                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish' };
+                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish', opacity:1 };
         }
     };
 
@@ -196,11 +199,16 @@ const AdminRequest = () => {
     }
 
     const onclickClear = () => {
-        if (startDate && endDate) {
-            loadDetailsClear(startDate, endDate);
-        } else {
-            setErrorDueDate(true);
-        }
+        setStartDate(dateRange.startDate);
+        setEndDate(dateRange.endDate);
+        setSelectedAssignees([]);
+        setSelectedSchools([]);
+        setSelectedStatus([]);
+        setSelectedRequesters([]);
+        setSelectedTypes([]);
+        setSelectedSystems([]);
+        console.log(startDate)
+        loadDetailsClear(startDate, endDate);
     };
 
     const fetchInfo = async (start = null, end = null, page = 1, pageSize = 10, query = null, sortBy = null, order = null) => {
@@ -384,12 +392,12 @@ const AdminRequest = () => {
                                                 </Col>
                                             </Row>
                                         </Col>
-                                        <Col lg={6}>
+                                        <Col lg={4}>
                                             <Row className='d-flex justify-content-between align-items-center'>
-                                                <Col lg={4}>
+                                                <Col>
                                                     <label className='modal-label'>{t('common.date')}</label>
                                                 </Col>
-                                                <Col lg={8}>
+                                                <Col>
                                                     <DatePickerRange
                                                         onChange={(val) => handleInspectionDateChange(val)}
                                                         firstPlaceHolder={t('common.startDate')}
@@ -401,10 +409,21 @@ const AdminRequest = () => {
                                                         disableWithFirst={true}
                                                         disableWithLast={true}
                                                     />
+                                                    {
+                                                        errorDueDate &&
+                                                        <Row>
+                                                            <Col sm={4}></Col>
+                                                            <Col sm={8} className='d-flex p-0 text-center'>
+                                                                <div className='invalid-feedback d-block'>
+                                                                    {t('errorMessage.selectDate')}
+                                                                </div>
+                                                            </Col>
+                                                        </Row>
+                                                    }
                                                 </Col>
                                             </Row>
                                         </Col>
-                                        <Col lg={2}>
+                                        <Col lg={4}>
                                         </Col>
                                     </Row>
 
@@ -445,16 +464,16 @@ const AdminRequest = () => {
 
                                         </Col>
                                     </Row>
-                                    <Row style={{ marginTop: 30, marginBottom:10 }} className=' border-separator-light border-top d-flex'></Row>
+                                    <Row style={{ marginTop: 30, marginBottom: 10 }} className=' border-separator-light border-top d-flex'></Row>
                                     <Row >
                                         <Col lg={5}>
                                         </Col>
                                         <Col lg={3} className='d-flex p-2  align-items-center'>
-                                            <Button  onClick={onclickClear} size="sm" variant="link">
+                                            <Button onClick={onclickClear} size="sm" variant="link">
                                                 {t('common.clear')}
                                             </Button>
-                                            <Button  variant="aqua" className="fs-12 br-8 ps-4 pe-4 " style={{ width: 120, color:'white', marginLeft:20 }} size="sm"  onClick={onSeeClick}>
-                                            <img src='../img/ticket/icon/filter.png' alt='school-icon' className='color-info me-1' />{t('ticket.search')}
+                                            <Button variant="aqua" className="fs-12 br-8 ps-4 pe-4 " style={{ width: 120, color: 'white', marginLeft: 20 }} size="sm" onClick={onSeeClick}>
+                                                <img src='../img/ticket/icon/filter.png' alt='school-icon' className='color-info me-1' />{t('ticket.search')}
                                             </Button>
 
                                         </Col>
@@ -462,19 +481,7 @@ const AdminRequest = () => {
 
                                         </Col>
                                     </Row>
-                                    {
-                                        errorDueDate &&
-                                        <Row>
-                                            <Col sm={3}></Col>
-                                            <Col sm={3} className='d-flex p-0 text-center'>
-                                                <div className='invalid-feedback d-block'>
-                                                    {t('errorMessage.selectDate')}
-                                                </div>
-                                            </Col>
-                                            <Col sm={4}>
-                                            </Col>
-                                        </Row>
-                                    }
+
                                 </Card.Body>
                             </Card>
                         </Col>
@@ -490,9 +497,9 @@ const AdminRequest = () => {
                             value={searchInput}
                             onChange={handleSearch}
                             placeholder="Хайх..."
-                            style={{ fontFamily: 'Mulish', borderRadius:10 }}
+                            style={{ fontFamily: 'Mulish', borderRadius: 10 }}
                         />
-                        <img src="../img/ticket/icon/xls.png" alt="dot-icon" className="color-info me-1" style={{marginLeft:10}} onClick={handleDownloadExcel} />
+                        <img src="../img/ticket/icon/xls.png" alt="dot-icon" className="color-info me-1" style={{ marginLeft: 10 }} onClick={handleDownloadExcel} />
                     </Col>
                 </Row>
                 {data.map((item, i) => (
@@ -500,26 +507,17 @@ const AdminRequest = () => {
                         <Card className="mb-3">
                             <Card.Body>
                                 <Row className="d-flex flex-row align-content-center align-items-center position-relative">
-                                    <Col sm={1} className="text-center flex-row">
-                                        <Row style={{ display: 'flex' }}>
-                                            <div style={{ textAlign: 'center' }}>
-                                                <img
-                                                    className="profile d-inline me-3 rounded-circle"
-                                                    width='70%'
-                                                    alt={item?.createdUserId}
-                                                    src={
-                                                        getUserAvatar(item?.createdUserId)
-                                                            ? `${getUserAvatar(item?.createdUserId)}`
-                                                            : '../img/system/default-profile.png'
-                                                    }
-                                                />
-                                            </div>
-                                        </Row>
-                                    </Col>
+                                <Col xs={1} className="text-center">
+                                            <Row style={{ display: 'flex' }}>
+                                            <div className="d-flex justify-content-center">
+                                                    <img className="profile rounded-circle" width='45' alt={item.createdUserId} src={getUserAvatar(item.createdUserId) ? `${getUserAvatar(item.createdUserId)}` : '../img/system/default-profile.png'} />
+                                                </div>
+                                            </Row>
+                                        </Col>
                                     <Col>
                                         <Row>
                                             <Col>
-                                                <Button className='position-relative d-inline-flex'
+                                                <Button className='position-relative d-inline-flex '
                                                     type="button"
                                                     size="sm"
                                                     disabled
@@ -538,13 +536,13 @@ const AdminRequest = () => {
                                             </Col>
                                         </Row>
 
-                                        <div style={{ color: 'black', fontSize: 14, fontWeight: 'semibold' }}>
-                                            {item?.createdDate?.date && (item?.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight: 'bold' }}> <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> </span> {getTypeName(item?.typeId)} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {getSystemName(item?.systemId)}
+                                        <div style={{ color: 'black', fontSize: 14, fontWeight: 'semibold', opacity:1 }}>
+                                            {item?.createdDate?.date && (item?.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight: 'bold', opacity:1 }}> <span style={{ color: 'orange', fontWeight: 'bold', opacity:1 }}> | </span> </span> {getTypeName(item?.typeId)} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {getSystemName(item?.systemId)}
                                         </div>
                                     </Col>
                                 </Row>
                                 <Row>
-                                    <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
+                                    <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold' , opacity:1}}>
                                         #{item?.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {item?.description}</span>
                                     </div>
                                 </Row>

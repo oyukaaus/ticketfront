@@ -46,15 +46,15 @@ const TicketPage = () => {
     const getButtonColor = (type) => {
         switch (type) {
             case 'Шинэ':
-                return { backgroundColor: '#FF003D', color: '#FFFFFF', fontFamily: 'Mulish' };
+                return { backgroundColor: '#FF003D', color: '#FFFFFF', fontFamily: 'Mulish', opacity: 1 };
             case 'eSchool хүлээж авсан':
-                return { backgroundColor: '#EDB414', color: '#000000', fontFamily: 'Mulish' };
+                return { backgroundColor: '#EDB414', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
             case 'Хаагдсан':
-                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish' };
+                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
             case 'Цуцласан':
-                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish' };
+                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
             default:
-                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish' };
+                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
         }
     };
     // const [dropdownStates, setDropdownStates] = useState(Array(data.length).fill(false));
@@ -165,13 +165,15 @@ const TicketPage = () => {
                         <img src="/img/ticket/icon/view.png" alt="dot-icon" className="color-info me-1" />Дэлгэрэнгүй харах
                     </Dropdown.Item>
                     {item.status === 'Шинэ' && (
-                        <Dropdown.Item onClick={() => editTicket(item.id)}>
-                            <img src="/img/ticket/icon/edit.png" alt="dot-icon" className="color-info me-1" />Хүсэлтээ засах
-                        </Dropdown.Item>
+                        <>
+                            <Dropdown.Item onClick={() => editTicket(item.id)}>
+                                <img src="/img/ticket/icon/edit.png" alt="dot-icon" className="color-info me-1" />Хүсэлтээ засах
+                            </Dropdown.Item>
+                            <Dropdown.Item onClick={() => cancelTicket(item.id)} >
+                                <img src="/img/ticket/icon/x-square.png" alt="dot-icon" className="color-info me-1" />Хүсэлтээ цуцлах
+                            </Dropdown.Item>
+                        </>
                     )}
-                    <Dropdown.Item onClick={() => cancelTicket(item.id)} >
-                        <img src="/img/ticket/icon/x-square.png" alt="dot-icon" className="color-info me-1" />Хүсэлтээ цуцлах
-                    </Dropdown.Item>
                 </div>
             );
         })
@@ -198,11 +200,11 @@ const TicketPage = () => {
                         <Row>
                             <Card>
                                 <Card.Body>
-                                    <Row className='center'>
-                                        <Col lg={3}></Col>
-                                        <Col lg={2}>
+                                    <Row className='justify-content-center'>
+                                        <Col lg={2}></Col>
+                                        <Col lg={1}>
                                             <img src='../img/ticket/Group.png' alt='school-icon' className='color-info me-1' /></Col>
-                                        <Col lg={5} className='d-flex align-items-center justify-content-center' style={{ color: '#000000', display: 'flex' }}>
+                                        <Col lg={8} xs={8} className='d-flex align-items-center justify-content-center'>
                                             <Row className='d-flex align-items-center'>
                                                 <div style={{ textAlign: 'center', color: '#000000', fontFamily: 'Mulish', fontSize: 12 }}>
                                                     Системтэй холбоотой санал хүсэлт, алдааны мэдээллээ бидэнд илгээнэ үү.
@@ -212,7 +214,7 @@ const TicketPage = () => {
                                                 </div>
                                             </Row>
                                         </Col>
-                                        <Col lg={3}></Col>
+                                        <Col lg={1}></Col>
                                     </Row>
                                 </Card.Body>
                             </Card>
@@ -242,8 +244,8 @@ const TicketPage = () => {
                                     <Row>
                                         <Col xs={1} className="text-center">
                                             <Row style={{ display: 'flex' }}>
-                                                <div style={{ textAlign: 'center' }}>
-                                                    <img className="profile rounded-circle" width='70%' alt={item.createdUserId} src={getUserAvatar(item.createdUserId) ? `${getUserAvatar(item.createdUserId)}` : '../img/system/default-profile.png'} />
+                                            <div className="d-flex justify-content-center">
+                                                    <img className="profile rounded-circle" width='45' alt={item.createdUserId} src={getUserAvatar(item.createdUserId) ? `${getUserAvatar(item.createdUserId)}` : '../img/system/default-profile.png'} />
                                                 </div>
                                             </Row>
                                         </Col>
@@ -258,7 +260,7 @@ const TicketPage = () => {
                                             </Button>
 
                                             <div style={{ color: 'black', fontSize: 14, fontFamily: 'Mulish' }}>
-                                                {(item.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight:'bold' }}> | </span> {getTypeName(item.typeId)} <span style={{ color: 'orange', fontWeight:'bold' }}> | </span> {getSystemName(item.systemId)}
+                                                {(item.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {getTypeName(item.typeId)} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {getSystemName(item.systemId)}
                                             </div>
                                         </Col>
                                         <Col xs="1" className="d-flex align-items-start justify-content-end ">

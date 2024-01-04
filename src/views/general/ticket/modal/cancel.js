@@ -41,8 +41,8 @@ const CancelRequest = ({id, show, setShow }) => {
             </Modal.Header>
             <Modal.Body className='px-0'>
                 <Col>
-                    <Row lg={12} className='d-flex justify-content-center' style={{ fontWeight: 'bold', fontSize:12 }}>
-                        Та хүсэлтээ цуцлахдаа итгэлтэй байна уу? Нэгэнт цуцалсан хүсэлтийг дахин сэргээх боломжгүйг анхаараарай.
+                    <Row lg={12} md={10} xs={10} className='d-flex justify-content-center' style={{ fontWeight: 'bold', fontSize:12 }}>
+                       <span style={{padding:30}}>Та хүсэлтээ цуцлахдаа итгэлтэй байна уу? Нэгэнт цуцалсан хүсэлтийг дахин сэргээх боломжгүйг анхаараарай.</span> 
                     </Row>
                 </Col>
             </Modal.Body>

@@ -405,7 +405,10 @@ export const TRANSLATIONS_MN = {
         descriptionErrorMsg: 'Тайлбар оруулна уу',
         systemErrorMsg: 'Систем сонгоно уу',
         menuErrorMsg: 'Меню сонгоно уу',
-        subMenuErrorMsg: 'Туслах меню сонгоно уу'
+        subMenuErrorMsg: 'Туслах меню сонгоно уу',
+        exampleErrorMsg: 'Жишээ оруулна уу',
+        schoolErrorMsg: 'Сургууль сонгоно уу',
+        imageError: 'Жишээ зураг оруулна уу'
     },
     home: {
         'title': 'Нүүр хуудас',

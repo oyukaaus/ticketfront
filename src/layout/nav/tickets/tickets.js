@@ -40,56 +40,42 @@ const Tickets = () => {
 
     if (tickets && tickets.length > 0) {
         return (
-            <Col style={{marginLeft: 40}}>
-                <div className="position-relative d-inline-flex" >
+            <Col md={10} lg={6} xl={6} style={{ marginLeft: 40 }}>
+                <div className="position-relative d-inline-flex flex-column">
                     <div className='d-flex align-items-center m-2'>
                         <Link to={{
                             pathname: `/ticket/index`,
                         }}
                         >
                             <img src='/img/ticket/icon/send.png' alt='icon147' className='color-info me-1' /><span style={{ color: 'white', fontFamily: 'Mulish' }}> Санал хүсэлт</span>
-                            <img src='/img/ticket/icon/chevron-right.png' alt='icon148'  className='color-info me-1' />
+                            <img src='/img/ticket/icon/chevron-right.png' alt='icon148' className='color-info me-1' />
                         </Link>
                     </div>
                 </div>
-                <div className="position-relative d-inline-flex m-1">
+                <div className="position-relative d-inline-flex flex-column">
                     <div className='d-flex align-items-center'>
                         <Link to={{
                             pathname: `/admin/index`,
                         }}
                         >
-                            <img src='/img/ticket/icon/book.png' alt='icon149'  className='color-info me-1' /><span style={{ color: 'white', fontFamily: 'Mulish' }}> Admin</span>
-                            <img src='/img/ticket/icon/chevron-right.png' alt='icon150'  className='color-info me-1' />
+                            <img src='/img/ticket/icon/book.png' alt='icon149' className='color-info me-1' /><span style={{ color: 'white', fontFamily: 'Mulish' }}> Admin</span>
+                            <img src='/img/ticket/icon/chevron-right.png' alt='icon150' className='color-info me-1' />
                         </Link>
                     </div>
                 </div>
-                <div className="position-relative d-inline-flex m-1">
+                <div className="position-relative d-inline-flex flex-column">
                     <div className='d-flex align-items-center'>
                         <Link to={{
                             pathname: `/ticket/index`,
                         }}
                         >
-                          <img src='/img/ticket/icon/file-question.png' alt='icon151'  className='color-info me-1' /><span style={{ color: 'white', fontFamily: 'Mulish' }}>Түгээмэл асуулт</span>
-                          <img src='/img/ticket/icon/chevron-right.png' alt='icon152'  className='color-info me-1' />
+                            <img src='/img/ticket/icon/file-question.png' alt='icon151' className='color-info me-1' /><span style={{ color: 'white', fontFamily: 'Mulish' }}>Түгээмэл асуулт</span>
+                            <img src='/img/ticket/icon/chevron-right.png' alt='icon152' className='color-info me-1' />
                         </Link>
                     </div>
                 </div>
                 {/* </a> */}
             </Col>
-
-
-            // <Dropdown
-            //     as="li"
-            //     bsPrefix="list-inline-item"
-            //     style={{ transform: 'translate(0px, 0px)' }}
-            // >
-            //     <Dropdown.Toggle as={TicketsDropdownToggle} />
-            //     {/* <Dropdown.Menu
-            //         className={window.innerWidth < 768 ? 'school-nav-phone mt-5' : 'mt-5'}
-            //         style={{ maxHeight: 300, transform: 'translate(209px, 54px) !important' }}
-            //         as={TicketsDropdownMenu}
-            //     /> */}
-            // </Dropdown>
         );
     } else {
         return <></>;

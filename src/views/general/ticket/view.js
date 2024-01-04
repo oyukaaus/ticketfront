@@ -36,15 +36,15 @@ const view = (outerProps) => {
     const getButtonColor = (type) => {
         switch (type) {
             case 'Шинэ':
-                return { backgroundColor: '#FF003D', color: '#FFFFFF', fontFamily: 'Mulish' };
+                return { backgroundColor: '#FF003D', color: '#FFFFFF', fontFamily: 'Mulish', opacity:1 };
             case 'eSchool хүлээж авсан':
-                return { backgroundColor: '#EDB414', color: '#000000', fontFamily: 'Mulish' };
+                return { backgroundColor: '#EDB414', color: '#000000', fontFamily: 'Mulish', opacity:1 };
             case 'Хаагдсан':
-                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish' };
+                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity:1 };
             case 'Цуцласан':
-                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish' };
+                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity:1 };
             default:
-                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish' }; // Default button color
+                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish', opacity:1 }; 
         }
     };
 

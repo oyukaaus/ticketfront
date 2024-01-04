@@ -41,8 +41,8 @@ const editTicket = ({
     const [menuList, setMenuList] = useState([]);
     const [subMenus, setSubMenus] = useState([]);
     const [file, setFile] = React.useState();
-    const [fileData, setFileData] = useState(selectedOne?.file || []);
-
+    const [fileData, setFileData] = useState([]);
+    const [existingImage, setExistingImage] = useState([]);
     const [systemErrorMsg, setSystemErrorMsg] = useState(false);
     const [menuErrorMsg, setMenuErrorMsg] = useState(false);
     const [subMenuErrorMsg, setSubMenuErrorMsg] = useState(false);
@@ -252,6 +252,7 @@ const editTicket = ({
             ticketId: selectedOne?.id,
         }).then((res) => {
             if (res?.success) {
+                console.log('es: ', res)
                 fetchMenu(selectedOne?.systemId);
                 fetchSubMenu(selectedOne?.systemId, selectedOne?.menuId);
                 setIsIssue(res?.ticket[0].type === "Алдаа" ? true : false);
@@ -259,7 +260,9 @@ const editTicket = ({
                 setSelectedMenu(res?.ticket[0].menuId);
                 setSelectedSubMenu(res?.ticket[0].subMenuId);
                 setSelectedSchool(res?.ticket[0].schoolId);
-                setFile(res?.ticket?.files)
+                setFile(res?.ticket[0].files[0]);
+                setFileData(res?.ticket[0].files[0]);
+                setExistingImage(res?.ticket[0].files[0]);
             } else {
                 showMessage(res?.message || t('errorMessage.title'));
             }
@@ -455,15 +458,33 @@ const editTicket = ({
                     </div>
                     <div className='modal-end'></div>
                 </div>
+                <div className='d-flex mt-08'>
+                    <label className='modal-label'>
+                    </label>
+                    <div className='modal-content-container'>
+                        <Row className='gx-0'>
+                            <Col className='pe-2' style={{ color: '#000000', fontSize: 14, fontFamily: 'Mulish' }}>
+                            Жишээ болгож алдаа гарч байгаа хэрэглэгчийн мэдээллийг оруулна уу.
+                            </Col>
+                        </Row>
+                    </div>
+                    <div className='modal-end'></div>
+                </div>
             </>
         )
     }
 
+    const openImageInNewWindow = (path) => {
+        window.open(path, '_blank');
+    };
 
+    const removeImage = () => {
+        setExistingImage([])
+    }
     const renderIdea = () => {
         return (
             <>
-            <div className='d-flex mt-08'>
+                <div className='d-flex mt-08'>
                     <label className='modal-label'>
                         {t('ticket.school')}*
                     </label>
@@ -603,6 +624,28 @@ const editTicket = ({
                         :
                         renderIdea()
                 }
+                {existingImage && (
+                    <div className='d-flex mt-08'>
+                        <label className='modal-label'>
+                        </label>
+                        <div className='modal-content-container'>
+                            <Row className='gx-0'>
+                                <Col className='pe-2'>
+                                    <div style={{ position: 'relative', marginRight: '10px' }}>
+                                        <img
+                                            src={existingImage && existingImage.path}
+                                            alt={`Image ${existingImage && existingImage.id}`}
+                                            width='100'
+                                            onClick={() => openImageInNewWindow(existingImage && existingImage.path)}
+                                            style={{ cursor: 'pointer' }}
+                                        />
+                                    </div>
+                                </Col>
+
+                            </Row>
+                        </div>
+                        <div className='modal-end'></div>
+                    </div>)}
                 <Forms ref={formRefRequest} fields={requestFields} />
             </Modal.Body>
             <Modal.Footer className='d-flex justify-content-center'>
