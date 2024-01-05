@@ -18,6 +18,8 @@ const TicketPage = () => {
     const history = useHistory();
     const { t } = useTranslation();
     const dispatch = useDispatch();
+    const { person } = useSelector((state) => state.auth);
+    const createdBy = person.id;
     const [data, setData] = useState([]);
     const [systems, setSystems] = useState([]);
     const [users, setUsers] = useState([]);
@@ -62,6 +64,7 @@ const TicketPage = () => {
     const fetchInfo = async () => {
         dispatch(setLoading(true));
         fetchRequest(ticketIndex, 'POST', {
+            createdBy: createdBy
         })
             .then((res) => {
                 const { success = false, message = null } = res;
@@ -244,7 +247,7 @@ const TicketPage = () => {
                                     <Row>
                                         <Col xs={1} className="text-center">
                                             <Row style={{ display: 'flex' }}>
-                                            <div className="d-flex justify-content-center">
+                                                <div className="d-flex justify-content-center">
                                                     <img className="profile rounded-circle" width='45' alt={item.createdUserId} src={getUserAvatar(item.createdUserId) ? `${getUserAvatar(item.createdUserId)}` : '../img/system/default-profile.png'} />
                                                 </div>
                                             </Row>

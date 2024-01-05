@@ -1098,6 +1098,7 @@ const Forms = (({
                                                 marginRight: 10,
                                                 marginBottom: 0,
                                                 width: field?.labelWidth || 'auto',
+                                                textOverflow: 'ellipsis', textAlign: 'end'
                                             }}
                                         >
                                             {field.label}

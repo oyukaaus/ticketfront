@@ -347,7 +347,7 @@ const editTicket = ({
                     <div className='modal-end'></div>
                 </div>
                 <div className='d-flex mt-08'>
-                    <label className='modal-label'>
+                <label className='modal-label mb-2 mt-2 mt-md-2' style={{ textOverflow:'ellipsis', textAlign:'end'}} >
                         {t('ticket.menu')}*
                     </label>
                     <div className='modal-content-container'>
@@ -380,7 +380,7 @@ const editTicket = ({
                     <div className='modal-end'></div>
                 </div>
                 <div className='d-flex mt-08'>
-                    <label className='modal-label'>
+                <label className='modal-label mb-2 mt-2 mt-md-2' style={{ textOverflow:'ellipsis', textAlign:'end'}} >
                         {t('ticket.subMenu')}*
                     </label>
                     <div className='modal-content-container'>
@@ -412,8 +412,8 @@ const editTicket = ({
                     </div>
                     <div className='modal-end'></div>
                 </div>
-                <div className='d-flex mt-08'>
-                    <label className='modal-label'>
+                <div className='d-flex flex-wrap mt-08'>
+                    <label className='modal-label mb-2 mt-2 mt-md-2' style={{ textOverflow: 'ellipsis', textAlign: 'end' }} >
                         {t('ticket.issue')}*
                     </label>
                     <div className='modal-content-container'>

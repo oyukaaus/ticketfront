@@ -37,12 +37,12 @@ const CancelRequest = ({id, show, setShow }) => {
     return (
         <Modal centered show={show} onHide={() => setShow(false)} size="xl">
             <Modal.Header closeButton>
-                <Modal.Title className="fs-16">{t('common.cancel')}</Modal.Title>
+                <Modal.Title className="fs-16" style={{color:"#FF5B1D"}}>{t('common.cancel')}</Modal.Title>
             </Modal.Header>
             <Modal.Body className='px-0'>
                 <Col>
                     <Row lg={12} md={10} xs={10} className='d-flex justify-content-center' style={{ fontWeight: 'bold', fontSize:12 }}>
-                       <span style={{padding:30}}>Та хүсэлтээ цуцлахдаа итгэлтэй байна уу? Нэгэнт цуцалсан хүсэлтийг дахин сэргээх боломжгүйг анхаараарай.</span> 
+                       <span className='d-flex justify-content-center' style={{padding:30, color:"#000000", opacity:1}}>Та хүсэлтээ цуцлахдаа итгэлтэй байна уу? Нэгэнт цуцалсан хүсэлтийг дахин сэргээх боломжгүйг анхаараарай.</span> 
                     </Row>
                 </Col>
             </Modal.Body>
@@ -51,7 +51,7 @@ const CancelRequest = ({id, show, setShow }) => {
                     <Button onClick={() => setShow(false)} size="sm" variant="link">
                         {t('common.cancel')}
                     </Button>
-                    <Button variant="success" className="text-uppercase fs-12 br-8 ps-4 pe-4 " style={{width:120}} size="sm" onClick={onSaveClick}>
+                    <Button variant="success" className="text-uppercase fs-12 br-8 ps-4 pe-4 " style={{width:120, color:"#000000", opacity:1}} size="sm" onClick={onSaveClick}>
                         {t('ticket.ok')}
                     </Button>
                 </div>

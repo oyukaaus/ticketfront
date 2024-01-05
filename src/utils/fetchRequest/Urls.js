@@ -30,4 +30,5 @@ export const ticketStatus = 'ticket/status-log';
 export const adminIndex = 'admin/index';
 export const adminView = 'admin/view';
 export const ticketList = 'ticket/list';
+export const ticketReport = 'ticket/report';
 

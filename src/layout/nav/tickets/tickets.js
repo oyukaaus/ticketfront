@@ -40,7 +40,7 @@ const Tickets = () => {
 
     if (tickets && tickets.length > 0) {
         return (
-            <Col md={10} lg={6} xl={6} style={{ marginLeft: 40 }}>
+            <Col md={10} lg={8} xl={8} style={{ marginLeft: 40 }}>
                 <div className="position-relative d-inline-flex flex-column">
                     <div className='d-flex align-items-center m-2'>
                         <Link to={{
@@ -74,7 +74,6 @@ const Tickets = () => {
                         </Link>
                     </div>
                 </div>
-                {/* </a> */}
             </Col>
         );
     } else {

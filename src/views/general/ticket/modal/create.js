@@ -170,101 +170,98 @@ const createTicketModal = ({
     ];
 
     const onSaveClick = () => {
-        const [isValid] = formRefRequest.current.validate();
-        if (isValid) {
-            let hasError = false;
-            console.log('fileData.length: ', fileData.length)
-            if (isIssue) {
-                if (selectedSchool === null) {
-                    setSchoolErrorMsg(true);
-                    hasError = true;
-                }
-                if (selectedSystem === null) {
-                    setSystemErrorMsg(true);
-                    hasError = true;
-                }
-                if (selectedMenu === null) {
-                    setMenuErrorMsg(true);
-                    hasError = true;
-                }
-                if (selectedSubMenu === null) {
-                    setSubMenuErrorMsg(true);
-                    hasError = true;
-                }
-                if (description === '') {
-                    setDescriptionErrorMsg(true);
-                    hasError = true;
-                }
-                if (example === '') {
-                    setExampleErrorMsg(true);
-                    hasError = true;
-                }
-                console.log('fileData', fileData)
-                if (fileData.length === 0) {
-                    setImageError(true);
-                }
-            } else {
-                if (selectedSchool === null) {
-                    setSchoolErrorMsg(true);
-                    hasError = true;
-                }
-                if (selectedSystem === null) {
-                    setSystemErrorMsg(true);
-                    hasError = true;
-                }
-                if (description === '') {
-                    setDescriptionErrorMsg(true);
-                    hasError = true;
-                } if (fileData.length === 0) {
-                    setImageError(true);
-                    hasError = true;
-                }
+        let hasError = false;
+        if (isIssue) {
+            if (selectedSchool === null) {
+                setSchoolErrorMsg(true);
+                hasError = true;
             }
+            if (selectedSystem === null) {
+                setSystemErrorMsg(true);
+                hasError = true;
+            }
+            if (selectedMenu === null) {
+                setMenuErrorMsg(true);
+                hasError = true;
+            }
+            if (selectedSubMenu === null) {
+                setSubMenuErrorMsg(true);
+                hasError = true;
+            }
+            if (description === '') {
+                setDescriptionErrorMsg(true);
+                hasError = true;
+            }
+            if (example === '') {
+                setExampleErrorMsg(true);
+                hasError = true;
+            }
+            if (fileData.length === 0) {
+                setImageError(true);
+                hasError = true;
+            }
+        } else {
+            if (selectedSchool === null) {
+                setSchoolErrorMsg(true);
+                hasError = true;
+            }
+            if (selectedSystem === null) {
+                setSystemErrorMsg(true);
+                hasError = true;
+            }
+            if (description === '') {
+                setDescriptionErrorMsg(true);
+                hasError = true;
+            } if (fileData.length === 0) {
+                setImageError(true);
+                hasError = true;
+            }
+        }
 
-            if (!hasError) {
-                const postData = {
-                    systemId: selectedSystem,
-                    menuId: selectedMenu,
-                    submenuId: selectedSubMenu,
-                    title: 'Title',
-                    description: description,
-                    typeId: isIssue ? 1 : 2,
-                    statusId: 1,
-                    example: example,
-                    userData: person,
-                    createdBy: person.id,
-                    schoolId: selectedSchool
+        if (!hasError) {
+            const postData = {
+                systemId: selectedSystem,
+                menuId: selectedMenu,
+                submenuId: selectedSubMenu,
+                title: 'Title',
+                description: description,
+                typeId: isIssue ? 1 : 2,
+                statusId: 1,
+                example: example,
+                userData: person,
+                createdBy: person.id,
+                schoolId: selectedSchool
+            };
+            if (fileData && fileData.name) {
+                postData.file = {
+                    name: fileData.name,
+                    type: fileData.type,
+                    size: fileData.size,
+                    path: '/',
+                    content: file,
                 };
-                if (fileData && fileData.name) {
-                    postData.file = {
-                        name: fileData.name,
-                        type: fileData.type,
-                        size: fileData.size,
-                        path: '/',
-                        content: file,
-                    };
-                }
-                console.log('postData: ', postData);
-                fetchRequest(ticketCreate, 'POST', postData)
-                    .then((res) => {
-                        console.log('response: ', res)
-                        const { success = false, message = null } = res;
-                        if (success) {
-                            history.replace(`/ticket/index`);
-                            window.location.reload();
-                            showMessage(message, true);
-                        } else {
-                            console.log('res: ', res);
-                            showMessage(message || t('errorMessage.title'));
-                        }
-                        dispatch(setLoading(false));
-                    })
-                    .catch((e) => {
-                        console.log('e', e)
-                        dispatch(setLoading(false));
-                        showMessage(t('errorMessage.title'));
-                    });
             }
+            console.log('postData: ', postData);
+            fetchRequest(ticketCreate, 'POST', postData)
+                .then((res) => {
+                    console.log('response: ', res)
+                    const { success = false, message = null } = res;
+                    if (success) {
+                        history.replace(`/ticket/index`);
+                        window.location.reload();
+                        showMessage(message, true);
+                    } else {
+                        console.log('res: ', res);
+                        showMessage(message || t('errorMessage.title'));
+                    }
+                    dispatch(setLoading(false));
+                })
+                .catch((e) => {
+                    console.log('e', e)
+                    dispatch(setLoading(false));
+                    showMessage(t('errorMessage.title'));
+                });
+            // }
         }
     };
 
@@ -337,7 +334,7 @@ const createTicketModal = ({
                     <div className='modal-end'></div>
                 </div>
                 <div className='d-flex mt-08'>
-                    <label className='modal-label'>
+                    <label className='modal-label mb-2 mt-2 mt-md-2' style={{ textOverflow: 'ellipsis', textAlign: 'end' }} >
                         {t('ticket.menu')}*
                     </label>
                     <div className='modal-content-container'>
@@ -370,7 +367,7 @@ const createTicketModal = ({
                     <div className='modal-end'></div>
                 </div>
                 <div className='d-flex mt-08'>
-                    <label className='modal-label'>
+                    <label className='modal-label mb-2 mt-2 mt-md-2' style={{ textOverflow: 'ellipsis', textAlign: 'end' }} >
                         {t('ticket.subMenu')}*
                     </label>
                     <div className='modal-content-container'>
@@ -402,9 +399,9 @@ const createTicketModal = ({
                     </div>
                     <div className='modal-end'></div>
                 </div>
-                <div className='d-flex flex-wrap mt-08'> 
-                <label className='modal-label mb-2 mt-2 mt-md-2' >
-                        <span style={{marginLeft:20}}>{t('ticket.issue')}*</span>
+                <div className='d-flex flex-wrap mt-08'>
+                    <label className='modal-label mb-2 mt-2 mt-md-2' style={{ textOverflow: 'ellipsis', textAlign: 'end' }} >
+                        {t('ticket.issue')}*
                     </label>
                     <div className='modal-content-container'>
                         <Row className='gx-0'>
@@ -464,13 +461,13 @@ const createTicketModal = ({
                     <div className='modal-content-container'>
                         <Row className='gx-0'>
                             <Col className='pe-2' style={{ color: '#000000', fontSize: 14, fontFamily: 'Mulish' }}>
-                            Жишээ болгож алдаа гарч байгаа хэрэглэгчийн мэдээллийг оруулна уу.
+                                Жишээ болгож алдаа гарч байгаа хэрэглэгчийн мэдээллийг оруулна уу.
                             </Col>
                         </Row>
                     </div>
                     <div className='modal-end'></div>
                 </div>
-                
+
                 <span></span>
             </>
         )

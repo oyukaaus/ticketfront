@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from 'utils/redux/action';
 import showMessage from "modules/message";
 import { fetchRequest } from 'utils/fetchRequest';
-import { ticketIndex, ticketList } from 'utils/fetchRequest/Urls';
+import { ticketReport, ticketList } from 'utils/fetchRequest/Urls';
 import DatePickerRange from 'modules/Form/DatePickerRange';
 import Select from 'modules/Form/Select';
 import * as XLSX from 'xlsx';
@@ -25,7 +25,7 @@ const AdminRequest = () => {
             longName: param?.longName,
         })
     )
-    // console.log('selectedSchool: ', schools)
+
     const [data, setData] = useState([]);
     const [startDate, setStartDate] = useState('');
     const [endDate, setEndDate] = useState('');
@@ -46,7 +46,7 @@ const AdminRequest = () => {
     const current = new Date();
     const [dateRange, setDateRange] = useState({
         startDate: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000),
-        endDate: new Date(), 
+        endDate: new Date(),
     });
     const dateTimeToday = current.getFullYear() + "-" + ("00" + (current.getMonth() + 1)).slice(-2) + "-" + ("00" + (current.getDate())).slice(-2) + " " + current.getHours() + ":" + ("00" + (current.getMinutes())).slice(-2) + ":" + ("00" + (current.getSeconds())).slice(-2);
     const generateExcelFile = (reportData, filename) => {
@@ -86,15 +86,15 @@ const AdminRequest = () => {
     const getButtonColor = (type) => {
         switch (type) {
             case 1:
-                return { backgroundColor: '#FF003D', color: '#FFFFFF', fontFamily: 'Mulish', opacity:1 };
+                return { backgroundColor: '#FF003D', color: '#FFFFFF', fontFamily: 'Mulish', opacity: 1 };
             case 2:
-                return { backgroundColor: '#EDB414', color: '#000000', fontFamily: 'Mulish' , opacity:1};
+                return { backgroundColor: '#EDB414', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
             case 3:
-                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish' , opacity:1};
+                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
             case 4:
-                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity:1 };
+                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
             default:
-                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish', opacity:1 };
+                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
         }
     };
 
@@ -211,9 +211,9 @@ const AdminRequest = () => {
         loadDetailsClear(startDate, endDate);
     };
 
-    const fetchInfo = async (start = null, end = null, page = 1, pageSize = 10, query = null, sortBy = null, order = null) => {
+    const fetchInfo = async () => {
         dispatch(setLoading(true));
-        fetchRequest(ticketIndex, 'POST', {})
+        fetchRequest(ticketReport, 'POST', {})
             .then((res) => {
                 const { success = false, message = null } = res;
                 if (success) {
@@ -229,7 +229,7 @@ const AdminRequest = () => {
                     const userOption = [];
                     res?.users.map((param) =>
                         userOption.push({
-                            value: param?.id,
+                            value: param?.userId,
                             text: param?.firstName,
                         })
                     )
@@ -306,6 +306,11 @@ const AdminRequest = () => {
         return school ? school.longName : 'Unknown School';
     };
 
+    const getAssigneeAvatar = (userId) => {
+        const user = assignees.find((sys) => sys.userId === userId);
+        return user?.avatar || '/img/system/default-profile.png';
+    };
+
     return (
         <>
             <>
@@ -321,172 +326,166 @@ const AdminRequest = () => {
                     />
                 </Col>
                 <Row>
-                    <Col>
-                        <Col lg={12}>
-                            <Card className=' no-border-radius' style={{ width: '100.5%' }}>
-                                <Card.Body>
-                                    <Row lg={12} className="d-flex flex-row align-content-center align-items-center position-relative">
-                                        <Col lg={4}>
-                                            <Row className='d-flex justify-content-between align-items-center'>
-                                                <Col>
-                                                    <label className='modal-label'>{t('common.type')}</label>
-                                                </Col>
-                                                <Col>
-                                                    <Select
-                                                        multiple
-                                                        clearable={false}
-                                                        options={types}
-                                                        value={selectedTypesIds}
-                                                        onChange={(value) => handleTypeChange(value)}
-                                                    />
-                                                </Col>
-                                            </Row>
+                    <Card className="mb-3">
+                        <Card.Body>
+                            <Row lg={12} className="d-flex flex-row align-content-center align-items-center position-relative">
+                                <Col lg={4}>
+                                    <Row className='d-flex justify-content-between align-items-center'>
+                                        <Col>
+                                            <label className='modal-label'>{t('common.type')}</label>
                                         </Col>
-                                        <Col lg={4}>
-                                            <Row className='d-flex justify-content-between align-items-center'>
-                                                <Col >
-                                                    <label className='modal-label'>{t('ticket.requester')}</label>
-                                                </Col>
-                                                <Col>
-                                                    <Select
-                                                        multiple
-                                                        clearable={false}
-                                                        options={requesters}
-                                                        value={selectedRequestersIds}
-                                                        onChange={(value) => handleRequesterChange(value)}
-                                                    />
-                                                </Col>
-                                            </Row>
-                                        </Col>
-                                        <Col lg={4}>
-                                            <Row className='d-flex justify-content-between align-items-center'>
-                                                <Col >
-                                                    <label className='modal-label'>{t('ticket.assignee')}</label>
-                                                </Col>
-                                                <Col>
-                                                    <Select
-                                                        multiple
-                                                        clearable={false}
-                                                        options={assignees}
-                                                        value={selectedAssigneeIds}
-                                                        onChange={(value) => handleAssigneeChange(value)}
-                                                    />
-                                                </Col>
-                                            </Row>
+                                        <Col>
+                                            <Select
+                                                multiple
+                                                clearable={false}
+                                                options={types}
+                                                value={selectedTypesIds}
+                                                onChange={(value) => handleTypeChange(value)}
+                                            />
                                         </Col>
                                     </Row>
-                                    <Row lg={12} className='d-flex justify-content-between align-items-center' style={{ marginTop: 10 }}>
-                                        <Col lg={4}>
-                                            <Row className='d-flex justify-content-between align-items-center'>
-                                                <Col className=''>
-                                                    <label className='modal-label'>{t('ticket.system')}</label>
-                                                </Col>
-                                                <Col>
-                                                    <Select
-                                                        multiple
-                                                        clearable={false}
-                                                        options={systems}
-                                                        value={selectedSystemIds}
-                                                        onChange={(value) => handleSystemChange(value)}
-                                                    />
-                                                </Col>
-                                            </Row>
+                                </Col>
+                                <Col lg={4}>
+                                    <Row className='d-flex justify-content-between align-items-center'>
+                                        <Col >
+                                            <label className='modal-label'>{t('ticket.requester')}</label>
                                         </Col>
-                                        <Col lg={4}>
-                                            <Row className='d-flex justify-content-between align-items-center'>
-                                                <Col>
-                                                    <label className='modal-label'>{t('common.date')}</label>
-                                                </Col>
-                                                <Col>
-                                                    <DatePickerRange
-                                                        onChange={(val) => handleInspectionDateChange(val)}
-                                                        firstPlaceHolder={t('common.startDate')}
-                                                        lastPlaceHolder={t('common.endDate')}
-                                                        selectedStartDate={startDate}
-                                                        selectedEndDate={endDate}
-                                                        isDisabled={false}
-                                                        clearable={false}
-                                                        disableWithFirst={true}
-                                                        disableWithLast={true}
-                                                    />
-                                                    {
-                                                        errorDueDate &&
-                                                        <Row>
-                                                            <Col sm={4}></Col>
-                                                            <Col sm={8} className='d-flex p-0 text-center'>
-                                                                <div className='invalid-feedback d-block'>
-                                                                    {t('errorMessage.selectDate')}
-                                                                </div>
-                                                            </Col>
-                                                        </Row>
-                                                    }
-                                                </Col>
-                                            </Row>
-                                        </Col>
-                                        <Col lg={4}>
+                                        <Col>
+                                            <Select
+                                                multiple
+                                                clearable={false}
+                                                options={requesters}
+                                                value={selectedRequestersIds}
+                                                onChange={(value) => handleRequesterChange(value)}
+                                            />
                                         </Col>
                                     </Row>
-
-                                    <Row lg={12} className='d-flex justify-content-between align-items-center' style={{ marginTop: 10 }} >
-                                        <Col lg={4}>
-                                            <Row className='d-flex justify-content-between align-items-center'>
-                                                <Col className=''>
-                                                    <label className='modal-label'>{t('menu.school')}</label>
-                                                </Col>
-                                                <Col>
-                                                    <Select
-                                                        multiple
-                                                        clearable={false}
-                                                        options={schoolData}
-                                                        value={selectedSchoolIds}
-                                                        onChange={(value) => handleSchoolChange(value)}
-                                                    />
-                                                </Col>
-                                            </Row>
+                                </Col>
+                                <Col lg={4}>
+                                    <Row className='d-flex justify-content-between align-items-center'>
+                                        <Col >
+                                            <label className='modal-label'>{t('ticket.assignee')}</label>
                                         </Col>
-                                        <Col lg={4}>
-                                            <Row className='d-flex justify-content-between align-items-center'>
-                                                <Col className='width-equal pe-2'>
-                                                    <label className='modal-label'>{t('common.status')}</label>
-                                                </Col>
-                                                <Col>
-                                                    <Select
-                                                        multiple
-                                                        clearable={false}
-                                                        options={statuses}
-                                                        value={selectedStatusIds}
-                                                        onChange={(value) => handleStatusChange(value)}
-                                                    />
-                                                </Col>
-                                            </Row>
-                                        </Col>
-                                        <Col lg={4}>
-
+                                        <Col>
+                                            <Select
+                                                multiple
+                                                clearable={false}
+                                                options={assignees}
+                                                value={selectedAssigneeIds}
+                                                onChange={(value) => handleAssigneeChange(value)}
+                                            />
                                         </Col>
                                     </Row>
-                                    <Row style={{ marginTop: 30, marginBottom: 10 }} className=' border-separator-light border-top d-flex'></Row>
-                                    <Row >
-                                        <Col lg={5}>
+                                </Col>
+                            </Row>
+                            <Row className='d-flex justify-content-between align-items-center' style={{ marginTop: 10 }}>
+                                <Col lg={4}>
+                                    <Row className='d-flex justify-content-between align-items-center'>
+                                        <Col className=''>
+                                            <label className='modal-label'>{t('ticket.system')}</label>
                                         </Col>
-                                        <Col lg={3} className='d-flex p-2  align-items-center'>
-                                            <Button onClick={onclickClear} size="sm" variant="link">
-                                                {t('common.clear')}
-                                            </Button>
-                                            <Button variant="aqua" className="fs-12 br-8 ps-4 pe-4 " style={{ width: 120, color: 'white', marginLeft: 20 }} size="sm" onClick={onSeeClick}>
-                                                <img src='../img/ticket/icon/filter.png' alt='school-icon' className='color-info me-1' />{t('ticket.search')}
-                                            </Button>
-
-                                        </Col>
-                                        <Col lg={4}>
-
+                                        <Col>
+                                            <Select
+                                                multiple
+                                                clearable={false}
+                                                options={systems}
+                                                value={selectedSystemIds}
+                                                onChange={(value) => handleSystemChange(value)}
+                                            />
                                         </Col>
                                     </Row>
+                                </Col>
+                                <Col lg={4}>
+                                    <Row className='d-flex justify-content-between align-items-center'>
+                                        <Col  >
+                                            <label className='modal-label'>{t('common.date')}</label>
+                                        </Col>
+                                        <Col>
+                                            <DatePickerRange
+                                                onChange={(val) => handleInspectionDateChange(val)}
+                                                firstPlaceHolder={t('common.startDate')}
+                                                lastPlaceHolder={t('common.endDate')}
+                                                selectedStartDate={startDate}
+                                                selectedEndDate={endDate}
+                                                isDisabled={false}
+                                                clearable={false}
+                                                disableWithFirst={true}
+                                                disableWithLast={true}
+                                            />
+                                            {
+                                                errorDueDate &&
+                                                <Row className='d-flex justify-content-between '>
+                                                    <Col sm={8} className='d-flex'>
+                                                        <div className='invalid-feedback d-block'>
+                                                            {t('errorMessage.selectDate')}
+                                                        </div>
+                                                    </Col>
+                                                </Row>
+                                            }
+                                        </Col>
+                                    </Row>
+                                </Col>
+                                <Col lg={4}>
+                                </Col>
+                            </Row>
 
-                                </Card.Body>
-                            </Card>
-                        </Col>
-                        {/* </Row> */}
-                    </Col>
+                            <Row lg={12} className='d-flex justify-content-between align-items-center' style={{ marginTop: 10 }} >
+                                <Col lg={4}>
+                                    <Row className='d-flex justify-content-between align-items-center'>
+                                        <Col className=''>
+                                            <label className='modal-label'>{t('menu.school')}</label>
+                                        </Col>
+                                        <Col>
+                                            <Select
+                                                multiple
+                                                clearable={false}
+                                                options={schoolData}
+                                                value={selectedSchoolIds}
+                                                onChange={(value) => handleSchoolChange(value)}
+                                            />
+                                        </Col>
+                                    </Row>
+                                </Col>
+                                <Col lg={4}>
+                                    <Row className='d-flex justify-content-between align-items-center'>
+                                        <Col>
+                                            <label className='modal-label'>{t('common.status')}</label>
+                                        </Col>
+                                        <Col>
+                                            <Select
+                                                multiple
+                                                clearable={false}
+                                                options={statuses}
+                                                value={selectedStatusIds}
+                                                onChange={(value) => handleStatusChange(value)}
+                                            />
+                                        </Col>
+                                    </Row>
+                                </Col>
+                                <Col lg={4}>
+
+                                </Col>
+                            </Row>
+                            <Row style={{ marginTop: 30, marginBottom: 10 }} className=' border-separator-light border-top d-flex'></Row>
+                            <Row >
+                                <Col lg={5}>
+                                </Col>
+                                <Col lg={3} className='d-flex p-2  align-items-center'>
+                                    <Button onClick={onclickClear} size="sm" variant="link">
+                                        {t('common.clear')}
+                                    </Button>
+                                    <Button variant="aqua" className="fs-12 br-8 ps-4 pe-4 " style={{ width: 120, color: 'white', marginLeft: 20 }} size="sm" onClick={onSeeClick}>
+                                        <img src='../img/ticket/icon/filter.png' alt='school-icon' className='color-info me-1' />{t('ticket.search')}
+                                    </Button>
+
+                                </Col>
+                                <Col lg={4}>
+
+                                </Col>
+                            </Row>
+
+                        </Card.Body>
+                    </Card>
                 </Row>
                 <Row style={{ marginTop: 20 }}>
                     <Col lg={4} style={{ color: '#FD7845', fontSize: 16, fontWeight: 'bolder', fontFamily: 'Mulish' }}>Ирсэн санал хүсэлтүүд</Col>
@@ -507,13 +506,13 @@ const AdminRequest = () => {
                         <Card className="mb-3">
                             <Card.Body>
                                 <Row className="d-flex flex-row align-content-center align-items-center position-relative">
-                                <Col xs={1} className="text-center">
-                                            <Row style={{ display: 'flex' }}>
+                                    <Col xs={1} className="text-center">
+                                        <Row style={{ display: 'flex' }}>
                                             <div className="d-flex justify-content-center">
-                                                    <img className="profile rounded-circle" width='45' alt={item.createdUserId} src={getUserAvatar(item.createdUserId) ? `${getUserAvatar(item.createdUserId)}` : '../img/system/default-profile.png'} />
-                                                </div>
-                                            </Row>
-                                        </Col>
+                                                <img className="profile rounded-circle" width='45' alt={item.createdUserId} src={getUserAvatar(item.createdUserId) ? `${getUserAvatar(item.createdUserId)}` : '../img/system/default-profile.png'} />
+                                            </div>
+                                        </Row>
+                                    </Col>
                                     <Col>
                                         <Row>
                                             <Col>
@@ -536,13 +535,13 @@ const AdminRequest = () => {
                                             </Col>
                                         </Row>
 
-                                        <div style={{ color: 'black', fontSize: 14, fontWeight: 'semibold', opacity:1 }}>
-                                            {item?.createdDate?.date && (item?.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight: 'bold', opacity:1 }}> <span style={{ color: 'orange', fontWeight: 'bold', opacity:1 }}> | </span> </span> {getTypeName(item?.typeId)} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {getSystemName(item?.systemId)}
+                                        <div style={{ color: 'black', fontSize: 14, fontWeight: 'semibold', opacity: 1 }}>
+                                            {item?.createdDate?.date && (item?.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight: 'bold', opacity: 1 }}> <span style={{ color: 'orange', fontWeight: 'bold', opacity: 1 }}> | </span> </span> {getTypeName(item?.typeId)} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {getSystemName(item?.systemId)}
                                         </div>
                                     </Col>
                                 </Row>
                                 <Row>
-                                    <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold' , opacity:1}}>
+                                    <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold', opacity: 1 }}>
                                         #{item?.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {item?.description}</span>
                                     </div>
                                 </Row>
@@ -551,11 +550,22 @@ const AdminRequest = () => {
                                         {item?.files && item?.files.map((dtlItem, index) => (
                                             <div key={index} className="text-center">
                                                 <img src={dtlItem.path} alt={`Image ${index}`} width='100' onClick={() => openImageInNewWindow(dtlItem.path)} />
-                                                {/* {dtlItem.name} */}
                                             </div>
                                         ))}
                                     </Col>
                                     <Col lg={11}></Col>
+                                </Row>
+                                <Row className="d-flex align-items-end justify-content-end " >
+                                    <Col lg={1}>
+                                        <Button variant="default" style={{ backgroundColor: '#E5E7EB', marginTop: 10 }} width="80%" size="sm" onClick={onSeeClick}>
+                                            <img src='../img/ticket/icon/reply.png' alt='school-icon' className='color-info me-1' /> <span style={{ color: 'black' }}>{item.replyCount}</span>
+                                        </Button>
+                                    </Col>
+                                    <Col lg={10}></Col>
+                                    <Col xs={1} className="d-flex align-items-end justify-content-end ">
+                                        <img className="profile d-inline rounded-circle" width='60%' alt={item.assigneeId}
+                                            src={getAssigneeAvatar(item.assigneeId) ? `${getAssigneeAvatar(item.assigneeId)}` : '../img/system/default-profile.png'} />
+                                    </Col>
                                 </Row>
                             </Card.Body>
                         </Card>

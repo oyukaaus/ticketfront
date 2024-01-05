@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
 
@@ -8,18 +8,31 @@ import NavIconMenu from './NavIconMenu';
 import MainMenu from './main-menu/MainMenu';
 import NavLogo from './NavLogo';
 import NavTicketSwitcher from './tickets/tickets';
+import NavTicketMobile from './tickets/ticket-mobile';
 import NavMobileButtons from './NavMobileButtons';
 import { menuChangeAttrMenuAnimate, menuChangeCollapseAll } from './main-menu/menuSlice';
 import NavLanguageSwitcher from './NavLanguageSwitcher';
-// import NavLanguageSwitcher from './NavLanguageSwitcher';
 
 const DELAY = 80;
 
 const Nav = () => {
     const dispatch = useDispatch();
+    const [isPhoneScreen, setIsPhoneScreen] = useState(false);
+
+    useEffect(() => {
+      const handleResize = () => {
+        setIsPhoneScreen(window.innerWidth <= 767);
+      };
+      handleResize();
+      window.addEventListener('resize', handleResize);
+  
+      // Cleanup on component unmount
+      return () => {
+        window.removeEventListener('resize', handleResize);
+      };
+    }, []);
     const { navClasses, placementStatus, behaviourStatus, attrMobile, menuPadding } = useSelector((state) => state.menu);
     const mouseActionTimer = useRef(null);
-
     // Vertical menu semihidden state showing
     // Only works when the vertical menu is active and mobile menu closed
     const onMouseEnterDelay = () => {
@@ -61,16 +74,17 @@ const Nav = () => {
                 style={placementStatus.placementHtmlData === MENU_PLACEMENT.Horizontal && menuPadding ? { paddingRight: menuPadding } : {}}
             >
                 <NavLogo />
-                <NavTicketSwitcher></NavTicketSwitcher>
+                {/* <NavTicketSwitcher></NavTicketSwitcher>
+                <NavTicketMobile></NavTicketMobile> */}
                 <NavIconMenu />
                 {/* <MainMenu /> */}
                 {/* <NavLanguageSwitcher /> */}
                 <NavUserMenu />
-                {/* {navClasses['mobile-side-in'] == true ? null : <NavTicketSwitcher />} */}
+                {isPhoneScreen ? <NavTicketMobile /> : <NavTicketSwitcher />}
                 {/* */}
                 {/* 
-
-                <NavMobileButtons /> */}
+*/}
+                <NavMobileButtons />
             </div>
             <div className="nav-shadow" />
         </div>
