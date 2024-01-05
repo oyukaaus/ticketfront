@@ -59,7 +59,6 @@ const TicketPage = () => {
                 return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
         }
     };
-    // const [dropdownStates, setDropdownStates] = useState(Array(data.length).fill(false));
 
     const fetchInfo = async () => {
         dispatch(setLoading(true));
@@ -190,7 +189,6 @@ const TicketPage = () => {
                 <Col lg={12} className="mb-3">
                     <h2 className='font-standard mb-0'>
                         {t('ticket.idea')}
-                        {/* Санал хүсэлт */}
                     </h2>
                     <BreadcrumbList
                         basePath='/'
@@ -248,7 +246,7 @@ const TicketPage = () => {
                                         <Col xs={1} className="text-center">
                                             <Row style={{ display: 'flex' }}>
                                                 <div className="d-flex justify-content-center">
-                                                    <img className="profile rounded-circle" width='45' alt={item.createdUserId} src={getUserAvatar(item.createdUserId) ? `${getUserAvatar(item.createdUserId)}` : '../img/system/default-profile.png'} />
+                                                    <img className="profile rounded-circle" width='50' alt={item.createdUserId} src={getUserAvatar(item.createdUserId) ? `${getUserAvatar(item.createdUserId)}` : '../img/system/default-profile.png'} />
                                                 </div>
                                             </Row>
                                         </Col>

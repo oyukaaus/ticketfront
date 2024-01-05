@@ -44,11 +44,15 @@ const AdminRequest = () => {
     const [requesters, setRequester] = useState([]);
     const [avatars, setUserAvatars] = useState([]);
     const current = new Date();
-    const [dateRange, setDateRange] = useState({
-        startDate: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000),
-        endDate: new Date(),
-    });
-    const dateTimeToday = current.getFullYear() + "-" + ("00" + (current.getMonth() + 1)).slice(-2) + "-" + ("00" + (current.getDate())).slice(-2) + " " + current.getHours() + ":" + ("00" + (current.getMinutes())).slice(-2) + ":" + ("00" + (current.getSeconds())).slice(-2);
+    // const [dateRange, setDateRange] = useState({
+    //     startDate: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000),
+    //     endDate: new Date(),
+    // });
+   
+    const openImageInNewWindow = (path) => {
+        window.open(path, '_blank');
+    };
+
     const generateExcelFile = (reportData, filename) => {
         const workbook = XLSX.utils.book_new();
         const worksheet = XLSX.utils.json_to_sheet(reportData);
@@ -70,7 +74,7 @@ const AdminRequest = () => {
     const handleDownloadExcel = () => {
         const reportData = data;
 
-        generateExcelFile(reportData, `'requests'+ '_' + dateTimeToday+'.xlsx'`);
+        generateExcelFile(reportData, `Ирсэн_санал_хүсэлтүүд.xlsx`);
     };
 
     useEffect(() => {
@@ -171,44 +175,44 @@ const AdminRequest = () => {
         }
     };
 
-    const loadDetailsClear = (start = null, end = null, page = 1, pageSize = 10, query = null, sortBy = null, order = null) => {
-        dispatch(setLoading(true));
-        const postData = {
-            startDate: start,
-            endDate: end,
-            page,
-            pageSize,
-            query,
-            sortBy,
-            order
-        };
-        fetchRequest(ticketList, 'POST', postData)
-            .then(res => {
-                const { success = false, message = null } = res
-                if (success) {
-                    setData(res?.tickets);
-                } else {
-                    showMessage(message || t('errorMessage.title'), false)
-                }
-                dispatch(setLoading(false));
-            })
-            .catch(() => {
-                dispatch(setLoading(false));
-                showMessage(t('errorMessage.title'))
-            });
-    }
+    // const loadDetailsClear = (start = null, end = null, page = 1, pageSize = 10, query = null, sortBy = null, order = null) => {
+    //     dispatch(setLoading(true));
+    //     const postData = {
+    //         startDate: start,
+    //         endDate: end,
+    //         page,
+    //         pageSize,
+    //         query,
+    //         sortBy,
+    //         order
+    //     };
+    //     fetchRequest(ticketList, 'POST', postData)
+    //         .then(res => {
+    //             const { success = false, message = null } = res
+    //             if (success) {
+    //                 setData(res?.tickets);
+    //             } else {
+    //                 showMessage(message || t('errorMessage.title'), false)
+    //             }
+    //             dispatch(setLoading(false));
+    //         })
+    //         .catch(() => {
+    //             dispatch(setLoading(false));
+    //             showMessage(t('errorMessage.title'))
+    //         });
+    // }
 
     const onclickClear = () => {
-        setStartDate(dateRange.startDate);
-        setEndDate(dateRange.endDate);
+        setStartDate('');
+        setEndDate('');
         setSelectedAssignees([]);
         setSelectedSchools([]);
         setSelectedStatus([]);
         setSelectedRequesters([]);
         setSelectedTypes([]);
         setSelectedSystems([]);
-        console.log(startDate)
-        loadDetailsClear(startDate, endDate);
+        console.log('startDate: ',startDate)
+        // loadDetailsClear(startDate, endDate);
     };
 
     const fetchInfo = async () => {
@@ -282,10 +286,6 @@ const AdminRequest = () => {
         return user?.avatar || '/img/system/default-profile.png';
     };
 
-    const openImageInNewWindow = (path) => {
-        window.open(path, '_blank');
-    };
-
     const getSystemName = (systemId) => {
         const system = systems.find((sys) => sys.value === systemId);
         return system ? system.text : 'Unknown System';
@@ -311,13 +311,16 @@ const AdminRequest = () => {
         return user?.avatar || '/img/system/default-profile.png';
     };
 
+    const truncatedDescription = (description) =>{
+        return description.length > 122 ? `${description.slice(0, 122)}...` : description;
+    };
+
     return (
         <>
             <>
                 <Col lg={12} className="mb-3">
                     <h2 className='font-standard mb-0'>
-                        {/* {t('dashboard.appointment')} */}
-                        Санал хүсэлт
+                        {t('ticket.ticket')}
                     </h2>
                     <BreadcrumbList
                         basePath='/'
@@ -325,16 +328,16 @@ const AdminRequest = () => {
                         items={breadcrumbs}
                     />
                 </Col>
-                <Row>
+                <>
                     <Card className="mb-3">
                         <Card.Body>
                             <Row lg={12} className="d-flex flex-row align-content-center align-items-center position-relative">
                                 <Col lg={4}>
                                     <Row className='d-flex justify-content-between align-items-center'>
-                                        <Col>
+                                        <Col lg={4}>
                                             <label className='modal-label'>{t('common.type')}</label>
                                         </Col>
-                                        <Col>
+                                        <Col lg={8}>
                                             <Select
                                                 multiple
                                                 clearable={false}
@@ -347,10 +350,10 @@ const AdminRequest = () => {
                                 </Col>
                                 <Col lg={4}>
                                     <Row className='d-flex justify-content-between align-items-center'>
-                                        <Col >
-                                            <label className='modal-label'>{t('ticket.requester')}</label>
-                                        </Col>
                                         <Col>
+                                            <label className='modal-label' style={{ textOverflow: 'ellipsis', textAlign: 'end' }} >{t('ticket.requester')}</label>
+                                        </Col>
+                                        <Col lg={8}>
                                             <Select
                                                 multiple
                                                 clearable={false}
@@ -364,9 +367,9 @@ const AdminRequest = () => {
                                 <Col lg={4}>
                                     <Row className='d-flex justify-content-between align-items-center'>
                                         <Col >
-                                            <label className='modal-label'>{t('ticket.assignee')}</label>
+                                            <label className='modal-label' style={{ textOverflow: 'ellipsis', textAlign: 'end' }} >{t('ticket.assignee')}</label>
                                         </Col>
-                                        <Col>
+                                        <Col lg={8}>
                                             <Select
                                                 multiple
                                                 clearable={false}
@@ -381,10 +384,10 @@ const AdminRequest = () => {
                             <Row className='d-flex justify-content-between align-items-center' style={{ marginTop: 10 }}>
                                 <Col lg={4}>
                                     <Row className='d-flex justify-content-between align-items-center'>
-                                        <Col className=''>
+                                        <Col lg={4}>
                                             <label className='modal-label'>{t('ticket.system')}</label>
                                         </Col>
-                                        <Col>
+                                        <Col lg={8}>
                                             <Select
                                                 multiple
                                                 clearable={false}
@@ -397,14 +400,14 @@ const AdminRequest = () => {
                                 </Col>
                                 <Col lg={4}>
                                     <Row className='d-flex justify-content-between align-items-center'>
-                                        <Col  >
+                                        <Col lg={4}>
                                             <label className='modal-label'>{t('common.date')}</label>
                                         </Col>
-                                        <Col>
+                                        <Col lg={8}>
                                             <DatePickerRange
                                                 onChange={(val) => handleInspectionDateChange(val)}
-                                                firstPlaceHolder={t('common.startDate')}
-                                                lastPlaceHolder={t('common.endDate')}
+                                                firstPlaceHolder={t('ticket.startDate')}
+                                                lastPlaceHolder={t('ticket.endDate')}
                                                 selectedStartDate={startDate}
                                                 selectedEndDate={endDate}
                                                 isDisabled={false}
@@ -432,10 +435,10 @@ const AdminRequest = () => {
                             <Row lg={12} className='d-flex justify-content-between align-items-center' style={{ marginTop: 10 }} >
                                 <Col lg={4}>
                                     <Row className='d-flex justify-content-between align-items-center'>
-                                        <Col className=''>
+                                        <Col lg={4}>
                                             <label className='modal-label'>{t('menu.school')}</label>
                                         </Col>
-                                        <Col>
+                                        <Col lg={8}>
                                             <Select
                                                 multiple
                                                 clearable={false}
@@ -448,10 +451,10 @@ const AdminRequest = () => {
                                 </Col>
                                 <Col lg={4}>
                                     <Row className='d-flex justify-content-between align-items-center'>
-                                        <Col>
+                                        <Col lg={4}>
                                             <label className='modal-label'>{t('common.status')}</label>
                                         </Col>
-                                        <Col>
+                                        <Col lg={8}>
                                             <Select
                                                 multiple
                                                 clearable={false}
@@ -463,30 +466,24 @@ const AdminRequest = () => {
                                     </Row>
                                 </Col>
                                 <Col lg={4}>
-
                                 </Col>
                             </Row>
                             <Row style={{ marginTop: 30, marginBottom: 10 }} className=' border-separator-light border-top d-flex'></Row>
-                            <Row >
-                                <Col lg={5}>
-                                </Col>
-                                <Col lg={3} className='d-flex p-2  align-items-center'>
-                                    <Button onClick={onclickClear} size="sm" variant="link">
+                            <Row>
+                                <Col></Col>
+                                <Col className='d-flex justify-content-center'>
+                                    <Button onClick={onclickClear} size="sm" variant="link" style={{ fontSize: 14 }}>
                                         {t('common.clear')}
                                     </Button>
-                                    <Button variant="aqua" className="fs-12 br-8 ps-4 pe-4 " style={{ width: 120, color: 'white', marginLeft: 20 }} size="sm" onClick={onSeeClick}>
+                                    <Button variant="aqua" style={{ color: 'white', marginLeft: 20, fontSize: 14, width:120 }} size="sm" onClick={onSeeClick}>
                                         <img src='../img/ticket/icon/filter.png' alt='school-icon' className='color-info me-1' />{t('ticket.search')}
                                     </Button>
-
                                 </Col>
-                                <Col lg={4}>
-
-                                </Col>
+                                <Col></Col>
                             </Row>
-
                         </Card.Body>
                     </Card>
-                </Row>
+                </>
                 <Row style={{ marginTop: 20 }}>
                     <Col lg={4} style={{ color: '#FD7845', fontSize: 16, fontWeight: 'bolder', fontFamily: 'Mulish' }}>Ирсэн санал хүсэлтүүд</Col>
                     <Col lg={5}></Col>
@@ -542,15 +539,15 @@ const AdminRequest = () => {
                                 </Row>
                                 <Row>
                                     <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold', opacity: 1 }}>
-                                        #{item?.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {item?.description}</span>
+                                        #{item?.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {truncatedDescription(item?.description)}</span>
                                     </div>
                                 </Row>
                                 <Row className="d-flex align-items-end justify-content-end " >
                                     <Col lg={1}>
                                         {item?.files && item?.files.map((dtlItem, index) => (
-                                            <div key={index} className="text-center">
-                                                <img src={dtlItem.path} alt={`Image ${index}`} width='100' onClick={() => openImageInNewWindow(dtlItem.path)} />
-                                            </div>
+                                            <Button key={index} variant="default" style={{ backgroundColor: '#FFFFFF', marginTop: 10, border: '1px solid #979797' }} width="80%" size="sm"  onClick={() => openImageInNewWindow(dtlItem.path)} >
+                                                <img src='../img/ticket/icon/image.png' alt='school-icon' className='color-info me-1' /> <span style={{ color: 'black' }}>{dtlItem.name}</span>
+                                            </Button>
                                         ))}
                                     </Col>
                                     <Col lg={11}></Col>
@@ -563,7 +560,7 @@ const AdminRequest = () => {
                                     </Col>
                                     <Col lg={10}></Col>
                                     <Col xs={1} className="d-flex align-items-end justify-content-end ">
-                                        <img className="profile d-inline rounded-circle" width='60%' alt={item.assigneeId}
+                                        <img className="profile d-inline rounded-circle" width='50' alt={item.assigneeId}
                                             src={getAssigneeAvatar(item.assigneeId) ? `${getAssigneeAvatar(item.assigneeId)}` : '../img/system/default-profile.png'} />
                                     </Col>
                                 </Row>

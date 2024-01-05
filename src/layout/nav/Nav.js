@@ -1,7 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
-
+import { Col } from 'react-bootstrap';
 import { MENU_BEHAVIOUR, MENU_PLACEMENT } from 'constants.js';
 import NavUserMenu from './NavUserMenu';
 import NavIconMenu from './NavIconMenu';
@@ -20,16 +20,16 @@ const Nav = () => {
     const [isPhoneScreen, setIsPhoneScreen] = useState(false);
 
     useEffect(() => {
-      const handleResize = () => {
-        setIsPhoneScreen(window.innerWidth <= 767);
-      };
-      handleResize();
-      window.addEventListener('resize', handleResize);
-  
-      // Cleanup on component unmount
-      return () => {
-        window.removeEventListener('resize', handleResize);
-      };
+        const handleResize = () => {
+            setIsPhoneScreen(window.innerWidth <= 767);
+        };
+        handleResize();
+        window.addEventListener('resize', handleResize);
+
+        // Cleanup on component unmount
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
     }, []);
     const { navClasses, placementStatus, behaviourStatus, attrMobile, menuPadding } = useSelector((state) => state.menu);
     const mouseActionTimer = useRef(null);
@@ -74,17 +74,12 @@ const Nav = () => {
                 style={placementStatus.placementHtmlData === MENU_PLACEMENT.Horizontal && menuPadding ? { paddingRight: menuPadding } : {}}
             >
                 <NavLogo />
-                {/* <NavTicketSwitcher></NavTicketSwitcher>
-                <NavTicketMobile></NavTicketMobile> */}
-                <NavIconMenu />
-                {/* <MainMenu /> */}
-                {/* <NavLanguageSwitcher /> */}
-                <NavUserMenu />
-                {isPhoneScreen ? <NavTicketMobile /> : <NavTicketSwitcher />}
-                {/* */}
-                {/* 
-*/}
-                <NavMobileButtons />
+                <Col xl={6} lg={6} md={8} sm={2}>
+                    {isPhoneScreen ? <NavTicketMobile /> : <NavTicketSwitcher />}
+                    </Col>
+                <Col xl={6} lg={6} md={6} sm={10}>
+                    <NavUserMenu />
+                </Col>
             </div>
             <div className="nav-shadow" />
         </div>

@@ -192,14 +192,15 @@ const view = (outerProps) => {
                                 <Row>
                                     <Link to={{ pathname: `/admin/index` }} style={{ textAlign: 'right', color: '#FD7845', fontSize: 12, fontWeight: 'bold', fontFamily: 'Mulish' }}>
                                         Жагсаалт руу буцах
-                                    </Link></Row>
+                                    </Link>
+                                    </Row>
                                 <Row className="d-flex flex-row align-content-center align-items-center position-relative ">
                                     <Col lg={1} className="text-center flex-row">
-                                        <Row style={{ display: 'flex' }}>
-                                            <div style={{ textAlign: 'center' }}>
-                                                <img className="profile d-inline me-3  rounded-circle" width='70%' alt={item.createdUser} src={getUserAvatar(item.createdUser) ? `${getUserAvatar(item.createdUser)}` : '../img/system/default-profile.png'} />
-                                            </div>
-                                        </Row>
+                                        {/* <Row style={{ display: 'flex' }}>
+                                            <div style={{ textAlign: 'center' }}> */}
+                                                <img className="profile d-inline me-3  rounded-circle" width='80' alt={item.createdUser} src={getUserAvatar(item.createdUser) ? `${getUserAvatar(item.createdUser)}` : '../img/system/default-profile.png'} />
+                                            {/* </div>
+                                        </Row> */}
                                     </Col>
                                     <Col>
                                         <Row>

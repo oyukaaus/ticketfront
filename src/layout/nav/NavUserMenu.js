@@ -23,14 +23,6 @@ const NavUserMenuContent = ({ userObj }) => {
 
     const { person } = useSelector((state) => state.auth);
 
-    // const onChangePasswordClick = () => {
-    //     setShowChangePassword(true);
-    // };
-
-    // const onChangeProfilePicClick = () => {
-    //     setShowChangeProfilePic(true);
-    // };
-
     const onChangePasswordSubmit = (param) => {
         dispatch(setLoading(true));
         const postData = {
@@ -52,38 +44,6 @@ const NavUserMenuContent = ({ userObj }) => {
                 showMessage(t('errorMessage.title'))
             });
     }
-
-    // const getBase64 = (file = null) => {
-    //     if (file) {
-    //         const reader = new FileReader();
-    //         reader.readAsDataURL(file);
-    //         reader.onload = function () {
-    //             const bodyParams = {
-    //                 file: reader?.result
-    //             }
-    //             dispatch(setLoading(true));
-    //             fetchRequestAdmin(userChangeAvatar, 'POST', bodyParams)
-    //                 .then(response => {
-    //                     const { message = null, success = false } = response
-    //                     if (success) {
-    //                         person.avatar = response?.path;
-    //                         dispatch(setPersonInfo(person));
-    //                         showMessage(message, success)
-    //                     } else {
-    //                         showMessage(message || t('errorMessage.title'), success)
-    //                     }
-    //                     dispatch(setLoading(false));
-    //                 })
-    //                 .catch(() => {
-    //                     dispatch(setLoading(false));
-    //                     showMessage(t('errorMessage.title'))
-    //                 });
-    //         };
-    //         reader.onerror = function (error) {
-    //             console.log('Error: ', error);
-    //         };
-    //     }
-    // }
 
     const onChangeProfilePicSubmit = (fileData = null) => {
         const bodyParams = {
@@ -118,14 +78,6 @@ const NavUserMenuContent = ({ userObj }) => {
                 </Col>
                 <Col xs="12" className="ps-1 pe-1">
                     <ul className="list-unstyled">
-                        {/* <li>
-                            <AccountBoxOutlined className='w-17 me-2' />
-                            <a href="#/!" onClick={onChangeProfilePicClick}>{t('user.changeProfilePic')}</a>
-                        </li>
-                        <li>
-                            <LockOutlined className='w-17 me-2' />
-                            <a href="#/!" onClick={onChangePasswordClick}>{t('user.changePassword')}</a>
-                        </li> */}
                         <li>
                             <LogoutOutlined className='w-17 me-2' />
                             <a href="/logout">{t('user.logout')}</a>
@@ -168,8 +120,8 @@ const NotificationsDropdownMenu = React.memo(
     React.forwardRef(({ style, className, labeledBy, items }, ref) => {
         return (
             <div ref={ref} style={style} className={classNames('dropdown-menu dropdown-menu-end user-menu wide', className)}>
-            <NotificationItem/>
-        </div>
+                <NotificationItem />
+            </div>
         );
     })
 );
@@ -190,7 +142,7 @@ const NavNotifDropdownToggle = React.memo(
                 onClick(e);
             }}
         >
-            <img alt='notif' src='/img/ticket/icon/bell.png' style={{ marginRight: 20 }} width="50%" />
+            <img alt='notif' src='/img/ticket/icon/bell.png' style={{ marginRight: 20 }} width="100%" />
         </a>
         </>
     ))
@@ -199,7 +151,9 @@ const NavUserMenuDropdownToggle = React.memo(
     React.forwardRef(({ onClick, expanded = false, user = {} }, ref) =>
     (
         <>
-            <span style={{ fontFamily: 'Mulish', fontWeight: 'bold', fontSize: 14, color: 'white', marginRight: 20 }}>  {user.lastName}{' '}  {user.firstName.toUpperCase()} </span>
+            {/* <Col xl={10} lg={7}> */}
+            {/* </Col>
+            <Col xl={2} lg={3}> */}
             <a
                 href='#!'
                 style={{ color: '#fff' }}
@@ -213,8 +167,11 @@ const NavUserMenuDropdownToggle = React.memo(
                     onClick(e);
                 }}
             >
+
                 <img className="profile" alt={user.firstName} src={user?.avatar ? `${user?.avatar}` : '../img/system/default-profile.png'} />
             </a>
+            {/* </Col> */}
+            {/* <Col xl={2} lg={2}></Col> */}
         </>
     ))
 );
@@ -249,6 +206,20 @@ const NavUserMenu = () => {
     const { color } = useSelector((state) => state.settings);
     const { showingNavMenu } = useSelector((state) => state.layout);
 
+    const [isPhoneScreen, setIsPhoneScreen] = useState(false);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsPhoneScreen(window.innerWidth <= 767);
+        };
+        handleResize();
+        window.addEventListener('resize', handleResize);
+
+        // Cleanup on component unmount
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
     useEffect(() => {
         setUpdateView(!updateView);
     }, [person])
@@ -268,60 +239,73 @@ const NavUserMenu = () => {
         return <></>;
     }
     return (
-        <>
-            <Dropdown as="div" bsPrefix="user-container d-flex" onToggle={onToggle} drop="down">
-                <Dropdown.Toggle as={NavNotifDropdownToggle} />
-                <Dropdown.Menu
-                    as={NotificationsDropdownMenu}
-                    className="dropdown-menu dropdown-menu-end user-menu wide"
-                    popperConfig={{
-                        modifiers: [
-                            {
-                                name: 'offset',
-                                options: {
-                                    offset: () => {
-                                        if (placement === MENU_PLACEMENT.Horizontal) {
-                                            return [0, 7];
-                                        }
-                                        if (window.innerWidth < 768) {
-                                            return [-84, 7];
-                                        }
+        <Row>
+            <Col xl={4} lg={1} sm={1} ></Col>
+            {isPhoneScreen === false && (
+                <>
+                    <Col xl={1} lg={1} md={1} sm={1}>
+                        <Dropdown as="div" bsPrefix="user-container d-flex" onToggle={onToggle} drop="down">
+                            <Dropdown.Toggle as={NavNotifDropdownToggle} />
+                            <Dropdown.Menu
+                                as={NotificationsDropdownMenu}
+                                className="dropdown-menu dropdown-menu-end user-menu wide"
+                                popperConfig={{
+                                    modifiers: [
+                                        {
+                                            name: 'offset',
+                                            options: {
+                                                offset: () => {
+                                                    if (placement === MENU_PLACEMENT.Horizontal) {
+                                                        return [0, 7];
+                                                    }
+                                                    if (window.innerWidth < 768) {
+                                                        return [-84, 7];
+                                                    }
 
-                                        return [-78, 7];
+                                                    return [-78, 7];
+                                                },
+                                            },
+                                        },
+                                    ],
+                                }}
+                            />
+                        </Dropdown>
+                    </Col>
+                    <Col xl={3} lg={4} md={5} sm={4} className="d-flex align-items-center justify-content-center ">
+                        <span style={{ fontFamily: 'Mulish', fontWeight: 'bold', fontSize: 14, color: 'white', marginRight: 20 }}>  {person.lastName}{' '}  {person.firstName.toUpperCase()} </span>
+                    </Col>
+                </>)}
+            <Col xl={1} lg={1} md={1} sm={1}>
+                <Dropdown as="div" bsPrefix="user-container d-flex" onToggle={onToggle} drop="down">
+                    <Dropdown.Toggle as={NavUserMenuDropdownToggle} user={person} />
+                    <Dropdown.Menu
+                        as={NavUserMenuDropdownMenu}
+                        user={person}
+                        className="dropdown-menu dropdown-menu-end user-menu wide"
+                        popperConfig={{
+                            modifiers: [
+                                {
+                                    name: 'offset',
+                                    options: {
+                                        offset: () => {
+                                            if (placement === MENU_PLACEMENT.Horizontal) {
+                                                return [0, 7];
+                                            }
+                                            if (window.innerWidth < 768) {
+                                                return [-84, 7];
+                                            }
+
+                                            return [-78, 7];
+                                        },
                                     },
                                 },
-                            },
-                        ],
-                    }}
-                />
-            </Dropdown>
-            <Dropdown as="div" bsPrefix="user-container d-flex" onToggle={onToggle} drop="down">
-                <Dropdown.Toggle as={NavUserMenuDropdownToggle} user={person} />
-                <Dropdown.Menu
-                    as={NavUserMenuDropdownMenu}
-                    user={person}
-                    className="dropdown-menu dropdown-menu-end user-menu wide"
-                    popperConfig={{
-                        modifiers: [
-                            {
-                                name: 'offset',
-                                options: {
-                                    offset: () => {
-                                        if (placement === MENU_PLACEMENT.Horizontal) {
-                                            return [0, 7];
-                                        }
-                                        if (window.innerWidth < 768) {
-                                            return [-84, 7];
-                                        }
-
-                                        return [-78, 7];
-                                    },
-                                },
-                            },
-                        ],
-                    }}
-                />
-            </Dropdown></>
+                            ],
+                        }}
+                    />
+                </Dropdown>
+            </Col>
+            <Col xl={3} lg={2} sm={2}></Col>
+        </Row>
     );
 };
 export default React.memo(NavUserMenu);

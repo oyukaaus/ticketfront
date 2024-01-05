@@ -40,14 +40,15 @@ const Tickets = () => {
 
     if (tickets && tickets.length > 0) {
         return (
-            <Col md={10} lg={8} xl={8} style={{ marginLeft: 40 }}>
-                <div className="position-relative d-inline-flex flex-column">
+            <>
+                <div className="position-relative d-inline-flex flex-column" style={{marginLeft:20}}>
                     <div className='d-flex align-items-center m-2'>
                         <Link to={{
                             pathname: `/ticket/index`,
                         }}
                         >
-                            <img src='/img/ticket/icon/send.png' alt='icon147' className='color-info me-1' /><span style={{ color: 'white', fontFamily: 'Mulish' }}> Санал хүсэлт</span>
+                            <img src='/img/ticket/icon/send.png' alt='icon147' className='color-info me-1' />
+                            <span style={{ color: 'white', fontFamily: 'Mulish', fontSize: 14 }}> Санал хүсэлт</span>
                             <img src='/img/ticket/icon/chevron-right.png' alt='icon148' className='color-info me-1' />
                         </Link>
                     </div>
@@ -58,23 +59,23 @@ const Tickets = () => {
                             pathname: `/admin/index`,
                         }}
                         >
-                            <img src='/img/ticket/icon/book.png' alt='icon149' className='color-info me-1' /><span style={{ color: 'white', fontFamily: 'Mulish' }}> Admin</span>
+                            <img src='/img/ticket/icon/book.png' alt='icon149' className='color-info me-1' /><span style={{ color: 'white', fontFamily: 'Mulish', fontSize: 14 }}> Admin</span>
                             <img src='/img/ticket/icon/chevron-right.png' alt='icon150' className='color-info me-1' />
                         </Link>
                     </div>
                 </div>
-                <div className="position-relative d-inline-flex flex-column">
+                <div className="position-relative d-inline-flex flex-column"style={{marginLeft:10}}>
                     <div className='d-flex align-items-center'>
                         <Link to={{
                             pathname: `/ticket/index`,
                         }}
                         >
-                            <img src='/img/ticket/icon/file-question.png' alt='icon151' className='color-info me-1' /><span style={{ color: 'white', fontFamily: 'Mulish' }}>Түгээмэл асуулт</span>
+                            <img src='/img/ticket/icon/file-question.png' alt='icon151' className='color-info me-1' /><span style={{ color: 'white', fontFamily: 'Mulish', fontSize: 14 }}>Түгээмэл асуулт</span>
                             <img src='/img/ticket/icon/chevron-right.png' alt='icon152' className='color-info me-1' />
                         </Link>
                     </div>
                 </div>
-            </Col>
+            </>
         );
     } else {
         return <></>;

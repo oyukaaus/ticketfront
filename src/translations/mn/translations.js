@@ -1272,6 +1272,8 @@ export const TRANSLATIONS_MN = {
       changedDate: 'Өөрчлөгдсөн огноо',
       changedBy: 'Өөрчилсөн',
       statusLog: 'Төлөв шилжилт',
-      search: 'Шүүх'
+      search: 'Шүүх',
+      startDate: 'Эхлэх',
+      endDate: 'Дуусах',
     }
 };
