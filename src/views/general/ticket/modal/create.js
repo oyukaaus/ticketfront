@@ -125,7 +125,7 @@ const createTicketModal = ({
     const requestFields = [
         {
             key: 'image',
-            label: 'Файл хавсаргах',
+            // label: 'Файл хавсаргах',
             value: '',
             type: 'fileUpload',
             // required: true,
@@ -269,7 +269,7 @@ const createTicketModal = ({
         return (
             <>
                 <div className='d-flex mt-08'>
-                    <label className='modal-label'>
+                    <label className='modal-label' style={{ color: '#575962' }}>
                         {t('ticket.school')}*
                     </label>
                     <div className='modal-content-container'>
@@ -302,7 +302,7 @@ const createTicketModal = ({
                     <div className='modal-end'></div>
                 </div>
                 <div className='d-flex mt-08'>
-                    <label className='modal-label'>
+                    <label className='modal-label' style={{ color: '#575962' }}>
                         {t('ticket.system')}*
                     </label>
                     <div className='modal-content-container'>
@@ -334,7 +334,7 @@ const createTicketModal = ({
                     <div className='modal-end'></div>
                 </div>
                 <div className='d-flex mt-08'>
-                    <label className='modal-label mb-2 mt-2 mt-md-2' style={{ textOverflow: 'ellipsis', textAlign: 'end' }} >
+                    <label className='modal-label mb-2 mt-2 mt-md-2' style={{ textOverflow: 'ellipsis', textAlign: 'end', color: '#575962' }} >
                         {t('ticket.menu')}*
                     </label>
                     <div className='modal-content-container'>
@@ -367,7 +367,7 @@ const createTicketModal = ({
                     <div className='modal-end'></div>
                 </div>
                 <div className='d-flex mt-08'>
-                    <label className='modal-label mb-2 mt-2 mt-md-2' style={{ textOverflow: 'ellipsis', textAlign: 'end' }} >
+                    <label className='modal-label mb-2 mt-2 mt-md-2' style={{ textOverflow: 'ellipsis', textAlign: 'end', color: '#575962' }} >
                         {t('ticket.subMenu')}*
                     </label>
                     <div className='modal-content-container'>
@@ -400,7 +400,7 @@ const createTicketModal = ({
                     <div className='modal-end'></div>
                 </div>
                 <div className='d-flex flex-wrap mt-08'>
-                    <label className='modal-label mb-2 mt-2 mt-md-2' style={{ textOverflow: 'ellipsis', textAlign: 'end' }} >
+                    <label className='modal-label mb-2 mt-2 mt-md-2' style={{ textOverflow: 'ellipsis', textAlign: 'end', color: '#575962' }} >
                         {t('ticket.issue')}*
                     </label>
                     <div className='modal-content-container'>
@@ -428,7 +428,7 @@ const createTicketModal = ({
                     <div className='modal-end'></div>
                 </div>
                 <div className='d-flex mt-08'>
-                    <label className='modal-label'>
+                    <label className='modal-label' style={{ color: '#575962' }}>
                         {t('ticket.example')}*
                     </label>
                     <div className='modal-content-container'>
@@ -477,7 +477,7 @@ const createTicketModal = ({
         return (
             <>
                 <div className='d-flex mt-08'>
-                    <label className='modal-label'>
+                    <label className='modal-label' color={{ color: '#575962' }}>
                         {t('ticket.school')}*
                     </label>
                     <div className='modal-content-container'>
@@ -510,7 +510,7 @@ const createTicketModal = ({
                     <div className='modal-end'></div>
                 </div>
                 <div className='d-flex mt-08'>
-                    <label className='modal-label'>
+                    <label className='modal-label' color={{ color: '#575962' }}>
                         {t('ticket.system')}*
                     </label>
                     <div className='modal-content-container'>
@@ -542,7 +542,7 @@ const createTicketModal = ({
                     <div className='modal-end'></div>
                 </div>
                 <div className='d-flex mt-08'>
-                    <label className='modal-label'>
+                    <label className='modal-label' color={{ color: '#575962' }}>
                         {t('ticket.idea')}*
                     </label>
                     <div className='modal-content-container'>
@@ -583,7 +583,7 @@ const createTicketModal = ({
             size='xl'
         >
             <Modal.Header closeButton>
-                <Modal.Title className='fs-16'>
+                <Modal.Title className='fs-16' color="#FF5B1D">
                     {t('common.requestSend')}
                 </Modal.Title>
             </Modal.Header>
@@ -615,16 +615,16 @@ const createTicketModal = ({
                         :
                         renderIdea()
                 }
-                <Forms ref={formRefRequest} fields={requestFields} />
                 <div className='d-flex mt-08'>
-                    <label className='modal-label'>
-                        {/* {t('ticket.school')}* */}
+                    <label className='modal-label' style={{ textOverflow: 'ellipsis', textAlign: 'end', color: '#575962' }} >
+                        {t('ticket.attachment')}*
                     </label>
                     <div className='modal-content-container'>
                         <table className='w-100'>
                             <thead>
                                 <tr>
                                     <th className='width-equal pe-2  d-flex align-items-center text-right'>
+                                        <Forms ref={formRefRequest} fields={requestFields} />
                                         {
                                             imageError ?
                                                 <div className='invalid-feedback d-block'>
@@ -653,6 +653,7 @@ const createTicketModal = ({
                     variant="success"
                     className='text-uppercase fs-12 br-8 ps-4 pe-4'
                     size='sm'
+                    style={{ backgroundColor: '#5DD75C', color: "#000000", opacity: 1 }}
                     onClick={onSaveClick}
                 >
                     {t('common.send')}

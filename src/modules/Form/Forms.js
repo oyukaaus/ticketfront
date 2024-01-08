@@ -10,12 +10,13 @@ import DatePickerRange from "./DatePickerRange";
 import TimePickerRange from "./TimePickerRange";
 import { useTranslation } from "react-i18next";
 import { HelpOutline } from '@mui/icons-material';
-import { Button, Popover, OverlayTrigger } from "react-bootstrap";
+import { Button, Popover, OverlayTrigger, Col } from "react-bootstrap";
 import './form.scss';
 
 const Forms = (({
     fields: paramFields = [],
-    onSubmit
+    onSubmit,
+    fileData
 }, ref) => {
     const { t } = useTranslation();
     const fileUploaderRef = useRef([]);
@@ -33,7 +34,7 @@ const Forms = (({
     }));
 
     const [fields, setFields] = useState([]);
-
+    console.log('fields: ', fileData)
     const isWeekday = (date) => {
         const day = date.getDay();
         return day !== 0 && day !== 6;
@@ -116,22 +117,22 @@ const Forms = (({
     const verifyFile = (files, index) => {
         const clone = [...fields];
         const acceptedType = [
-            'image/x-png',
+            // 'image/x-png',
             'image/png',
             'image/jpg',
             'image/jpeg',
             'image/gif',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-            'application/vnd.openxmlformats-officedocument.presentationml.slideshow',
-            'video/x-ms-wmv',
-            'application/pdf',
-            'audio/mpeg',
-            'video/mpeg',
-            'video/mp4',
-            'video/quicktime',
-            'video/x-ms-wmv',
+            // 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            // 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            // 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+            // 'application/vnd.openxmlformats-officedocument.presentationml.slideshow',
+            // 'video/x-ms-wmv',
+            // 'application/pdf',
+            // 'audio/mpeg',
+            // 'video/mpeg',
+            // 'video/mp4',
+            // 'video/quicktime',
+            // 'video/x-ms-wmv',
         ];
         const acceptedSize = 52428800;
 
@@ -1001,7 +1002,7 @@ const Forms = (({
                                                     {
                                                         field.isCustomBtn &&
                                                         <Button
-                                                            style={{height: 38}}
+                                                            style={{ height: 38 }}
                                                             variant="outline-alternate"
                                                             className='text-uppercase fs-12 br-8 ps-4 pe-4'
                                                             size='sm'
@@ -1089,7 +1090,7 @@ const Forms = (({
                                     <div key={index} />
                                     :
                                     <div key={index} style={{ display: 'flex', marginTop: '0.8rem' }}>
-                                        <label
+                                        {/* <label
                                             style={{
                                                 display: 'flex',
                                                 flex: field.labelWidth ? undefined : field?.labelFlex || 1,
@@ -1102,11 +1103,11 @@ const Forms = (({
                                             }}
                                         >
                                             {field.label}
-                                        </label>
+                                        </label> */}
                                         <div
                                             style={{
-                                                flexDirection: 'column',
-                                                marginLeft: 10,
+                                                flexDirection: 'row',
+                                                // marginLeft: 10,
                                                 width: field?.inputWidth || 'auto',
                                             }}
                                         >
@@ -1122,47 +1123,89 @@ const Forms = (({
                                                 }}
                                                 value={field.value}
                                             />
-                                            {
-                                                field?.fileType == 'image'
-                                                    ?
-                                                    <img src={field?.files && field?.fileData ? field?.fileData ? URL?.createObjectURL(field?.fileData) : field?.altImage : field?.altImage} width='100' className={field?.files && field?.fileData ? "" : field?.altImageClass} alt={field?.fileNames || 'empty'} />
-                                                    :
-                                                    field.fileNames
-                                            }
-                                            <br />
-                                            <br />
-                                            {
-                                                field.isExtendedButton
-                                                    ?
-                                                    <button className={field.isExtendedButtonClass} onClick={() => onFileUploadButtonHandler(index)}>{field?.isExtendedButtonText || ''}</button>
-                                                    : null
-                                            }
-                                            {
-                                                field.clearButton
-                                                    ?
-                                                    field.fileNames &&
-                                                    <Button
-                                                        onClick={() => { onFileUploadClearButtonHandler(index) }}
-                                                        className={
-                                                            field?.isClearButtonClass
-                                                                ?
-                                                                field?.isClearButtonClass
-                                                                :
-                                                                "btn btn-outline-danger m-btn m-btn--icon m-btn--icon-only m-btn--circle-28 ms-2"
-                                                        }
-                                                    >
-                                                        {field?.isClearButtonText || <i className="flaticon2-cross"> </i>}
-                                                    </Button>
-                                                    : null
-                                            }
-                                            {
-                                                field.showErrorMessage
-                                                    ?
-                                                    <div style={{ color: '#F64E60' }}>
-                                                        {field.errorMessage}
+                                            <div className="row">
+                                                <div className="col">
+                                                    <div className="d-flex flex-row position-relative">
+                                                        {fileData && fileData.map((item) => (
+                                                            <div key={item.id} xs="auto" className="d-flex align-items-start" style={{ marginLeft: 10 }}>
+                                                                <div className="text-center">
+                                                                    {item.type === 'image/png' ? (
+                                                                        <img
+                                                                            src={item.path}
+                                                                            alt={`Image ${item.name}`}
+                                                                            width="100"
+                                                                            height="60"
+                                                                            onClick={() => openImageInNewWindow(item.path)}
+                                                                        />
+                                                                    ) : (
+                                                                        <p>{item.name}</p>
+                                                                    )}
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                        {field?.fileType === 'image' ? (
+                                                            <img
+                                                                style={{ marginLeft: 10 }}
+                                                                src={
+                                                                    field?.files && field?.fileData
+                                                                        ? field?.fileData
+                                                                            ? URL?.createObjectURL(field?.fileData)
+                                                                            : field?.altImage
+                                                                        : field?.altImage
+                                                                }
+                                                                width="100"
+                                                                className={field?.files && field?.fileData ? '' : field?.altImageClass}
+                                                                alt={field?.fileNames || 'empty'}
+                                                            />
+                                                        ) : (
+                                                            field.fileNames
+                                                        )}
                                                     </div>
-                                                    : null
-                                            }
+
+                                                </div>
+                                            </div>
+
+                                            <br />
+                                            <br />
+                                            {/* <div className="row">
+                                                <div className="col"> */}
+
+                                            <div className="">
+                                                {
+                                                    field.isExtendedButton
+                                                        ?
+                                                        <button className={field.isExtendedButtonClass} onClick={() => onFileUploadButtonHandler(index)}>{field?.isExtendedButtonText || ''}</button>
+                                                        : null
+                                                }
+                                                {
+                                                    field.clearButton
+                                                        ?
+                                                        field.fileNames &&
+                                                        <Button
+                                                            onClick={() => { onFileUploadClearButtonHandler(index) }}
+                                                            className={
+                                                                field?.isClearButtonClass
+                                                                    ?
+                                                                    field?.isClearButtonClass
+                                                                    :
+                                                                    "btn btn-outline-danger m-btn m-btn--icon m-btn--icon-only m-btn--circle-28"
+                                                            }
+                                                        >
+                                                            {field?.isClearButtonText || <i className="flaticon2-cross"> </i>}
+                                                        </Button>
+                                                        : null
+                                                }
+                                                {
+                                                    field.showErrorMessage
+                                                        ?
+                                                        <div style={{ color: '#F64E60' }}>
+                                                            {field.errorMessage}
+                                                        </div>
+                                                        : null
+                                                }
+                                                {/* </div>
+                                                </div> */}
+                                            </div>
                                         </div>
                                         {
                                             field.inputWidth

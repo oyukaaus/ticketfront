@@ -90,15 +90,15 @@ const AdminRequest = () => {
     const getButtonColor = (type) => {
         switch (type) {
             case 1:
-                return { backgroundColor: '#FF003D', color: '#FFFFFF', fontFamily: 'Mulish', opacity: 1 };
+                return { backgroundColor: '#FF003D', color: '#FFFFFF', fontFamily: 'Mulish', opacity: 1, marginLeft: 10, marginTop:10 };
             case 2:
-                return { backgroundColor: '#EDB414', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
+                return { backgroundColor: '#EDB414', color: '#000000', fontFamily: 'Mulish', opacity: 1, marginLeft: 10 , marginTop:10};
             case 3:
-                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
+                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity: 1, marginLeft: 10 , marginTop:10};
             case 4:
-                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
+                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity: 1 , marginLeft: 10, marginTop:10};
             default:
-                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
+                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish', opacity: 1, marginLeft: 10, marginTop:10 };
         }
     };
 
@@ -315,6 +315,10 @@ const AdminRequest = () => {
         return description.length > 122 ? `${description.slice(0, 122)}...` : description;
     };
 
+    const truncatedName = (name) =>{
+        return name.length > 25 ? `${name.slice(0, 25)}.png` : name;
+    };
+
     return (
         <>
             <>
@@ -512,7 +516,7 @@ const AdminRequest = () => {
                                     </Col>
                                     <Col>
                                         <Row>
-                                            <Col>
+                                            <Col className='mb-2'>
                                                 <Button className='position-relative d-inline-flex '
                                                     type="button"
                                                     size="sm"
@@ -525,7 +529,7 @@ const AdminRequest = () => {
                                                     type="button"
                                                     size="sm"
                                                     disabled
-                                                    style={{ backgroundColor: '#FD7845', fontFamily: 'Mulish', color: '#000000', marginLeft: 10 }}
+                                                    style={{ backgroundColor: '#FD7845', fontFamily: 'Mulish', color: '#000000', marginLeft: 10, marginTop:10 }}
                                                 >
                                                     {getSchoolName(item.schoolId)}
                                                 </Button>
@@ -543,18 +547,17 @@ const AdminRequest = () => {
                                     </div>
                                 </Row>
                                 <Row className="d-flex align-items-end justify-content-end " >
-                                    <Col lg={1}>
+                                    <Col>
                                         {item?.files && item?.files.map((dtlItem, index) => (
-                                            <Button key={index} variant="default" style={{ backgroundColor: '#FFFFFF', marginTop: 10, border: '1px solid #979797' }} width="80%" size="sm"  onClick={() => openImageInNewWindow(dtlItem.path)} >
-                                                <img src='../img/ticket/icon/image.png' alt='school-icon' className='color-info me-1' /> <span style={{ color: 'black' }}>{dtlItem.name}</span>
+                                            <Button key={index} variant="default" style={{ backgroundColor: '#FFFFFF', marginTop: 10, marginLeft:5, border: '1px solid #979797' }} width="80%" size="sm"  onClick={() => openImageInNewWindow(dtlItem.path)} >
+                                                <img src='../img/ticket/icon/image.png' alt='school-icon' className='color-info me-1' /> <span style={{ color: 'black',  }}>{truncatedName(dtlItem.name)}</span>
                                             </Button>
                                         ))}
                                     </Col>
-                                    <Col lg={11}></Col>
                                 </Row>
                                 <Row className="d-flex align-items-end justify-content-end " >
                                     <Col lg={1}>
-                                        <Button variant="default" style={{ backgroundColor: '#E5E7EB', marginTop: 10 }} width="80%" size="sm" onClick={onSeeClick}>
+                                    <Button variant="default" style={{ backgroundColor: '#E5E7EB', marginTop: 10 }} width="80%" size="sm" onClick={onSeeClick}>
                                             <img src='../img/ticket/icon/reply.png' alt='school-icon' className='color-info me-1' /> <span style={{ color: 'black' }}>{item.replyCount}</span>
                                         </Button>
                                     </Col>

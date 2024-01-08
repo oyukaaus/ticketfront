@@ -1275,5 +1275,6 @@ export const TRANSLATIONS_MN = {
       search: 'Шүүх',
       startDate: 'Эхлэх',
       endDate: 'Дуусах',
+      attachment: 'Файл хавсаргах'
     }
 };

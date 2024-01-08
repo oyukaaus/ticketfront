@@ -116,17 +116,17 @@ const editTicket = ({
     const onChangeExample = (e) => {
         setExample(e.target.value);
     }
-
     const requestFields = [
         {
             key: 'image',
-            label: 'Файл хавсаргах',
+            // label: 'Файл хавсаргах',
             value: '',
             type: 'fileUpload',
             required: false,
             fileName: '',
             multiple: true,
             isExtendedButton: true,
+            files: [fileData],
             isExtendedButtonText: (
                 <>
                     <CollectionsIcon /> {t('survey.selectImage')}
@@ -262,7 +262,7 @@ const editTicket = ({
                 setSelectedSchool(res?.ticket[0].schoolId);
                 setFile(res?.ticket[0].files[0]);
                 setFileData(res?.ticket[0].files[0]);
-                setExistingImage(res?.ticket[0].files[0]);
+                setExistingImage(res?.ticket[0].files);
             } else {
                 showMessage(res?.message || t('errorMessage.title'));
             }
@@ -347,7 +347,7 @@ const editTicket = ({
                     <div className='modal-end'></div>
                 </div>
                 <div className='d-flex mt-08'>
-                <label className='modal-label mb-2 mt-2 mt-md-2' style={{ textOverflow:'ellipsis', textAlign:'end'}} >
+                    <label className='modal-label mb-2 mt-2 mt-md-2' style={{ textOverflow: 'ellipsis', textAlign: 'end' }} >
                         {t('ticket.menu')}*
                     </label>
                     <div className='modal-content-container'>
@@ -380,7 +380,7 @@ const editTicket = ({
                     <div className='modal-end'></div>
                 </div>
                 <div className='d-flex mt-08'>
-                <label className='modal-label mb-2 mt-2 mt-md-2' style={{ textOverflow:'ellipsis', textAlign:'end'}} >
+                    <label className='modal-label mb-2 mt-2 mt-md-2' style={{ textOverflow: 'ellipsis', textAlign: 'end' }} >
                         {t('ticket.subMenu')}*
                     </label>
                     <div className='modal-content-container'>
@@ -464,7 +464,7 @@ const editTicket = ({
                     <div className='modal-content-container'>
                         <Row className='gx-0'>
                             <Col className='pe-2' style={{ color: '#000000', fontSize: 14, fontFamily: 'Mulish' }}>
-                            Жишээ болгож алдаа гарч байгаа хэрэглэгчийн мэдээллийг оруулна уу.
+                                Жишээ болгож алдаа гарч байгаа хэрэглэгчийн мэдээллийг оруулна уу.
                             </Col>
                         </Row>
                     </div>
@@ -624,29 +624,32 @@ const editTicket = ({
                         :
                         renderIdea()
                 }
-                {existingImage && (
-                    <div className='d-flex mt-08'>
-                        <label className='modal-label'>
-                        </label>
-                        <div className='modal-content-container'>
-                            <Row className='gx-0'>
-                                <Col className='pe-2'>
-                                    <div style={{ position: 'relative', marginRight: '10px' }}>
-                                        <img
-                                            src={existingImage && existingImage.path}
-                                            alt={`Image ${existingImage && existingImage.id}`}
-                                            width='100'
-                                            onClick={() => openImageInNewWindow(existingImage && existingImage.path)}
-                                            style={{ cursor: 'pointer' }}
-                                        />
-                                    </div>
-                                </Col>
-
-                            </Row>
-                        </div>
-                        <div className='modal-end'></div>
-                    </div>)}
-                <Forms ref={formRefRequest} fields={requestFields} />
+                <div className='d-flex'>
+                    <label className='modal-label' style={{ textOverflow: 'ellipsis', textAlign: 'end', color: '#575962' }} >
+                        {t('ticket.attachment')}*
+                    </label>
+                    <div className='modal-content-container'>
+                        <table className='w-100'>
+                            <thead>
+                                <tr>
+                                    <th className='width-equal d-flex align-items-center text-right'>
+                                        <Forms ref={formRefRequest} fields={requestFields} fileData={existingImage} />
+                                        {/* {
+                                            imageError ?
+                                                <div className='invalid-feedback d-block'>
+                                                    {t('errorMessage.imageError')}
+                                                </div>
+                                                :
+                                                null
+                                        } */}
+                                    </th>
+                                </tr>
+                            </thead>
+                        </table>
+                    </div>
+                    <div className='modal-end'></div>
+                </div>
+                {/* <Forms ref={formRefRequest} fields={requestFields}  fileData={existingImage} /> */}
             </Modal.Body>
             <Modal.Footer className='d-flex justify-content-center'>
                 <Button

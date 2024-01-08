@@ -48,15 +48,15 @@ const TicketPage = () => {
     const getButtonColor = (type) => {
         switch (type) {
             case 'Шинэ':
-                return { backgroundColor: '#FF003D', color: '#FFFFFF', fontFamily: 'Mulish', opacity: 1 };
+                return { backgroundColor: '#FF003D', color: '#FFFFFF', fontFamily: 'Mulish', opacity: 1, marginLeft: 10};
             case 'eSchool хүлээж авсан':
-                return { backgroundColor: '#EDB414', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
+                return { backgroundColor: '#EDB414', color: '#000000', fontFamily: 'Mulish', opacity: 1 , marginLeft: 10};
             case 'Хаагдсан':
-                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
+                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity: 1, marginLeft: 10};
             case 'Цуцласан':
-                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
+                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity: 1, marginLeft: 10};
             default:
-                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
+                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish', opacity: 1 , marginLeft: 10};
         }
     };
 
@@ -138,6 +138,10 @@ const TicketPage = () => {
         console.log(itemId, 'cancelled')
     }
 
+    const truncatedDescription = (description) =>{
+        return description.length > 122 ? `${description.slice(0, 122)}...` : description;
+    };
+
     const NavUserMenuDropdownToggle = React.memo(
         React.forwardRef(({ onClick, expanded = false, user = {} }, ref) =>
         (
@@ -180,6 +184,7 @@ const TicketPage = () => {
             );
         })
     );
+    
     useEffect(() => {
         fetchInfo()
     }, []);
@@ -260,7 +265,7 @@ const TicketPage = () => {
                                                 {item.status}
                                             </Button>
 
-                                            <div style={{ color: 'black', fontSize: 14, fontFamily: 'Mulish' }}>
+                                            <div style={{ color: 'black', fontSize: 14, fontFamily: 'Mulish', marginLeft: 10 }}>
                                                 {(item.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {getTypeName(item.typeId)} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {getSystemName(item.systemId)}
                                             </div>
                                         </Col>
@@ -301,7 +306,7 @@ const TicketPage = () => {
                                     </Row>
                                     <Row>
                                         <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
-                                            #{item?.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {item?.description}</span>
+                                            #{item?.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {truncatedDescription(item?.description)}</span>
                                         </div>
                                     </Row>
                                 </Col>

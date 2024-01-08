@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal, Button, Row, Col, Form } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import Forms from 'modules/Form/Forms';
 import CollectionsIcon from '@mui/icons-material/Collections';
@@ -23,19 +23,21 @@ const ReplyTicket = ({
     const { person } = useSelector((state) => state.auth);
     const [file, setFile] = React.useState();
     const [fileData, setFileData] = useState([]);
+    const [description, setDescription] = useState('');
+    const [descriptionErrorMsg, setDescriptionErrorMsg] = useState(false);
 
     const requestFields = [
-        {
-            key: 'description',
-            value: '',
-            label: `${t('ticket.reply')}*`,
-            type: 'textArea',
-            required: true,
-            labelBold: true,
-        },
+        // {
+        //     key: 'description',
+        //     value: '',
+        //     label: `${t('ticket.reply')}*`,
+        //     type: 'textArea',
+        //     required: true,
+        //     labelBold: true,
+        // },
         {
             key: 'image',
-            label: 'Файл хавсаргах',
+            // label: 'Файл хавсаргах',
             value: '',
             type: 'fileUpload',
             required: false,
@@ -77,14 +79,18 @@ const ReplyTicket = ({
         },
     ];
 
+    const onChangeDescription = (e) => {
+        setDescription(e.target.value);
+        setDescriptionErrorMsg(false)
+    }
+
     const onSaveClick = () => {
-        const [isValid, , values] = formRef.current.validate();
-        console.log('person.id: ', person.id)
+        const [isValid] = formRef.current.validate();
         if (isValid) {
             dispatch(setLoading(true));
             const postData = {
                 ticketId: selectedId,
-                description: values.description,
+                description: description,
                 statusId: 1,
                 createdBy: person.id
             };
@@ -136,7 +142,47 @@ const ReplyTicket = ({
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body className='px-0'>
-                <Forms ref={formRef} fields={requestFields} />
+            <div className='d-flex flex-wrap mt-08'>
+                    <label className='modal-label mb-2 mt-2 mt-md-2' style={{ textOverflow: 'ellipsis', textAlign: 'end', color: '#575962' }} >
+                        {t('ticket.reply')}*
+                    </label>
+                    <div className='modal-content-container'>
+                        <Row className='gx-0'>
+                            <Col className='pe-2'>
+                                <Form.Control
+                                    className={descriptionErrorMsg && 'is-invalid form-control'}
+                                    as="textarea" rows="3"
+                                    onChange={onChangeDescription}
+                                    placeholder='Хариу'
+                                    value={description}
+                                    required
+                                />
+                                {
+                                    descriptionErrorMsg ?
+                                        <div className='invalid-feedback d-block'>
+                                            {t('errorMessage.descriptionErrorMsg')}
+                                        </div>
+                                        :
+                                        null
+                                }
+                            </Col>
+                        </Row>
+                    </div>
+                    <div className='modal-end'></div>
+                </div>
+                <div className='d-flex flex-wrap mt-08'>
+                    <label className='modal-label mb-2 mt-2 mt-md-2' style={{ textOverflow: 'ellipsis', textAlign: 'end', color: '#575962' }} >
+                                  {t('ticket.attachment')}*
+                    </label>
+                    <div className='modal-content-container'>
+                        <Row className='gx-0'>
+                            <Col className='pe-2'>
+                                        <Forms ref={formRef} fields={requestFields} />
+                            </Col>
+                        </Row>
+                    </div>
+                    <div className='modal-end'></div>
+                </div>
             </Modal.Body>
             <Modal.Footer className='d-flex justify-content-center'>
                 <Button

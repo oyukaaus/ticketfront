@@ -141,7 +141,9 @@ const view = (outerProps) => {
         const school = schoolData.find((sys) => sys.value === schoolId);
         return school ? school.longName : 'Unknown School';
     };
-
+    const truncatedName = (name) =>{
+        return name.length > 25 ? `${name.slice(0, 25)}.png` : name;
+    };
     const NavUserMenuDropdownMenu = React.memo(
         React.forwardRef(({ style, className, item }, ref) => {
             return (
@@ -198,7 +200,7 @@ const view = (outerProps) => {
                                     <Col lg={1} className="text-center flex-row">
                                         {/* <Row style={{ display: 'flex' }}>
                                             <div style={{ textAlign: 'center' }}> */}
-                                                <img className="profile d-inline me-3  rounded-circle" width='80' alt={item.createdUser} src={getUserAvatar(item.createdUser) ? `${getUserAvatar(item.createdUser)}` : '../img/system/default-profile.png'} />
+                                                <img className="profile d-inline me-3  rounded-circle" width='50' alt={item.createdUser} src={getUserAvatar(item.createdUser) ? `${getUserAvatar(item.createdUser)}` : '../img/system/default-profile.png'} />
                                             {/* </div>
                                         </Row> */}
                                     </Col>
@@ -225,7 +227,7 @@ const view = (outerProps) => {
                                         </Row>
 
                                         <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold' }}>
-                                            {(item.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {item.type} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {getSystemName(item.systemId)}
+                                           {item.type} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {(item.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span>  {getSystemName(item.systemId)}
                                         </div>
                                     </Col>
                                 </Row>
@@ -237,17 +239,17 @@ const view = (outerProps) => {
                                     </Col>
                                 </Row>
                                 <Row className="d-flex align-items-end justify-content-end " >
-                                    <Col lg={1}>
-                                        {item.files && item.files.map((dtlItem, index) => (
-                                            <div key={index} className="text-center">
-                                                <img src={dtlItem.path} alt={`Image ${index}`} width='100' onClick={() => openImageInNewWindow(dtlItem.path)} />
-                                            </div>
+                                    <Col>
+                                    {item?.files && item?.files.map((dtlItem, index) => (
+                                            <Button key={index} variant="default" style={{ backgroundColor: '#FFFFFF', marginTop: 10, marginLeft:5, border: '1px solid #979797' }} width="80%" size="sm"  onClick={() => openImageInNewWindow(dtlItem.path)} >
+                                                <img src='/img/ticket/icon/image.png' alt='school-icon' className='color-info me-1' /> <span style={{ color: 'black',  }}>{truncatedName(dtlItem.name)}</span>
+                                            </Button>
                                         ))}
                                     </Col>
-                                    <Col lg={10}></Col>
-
-                                    <Col xs={1} className="d-flex align-items-end justify-content-end ">
-                                        <img className="profile d-inline me-3  rounded-circle" width='60%' alt={item.assigneeId}
+                                </Row>
+                                <Row className="d-flex align-items-end justify-content-end " >
+                                <Col  className="d-flex align-items-end justify-content-end ">
+                                        <img className="profile d-inline me-3  rounded-circle" width='50' alt={item.assigneeId}
                                             src={getAssigneeAvatar(item.assigneeId) ? `${getAssigneeAvatar(item.assigneeId)}` : '../img/system/default-profile.png'} />
                                         <Dropdown as="div" bsPrefix="user-container d-flex" drop="down">
                                             <Dropdown.Toggle as={NavUserMenuDropdownToggle} />
@@ -293,59 +295,42 @@ const view = (outerProps) => {
             <>
                 {replyData.map((item1, i) => (
                     <div key={i} style={{ marginLeft: '5%', width: '95.7%' }}>
-                        {/* <Col lg={1}><div></div></Col> */}
-                        <Col >
-                            <Card className="mb-3">
-                                <Card.Body className="d-flex flex-row align-content-center align-items-center position-relative mb-3">
-                                    <Col xs={12}>
-                                        <Row>
-                                            <Col xs={1} className="text-center">
-                                                <Row style={{ display: 'flex' }}>
-                                                    <div style={{ textAlign: 'center' }}>
-                                                        <img className="profile d-inline me-3  rounded-circle" width='70%' alt={item1.createdUser} src={getUserAvatar(item1.createdUser) ? `${getUserAvatar(item1.createdUser)}` : '../img/system/default-profile.png'} />
-                                                    </div>
-                                                </Row>
-
-                                            </Col>
-                                            <Col xs={10}>
-                                                <Row>
-                                                    <Col>
-                                                        <Button
-                                                            type="button"
-                                                            size="sm"
-                                                            disabled
-                                                            style={getButtonColor(item1.status)}
-                                                        >
-                                                            {item1.status}
-                                                        </Button>
-                                                        <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold', fontFamily: 'Mulish' }}>
-                                                            {getUsername(item1.createdUser)} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {(item1.createdDate?.date).replace(/\.\d+$/, '')}
-                                                        </div>
-                                                    </Col>
-
-                                                </Row>
-                                            </Col>
-                                        </Row>
-                                        <Row xs={11} style={{ width: "100%" }}>
-                                            <div style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold', maxWidth: '100%', fontFamily: 'Mulish' }}>
-                                                Хариу тайлбар. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}> {item1.description}</span>
-                                            </div>
-                                        </Row>
-                                        <Row className="d-flex align-items-end justify-content-end " >
-                                            <Col lg={1}>
-                                                {item1.file && item1.file.map((dItem, index) => (
-                                                    <div key={index} className="text-center">
-                                                        <img src={dItem.path} alt={`Image ${index}`} width='100' onClick={() => openImageInNewWindow(dItem.path)} />
-                                                    </div>
-                                                ))}
-                                            </Col>
-                                            <Col lg={11}></Col>
-                                        </Row>
+                         <Card className="mb-4">
+                            <Card.Body>
+                                <Row className="d-flex flex-row align-content-center align-items-center position-relative ">
+                                    <Col lg={1} className="text-center flex-row">
+                                        {/* <Row style={{ display: 'flex' }}>
+                                            <div style={{ textAlign: 'center' }}> */}
+                                                <img className="profile d-inline me-3  rounded-circle" width='50' alt={item1.createdUser} src={getUserAvatar(item1.createdUser) ? `${getUserAvatar(item1.createdUser)}` : '../img/system/default-profile.png'} />
+                                            {/* </div>
+                                        </Row> */}
                                     </Col>
+                                    <Col>
+                                        <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold' }}>
+                                        {getUsername(item1.createdUser)} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {(item1.createdDate?.date).replace(/\.\d+$/, '')} 
+                                        </div>
+                                    </Col>
+                                </Row>
+                                <Row>
+                                    <Col>
+                                        <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
+                                            Хариу тайлбар. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {item1.description}</span>
+                                        </div>
+                                    </Col>
+                                </Row>
+                                <Row className="d-flex align-items-end justify-content-end " >
+                                    <Col>
+                                    {item1?.file && item1?.file.map((dtlItem, index) => (
+                                            <Button key={index} variant="default" style={{ backgroundColor: '#FFFFFF', marginTop: 10, marginLeft:5, border: '1px solid #979797' }} width="80%" size="sm"  onClick={() => openImageInNewWindow(dtlItem.path)} >
+                                                <img src='/img/ticket/icon/image.png' alt='school-icon' className='color-info me-1' /> <span style={{ color: 'black',  }}>{truncatedName(dtlItem.name)}</span>
+                                            </Button>
+                                        ))}
+                                    </Col>
+                                    <Col ></Col>
 
-                                </Card.Body>
-                            </Card>
-                        </Col>
+                                </Row>
+                            </Card.Body>
+                        </Card>
                     </div>
                 ))}
             </>
