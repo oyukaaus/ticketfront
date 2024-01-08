@@ -204,7 +204,7 @@ th {
 
 /************ datetime picker css ***********/
 .react-datepicker-wrapper {
-  width: auto !important;
+  width: 100% !important;
 }
 
 .react-calendar {
@@ -230,7 +230,7 @@ th {
 
 .react-datepicker-wrapper .react-datepicker__input-container input {
   display: block;
-  border: 1px solid var(--separator);
+  border: 2px solid var(--separator);
   width: 100%;
   height: 38px;
   padding: 0.65rem 1rem;
@@ -257,8 +257,10 @@ th {
 /************ datetime picker css end ***********/
 /***************** date-picker-range-container css **************/
 .date-picker-range-container {
-  width: auto;
-  display: inline-flex;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  /* display: inline-flex; */
 }
 
 .date-picker-range-container .first-datepicker {

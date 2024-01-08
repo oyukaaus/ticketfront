@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Card, Row, Col, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
@@ -11,11 +11,13 @@ import { ticketReport, ticketList } from 'utils/fetchRequest/Urls';
 import DatePickerRange from 'modules/Form/DatePickerRange';
 import Select from 'modules/Form/Select';
 import * as XLSX from 'xlsx';
+import Forms from 'modules/Form/Forms';
 
 const AdminRequest = () => {
     const history = useHistory();
     const { t } = useTranslation();
     const dispatch = useDispatch();
+    const formRef = useRef();
     const { schools } = useSelector(state => state.schoolData);
     const schoolData = [];
     schools.map((param) =>
@@ -87,6 +89,7 @@ const AdminRequest = () => {
         { to: '/ticket/index', text: 'Санал хүсэлт' },
 
     ];
+
     const getButtonColor = (type) => {
         switch (type) {
             case 1:
@@ -102,13 +105,29 @@ const AdminRequest = () => {
         }
     };
 
-
-    const handleInspectionDateChange = (value) => {
-        if (value && value.length > 0) {
-            setStartDate(value[0]?.startDate || '')
-            setEndDate(value[0]?.endDate || '')
-        }
-    }
+    const field = [
+        {
+            key: 'date',
+            value: '',
+            // label: `${t('survey.date')}*`,
+            type: 'daterange',
+            required: true,
+            errorMessage: t('errorMessage.enterName'),
+            labelBold: true,
+            selectedStartDate: startDate,
+            selectedEndDate: endDate,
+            firstPlaceHolder:t('ticket.startDate'),
+            lastPlaceHolder:t('ticket.endDate'),
+            width:'100%',
+          
+        },
+    ];
+    const handerRangePicker = (dates) => {
+        console.log('range: ', dates);
+        setStartDate(dates[0].startDate);
+        setEndDate(dates[0].endDate);
+    };
+    
     const loadDetails = (start = null, end = null, page = 1, pageSize = 10, query = null, sortBy = null, order = null) => {
         dispatch(setLoading(true));
         const postData = {
@@ -167,6 +186,7 @@ const AdminRequest = () => {
     }
 
     const onSeeClick = () => {
+        console.log('startDate', startDate);
         if (startDate && endDate) {
             setErrorDueDate(false);
             loadDetails(startDate, endDate);
@@ -408,7 +428,29 @@ const AdminRequest = () => {
                                             <label className='modal-label'>{t('common.date')}</label>
                                         </Col>
                                         <Col lg={8}>
+                                        <div
+                                            style={{
+                                                display: 'flex',
+                                                flex: field.inputWidth ? undefined : field?.inputFlex || 1,
+                                                flexDirection: 'column',
+                                                // marginLeft: 10,
+                                                // width: field?.inputWidth || 'auto',
+                                                fontFamily: field.labelBold ? 'Pinnacle-Bold' : 'Pinnacle',
+                                            }}
+                                        >
                                             <DatePickerRange
+                                                onChange={(val) => handerRangePicker(val)}
+                                                firstPlaceHolder={t('ticket.startDate')}
+                                                lastPlaceHolder={t('ticket.endDate')}
+                                                selectedStartDate={startDate}
+                                                selectedEndDate={endDate}
+                                            />
+                                            {/* <div className={feedbackClassName} style={{ display: message ? 'block' : undefined }}>
+                                                {message}
+                                            </div> */}
+                                        </div>
+                                        {/* <Forms key="change-date-range" ref={formRef} fields={fields} /> */}
+                                            {/* <DatePickerRange
                                                 onChange={(val) => handleInspectionDateChange(val)}
                                                 firstPlaceHolder={t('ticket.startDate')}
                                                 lastPlaceHolder={t('ticket.endDate')}
@@ -428,7 +470,7 @@ const AdminRequest = () => {
                                                         </div>
                                                     </Col>
                                                 </Row>
-                                            }
+                                            } */}
                                         </Col>
                                     </Row>
                                 </Col>
