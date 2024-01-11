@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { OverlayScrollbarsComponent } from 'overlayscrollbars-react';
 import { useDispatch, useSelector } from 'react-redux';
 import classNames from 'classnames';
-import { Col, Dropdown, NavLink, Row } from 'react-bootstrap';
+import { Col, Dropdown,  Row } from 'react-bootstrap';
 import { MENU_PLACEMENT } from 'constants.js';
 import { LogoutOutlined } from '@mui/icons-material';
 import { layoutShowingNavMenu } from 'layout/layoutSlice';
@@ -104,7 +103,7 @@ const NavUserMenuContent = ({ userObj }) => {
         </div>
     )
 };
-const NotificationItem = ({ img = '', link = '', detail = '' }) => (
+const NotificationItem = () => (
     <li className="mb-3 pb-3 border-bottom border-separator-light d-flex">
         {/* <img src={img} className="me-3 sw-4 sh-4 rounded-xl align-self-center" alt="notification" /> */}
         <div className="align-self-center">
@@ -117,7 +116,7 @@ const NotificationItem = ({ img = '', link = '', detail = '' }) => (
 );
 
 const NotificationsDropdownMenu = React.memo(
-    React.forwardRef(({ style, className, labeledBy, items }, ref) => {
+    React.forwardRef(({ style, className}, ref) => {
         return (
             <div ref={ref} style={style} className={classNames('dropdown-menu dropdown-menu-end user-menu wide', className)}>
                 <NotificationItem />
@@ -127,7 +126,7 @@ const NotificationsDropdownMenu = React.memo(
 );
 
 const NavNotifDropdownToggle = React.memo(
-    React.forwardRef(({ onClick, expanded = false, user = {} }, ref) =>
+    React.forwardRef(({ onClick, expanded = false}, ref) =>
     (
         <>   <a
             href='#!'
@@ -204,8 +203,6 @@ const NavUserMenu = () => {
     const [updateView, setUpdateView] = useState(false)
 
     const { color } = useSelector((state) => state.settings);
-    const { showingNavMenu } = useSelector((state) => state.layout);
-
     const [isPhoneScreen, setIsPhoneScreen] = useState(false);
 
     useEffect(() => {

@@ -50,15 +50,15 @@ const view = (outerProps) => {
     const getButtonColor = (type) => {
         switch (type) {
             case 'Шинэ':
-                return { backgroundColor: '#FF003D', color: '#FFFFFF', fontFamily: 'Mulish', opacity:1 };
+                return { backgroundColor: '#FF003D', color: '#FFFFFF', fontFamily: 'Mulish', opacity: 1 };
             case 'eSchool хүлээж авсан':
-                return { backgroundColor: '#EDB414', color: '#000000', fontFamily: 'Mulish', opacity:1 };
+                return { backgroundColor: '#EDB414', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
             case 'Хаагдсан':
-                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity:1 };
+                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
             case 'Цуцласан':
-                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity:1 };
+                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
             default:
-                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish', opacity:1 };
+                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
         }
     };
 
@@ -141,18 +141,33 @@ const view = (outerProps) => {
         const school = schoolData.find((sys) => sys.value === schoolId);
         return school ? school.longName : 'Unknown School';
     };
-    const truncatedName = (name) =>{
+    const truncatedName = (name) => {
         return name.length > 25 ? `${name.slice(0, 25)}.png` : name;
     };
+    
+    const [isPhoneScreen, setIsPhoneScreen] = useState(false);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsPhoneScreen(window.innerWidth <= 767);
+        };
+        handleResize();
+        window.addEventListener('resize', handleResize);
+
+        // Cleanup on component unmount
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
     const NavUserMenuDropdownMenu = React.memo(
         React.forwardRef(({ style, className, item }, ref) => {
             return (
                 <div ref={ref} style={style} className={classNames('dropdown-menu dropdown-menu-start user-menu wide', className)}>
                     {(item.status === 'Шинэ' || item.status === 'eSchool хүлээж авсан') && (
                         <>
-                            <Dropdown.Item onClick={() => ticketAssign()}><img src="../../img/ticket/icon/user-profile-add.png" alt="view-icon" /> Хариуцагчийг солих</Dropdown.Item>
-                            <Dropdown.Item onClick={() => ticketReply()}><img src="../../img/ticket/icon/file-input.png" alt="fileinput-icon" /> Хариу бичих</Dropdown.Item>
-                            <Dropdown.Item onClick={() => ticketClose()}><img src="../../img/ticket/icon/file-check-2.png" alt="filecheck-icon" /> Хүсэлтийг хаах</Dropdown.Item>
+                            <Dropdown.Item onClick={() => ticketAssign()}><img src="../../img/ticket/icon/user-profile-add.png" alt="view-icon" /> <span style={{ color: '#000000', fontSize: 14 }}> Хариуцагчийг солих</span></Dropdown.Item>
+                            <Dropdown.Item onClick={() => ticketReply()}><img src="../../img/ticket/icon/file-input.png" alt="fileinput-icon" /> <span style={{ color: '#000000', fontSize: 14 }}> Хариу бичих</span></Dropdown.Item>
+                            <Dropdown.Item onClick={() => ticketClose()}><img src="../../img/ticket/icon/file-check-2.png" alt="filecheck-icon" /> <span style={{ color: '#000000', fontSize: 14 }}> Хүсэлтийг хаах</span></Dropdown.Item>
                         </>)}
                     <Dropdown.Item onClick={() => statusLogShow()}><img src="../../img/ticket/icon/file-check-2.png" alt="filecheck-icon" />Төлөв шилжилт харах</Dropdown.Item>
                 </div>
@@ -191,64 +206,53 @@ const view = (outerProps) => {
                     <Row key={i} style={{ marginTop: 10 }}>
                         <Card className="mb-4">
                             <Card.Body>
-                                <Row>
-                                    <Link to={{ pathname: `/admin/index` }} style={{ textAlign: 'right', color: '#FD7845', fontSize: 12, fontWeight: 'bold', fontFamily: 'Mulish' }}>
+                                <Row className='d-flex'>
+                                    <div style={{ width: '5%' }}>
+                                        <img className="profile d-inline me-3  rounded-circle" width='50' alt={item.createdUser} src={getUserAvatar(item.createdUser) ? `${getUserAvatar(item.createdUser)}` : '../img/system/default-profile.png'} />
+                                    </div>
+                                    <Col style={{ marginLeft: isPhoneScreen ? 30 : 0 }}>
+                                        <Button className='position-relative d-inline-flex m-1'
+                                            type="button"
+                                            size="sm"
+                                            disabled
+                                            style={getButtonColor(item.status)}
+                                        >
+                                            {item.status}
+                                        </Button>
+                                        <Button className='position-relative d-inline-flex m-1'
+                                            type="button"
+                                            size="sm"
+                                            disabled
+                                            style={{ backgroundColor: '#FD7845', fontFamily: 'Mulish' }}
+                                        >
+                                            {getSchoolName(item.schoolId)}
+                                        </Button>
+                                        
+                                        <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold' }}>
+                                            {item.type} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {(item.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span>  {getSystemName(item.systemId)}
+                                        </div>
+                                    </Col>
+                                    <Col className="d-flex align-items-start justify-content-end ">
+                                    <Link to={{ pathname: `/admin/index` }} style={{ textAlign: 'right', color: '#FF2F1A', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}>
                                         Жагсаалт руу буцах
                                     </Link>
-                                    </Row>
-                                <Row className="d-flex flex-row align-content-center align-items-center position-relative ">
-                                    <Col lg={1} className="text-center flex-row">
-                                        {/* <Row style={{ display: 'flex' }}>
-                                            <div style={{ textAlign: 'center' }}> */}
-                                                <img className="profile d-inline me-3  rounded-circle" width='50' alt={item.createdUser} src={getUserAvatar(item.createdUser) ? `${getUserAvatar(item.createdUser)}` : '../img/system/default-profile.png'} />
-                                            {/* </div>
-                                        </Row> */}
                                     </Col>
-                                    <Col>
-                                        <Row>
-                                            <Col>
-                                                <Button className='position-relative d-inline-flex m-1'
-                                                    type="button"
-                                                    size="sm"
-                                                    disabled
-                                                    style={getButtonColor(item.status)}
-                                                >
-                                                    {item.status}
-                                                </Button>
-                                                <Button className='position-relative d-inline-flex m-1'
-                                                    type="button"
-                                                    size="sm"
-                                                    disabled
-                                                    style={{ backgroundColor: '#FD7845', fontFamily: 'Mulish' }}
-                                                >
-                                                    {getSchoolName(item.schoolId)}
-                                                </Button>
-                                            </Col>
-                                        </Row>
+                                </Row>
 
-                                        <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold' }}>
-                                           {item.type} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {(item.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span>  {getSystemName(item.systemId)}
-                                        </div>
-                                    </Col>
-                                </Row>
-                                <Row>
-                                    <Col>
-                                        <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
-                                            #{item.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {item.description}</span>
-                                        </div>
-                                    </Col>
-                                </Row>
-                                <Row className="d-flex align-items-end justify-content-end " >
+                                <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
+                                    #{item.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {item.description}</span>
+                                </div>
+                                <div className="d-flex align-items-end justify-content-end " >
                                     <Col>
                                     {item?.files && item?.files.map((dtlItem, index) => (
-                                            <Button key={index} variant="default" style={{ backgroundColor: '#FFFFFF', marginTop: 10, marginLeft:5, border: '1px solid #979797' }} width="80%" size="sm"  onClick={() => openImageInNewWindow(dtlItem.path)} >
-                                                <img src='/img/ticket/icon/image.png' alt='school-icon' className='color-info me-1' /> <span style={{ color: 'black',  }}>{truncatedName(dtlItem.name)}</span>
-                                            </Button>
-                                        ))}
+                                        <Button key={index} variant="default" style={{ backgroundColor: '#FFFFFF', marginTop: 10, marginLeft: 5, border: '1px solid #979797' }} width="80%" size="sm" onClick={() => openImageInNewWindow(dtlItem.path)} >
+                                            <img src='/img/ticket/icon/image.png' alt='school-icon' className='color-info me-1' /> <span style={{ color: 'black', }}>{truncatedName(dtlItem.name)}</span>
+                                        </Button>
+                                    ))}
                                     </Col>
-                                </Row>
+                                </div>
                                 <Row className="d-flex align-items-end justify-content-end " >
-                                <Col  className="d-flex align-items-end justify-content-end ">
+                                    <Col className="d-flex align-items-end justify-content-end ">
                                         <img className="profile d-inline me-3  rounded-circle" width='50' alt={item.assigneeId}
                                             src={getAssigneeAvatar(item.assigneeId) ? `${getAssigneeAvatar(item.assigneeId)}` : '../img/system/default-profile.png'} />
                                         <Dropdown as="div" bsPrefix="user-container d-flex" drop="down">
@@ -295,19 +299,19 @@ const view = (outerProps) => {
             <>
                 {replyData.map((item1, i) => (
                     <div key={i} style={{ marginLeft: '5%', width: '95.7%' }}>
-                         <Card className="mb-4">
+                        <Card className="mb-4">
                             <Card.Body>
                                 <Row className="d-flex flex-row align-content-center align-items-center position-relative ">
                                     <Col lg={1} className="text-center flex-row">
                                         {/* <Row style={{ display: 'flex' }}>
                                             <div style={{ textAlign: 'center' }}> */}
-                                                <img className="profile d-inline me-3  rounded-circle" width='50' alt={item1.createdUser} src={getUserAvatar(item1.createdUser) ? `${getUserAvatar(item1.createdUser)}` : '../img/system/default-profile.png'} />
-                                            {/* </div>
+                                        <img className="profile d-inline me-3  rounded-circle" width='50' alt={item1.createdUser} src={getUserAvatar(item1.createdUser) ? `${getUserAvatar(item1.createdUser)}` : '../img/system/default-profile.png'} />
+                                        {/* </div>
                                         </Row> */}
                                     </Col>
                                     <Col>
                                         <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold' }}>
-                                        {getUsername(item1.createdUser)} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {(item1.createdDate?.date).replace(/\.\d+$/, '')} 
+                                            {getUsername(item1.createdUser)} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {(item1.createdDate?.date).replace(/\.\d+$/, '')}
                                         </div>
                                     </Col>
                                 </Row>
@@ -320,9 +324,9 @@ const view = (outerProps) => {
                                 </Row>
                                 <Row className="d-flex align-items-end justify-content-end " >
                                     <Col>
-                                    {item1?.file && item1?.file.map((dtlItem, index) => (
-                                            <Button key={index} variant="default" style={{ backgroundColor: '#FFFFFF', marginTop: 10, marginLeft:5, border: '1px solid #979797' }} width="80%" size="sm"  onClick={() => openImageInNewWindow(dtlItem.path)} >
-                                                <img src='/img/ticket/icon/image.png' alt='school-icon' className='color-info me-1' /> <span style={{ color: 'black',  }}>{truncatedName(dtlItem.name)}</span>
+                                        {item1?.file && item1?.file.map((dtlItem, index) => (
+                                            <Button key={index} variant="default" style={{ backgroundColor: '#FFFFFF', marginTop: 10, marginLeft: 5, border: '1px solid #979797' }} width="80%" size="sm" onClick={() => openImageInNewWindow(dtlItem.path)} >
+                                                <img src='/img/ticket/icon/image.png' alt='school-icon' className='color-info me-1' /> <span style={{ color: 'black', }}>{truncatedName(dtlItem.name)}</span>
                                             </Button>
                                         ))}
                                     </Col>

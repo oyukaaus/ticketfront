@@ -40,6 +40,22 @@ const TicketPage = () => {
         { to: '/ticket/index', text: 'Санал хүсэлт' },
 
     ];
+    
+    const [isPhoneScreen, setIsPhoneScreen] = useState(false);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsPhoneScreen(window.innerWidth <= 767);
+        };
+        handleResize();
+        window.addEventListener('resize', handleResize);
+
+        // Cleanup on component unmount
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
     useEffect(() => {
         dispatch(setLoading(true));
 
@@ -48,15 +64,15 @@ const TicketPage = () => {
     const getButtonColor = (type) => {
         switch (type) {
             case 'Шинэ':
-                return { backgroundColor: '#FF003D', color: '#FFFFFF', fontFamily: 'Mulish', opacity: 1, marginLeft: 10};
+                return { backgroundColor: '#FF003D', color: '#FFFFFF', fontFamily: 'Mulish', opacity: 1, marginLeft: 10 };
             case 'eSchool хүлээж авсан':
-                return { backgroundColor: '#EDB414', color: '#000000', fontFamily: 'Mulish', opacity: 1 , marginLeft: 10};
+                return { backgroundColor: '#EDB414', color: '#000000', fontFamily: 'Mulish', opacity: 1, marginLeft: 10 };
             case 'Хаагдсан':
-                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity: 1, marginLeft: 10};
+                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity: 1, marginLeft: 10 };
             case 'Цуцласан':
-                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity: 1, marginLeft: 10};
+                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity: 1, marginLeft: 10 };
             default:
-                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish', opacity: 1 , marginLeft: 10};
+                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish', opacity: 1, marginLeft: 10 };
         }
     };
 
@@ -138,12 +154,12 @@ const TicketPage = () => {
         console.log(itemId, 'cancelled')
     }
 
-    const truncatedDescription = (description) =>{
+    const truncatedDescription = (description) => {
         return description.length > 122 ? `${description.slice(0, 122)}...` : description;
     };
 
     const NavUserMenuDropdownToggle = React.memo(
-        React.forwardRef(({ onClick, expanded = false, user = {} }, ref) =>
+        React.forwardRef(({ onClick, expanded = false }, ref) =>
         (
             <a
                 href='#!'
@@ -168,15 +184,15 @@ const TicketPage = () => {
             return (
                 <div ref={ref} style={style} className={classNames('dropdown-menu dropdown-menu-end user-menu wide', className)}>
                     <Dropdown.Item onClick={() => history.push(`/ticket/view/${item.id}`)}>
-                        <img src="/img/ticket/icon/view.png" alt="dot-icon" className="color-info me-1" />Дэлгэрэнгүй харах
+                        <img src="/img/ticket/icon/view.png" alt="dot-icon" className="color-info me-1" /><span style={{ color: '#000000', fontSize: 14 }}> Дэлгэрэнгүй харах</span>
                     </Dropdown.Item>
                     {item.status === 'Шинэ' && (
                         <>
                             <Dropdown.Item onClick={() => editTicket(item.id)}>
-                                <img src="/img/ticket/icon/edit.png" alt="dot-icon" className="color-info me-1" />Хүсэлтээ засах
+                                <img src="/img/ticket/icon/edit.png" alt="dot-icon" className="color-info me-1" /><span style={{ color: '#000000', fontSize: 14 }}>Хүсэлтээ засах</span>
                             </Dropdown.Item>
                             <Dropdown.Item onClick={() => cancelTicket(item.id)} >
-                                <img src="/img/ticket/icon/x-square.png" alt="dot-icon" className="color-info me-1" />Хүсэлтээ цуцлах
+                                <img src="/img/ticket/icon/x-square.png" alt="dot-icon" className="color-info me-1" /><span style={{ color: '#000000', fontSize: 14 }}>Хүсэлтээ цуцлах</span>
                             </Dropdown.Item>
                         </>
                     )}
@@ -184,7 +200,7 @@ const TicketPage = () => {
             );
         })
     );
-    
+
     useEffect(() => {
         fetchInfo()
     }, []);
@@ -193,7 +209,7 @@ const TicketPage = () => {
             <>
                 <Col lg={12} className="mb-3">
                     <h2 className='font-standard mb-0'>
-                        {t('ticket.idea')}
+                        {t('ticket.ticket')}
                     </h2>
                     <BreadcrumbList
                         basePath='/'
@@ -212,7 +228,7 @@ const TicketPage = () => {
                                             <img src='../img/ticket/Group.png' alt='school-icon' className='color-info me-1' /></Col>
                                         <Col lg={8} xs={8} className='d-flex align-items-center justify-content-center'>
                                             <Row className='d-flex align-items-center'>
-                                                <div style={{ textAlign: 'center', color: '#000000', fontFamily: 'Mulish', fontSize: 12 }}>
+                                                <div style={{ textAlign: 'center', color: '#000000', fontFamily: 'Mulish', fontSize: 14 }}>
                                                     Системтэй холбоотой санал хүсэлт, алдааны мэдээллээ бидэнд илгээнэ үү.
                                                 </div>
                                                 <div className='ml-auto' style={{ marginTop: 20, textAlign: 'center', fontFamily: 'Mulish' }}>
@@ -227,49 +243,42 @@ const TicketPage = () => {
                         </Row>
                     </Col>
                 </Row>
-                <Row style={{ marginTop: 20 }}  >
-                    <Col style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}>Миний илгээсэн санал хүсэлтүүд</Col>
-                    <Col lg={2} className=" ">
+                <Row style={{ marginTop: 20 }}>
+                    <Col lg={4} style={{ color: '#FD7845', fontSize: 16, fontWeight: 'bolder', fontFamily: 'Mulish' }}>Миний илгээсэн санал хүсэлтүүд</Col>
+                    <Col lg={5}></Col>
+                    <Col lg={3} className="d-flex align-items-end justify-content-end ">
                         <input
-                            className="form-control datatable-search "
+                            className="form-control datatable-search align-items-end justify-content-end "
                             value={searchInput}
                             onChange={handleSearch}
                             placeholder="Хайх..."
-                            style={{
-                                fontFamily: 'Mulish', width: '104%', color: 'black',
-                                opacity: 1,
-                            }}
+                            style={{ fontFamily: 'Mulish', borderRadius: 10 }}
                         />
                     </Col>
                 </Row>
                 {data.map((item, i) => (
                     <Row key={i} style={{ marginTop: 10 }}>
-                        <Card className="mb-2">
-                            <Card.Body className="d-flex flex-row align-content-center align-items-center position-relative mb-3">
-                                <Col>
-                                    <Row>
-                                        <Col xs={1} className="text-center">
-                                            <Row style={{ display: 'flex' }}>
-                                                <div className="d-flex justify-content-center">
-                                                    <img className="profile rounded-circle" width='50' alt={item.createdUserId} src={getUserAvatar(item.createdUserId) ? `${getUserAvatar(item.createdUserId)}` : '../img/system/default-profile.png'} />
-                                                </div>
-                                            </Row>
-                                        </Col>
-                                        <Col>
-                                            <Button
-                                                type="button"
-                                                size="sm"
-                                                disabled
-                                                style={getButtonColor(item.status)}
-                                            >
-                                                {item.status}
-                                            </Button>
+                    <Card className="mb-2">
+                        <Card.Body >
+                            <Row className='d-flex'>
+                                <div  style={{width:'5%'}}>
+                                    <img className="profile rounded-circle" width='50' alt={item.createdUserId} src={getUserAvatar(item.createdUserId) ? `${getUserAvatar(item.createdUserId)}` : '../img/system/default-profile.png'} />
+                                </div>
+                                <Col style={{ marginLeft: isPhoneScreen ? 20 : 0 }}>
+                                    <Button
+                                        type="button"
+                                        size="sm"
+                                        disabled
+                                        style={getButtonColor(item.status)}
+                                    >
+                                        {item.status}
+                                    </Button>
 
-                                            <div style={{ color: 'black', fontSize: 14, fontFamily: 'Mulish', marginLeft: 10 }}>
-                                                {(item.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {getTypeName(item.typeId)} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {getSystemName(item.systemId)}
-                                            </div>
-                                        </Col>
-                                        <Col xs="1" className="d-flex align-items-start justify-content-end ">
+                                    <div style={{ color: 'black', fontSize: 14, fontFamily: 'Mulish', marginLeft: 10 }}>
+                                        {(item.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {getTypeName(item.typeId)} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {getSystemName(item.systemId)}
+                                    </div>
+                                </Col>
+                                <div style={{width:'10%'}} className="d-flex align-items-start justify-content-end ">
                                             <Dropdown as="div" bsPrefix="user-container d-flex" drop="down">
                                                 <Dropdown.Toggle as={NavUserMenuDropdownToggle} />
                                                 <Dropdown.Menu
@@ -302,17 +311,14 @@ const TicketPage = () => {
                                                     }}
                                                 />
                                             </Dropdown>
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
+                                        </div>
+                            </Row>
+                            <div style={{ textAlign: 'left', color: '#FF5B1D', fontSize: 14, fontWeight: 'bold' }}>
                                             #{item?.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {truncatedDescription(item?.description)}</span>
                                         </div>
-                                    </Row>
-                                </Col>
-                            </Card.Body>
-                        </Card>
-                    </Row>
+                        </Card.Body>
+                    </Card>
+                     </Row>
                 ))}
             </>
             <Row>

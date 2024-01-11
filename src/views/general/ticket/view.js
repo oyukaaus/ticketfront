@@ -48,6 +48,21 @@ const view = (outerProps) => {
         }
     };
 
+    const [isPhoneScreen, setIsPhoneScreen] = useState(false);
+
+    useEffect(() => {
+        const handleResize = () => {
+            setIsPhoneScreen(window.innerWidth <= 767);
+        };
+        handleResize();
+        window.addEventListener('resize', handleResize);
+
+        // Cleanup on component unmount
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
     const ticketReply = () => {
         setShowReplyTicket(true);
     };
@@ -74,7 +89,6 @@ const view = (outerProps) => {
                 const { success = false, message = null } = res;
                 if (success) {
                     setData(res?.ticket);
-                    // setFiles(res?.ticket?.files);
                     setSystems(res?.systems)
                     setReplyData(res?.ticketDtlList);
                     const userOption = [];
@@ -108,19 +122,17 @@ const view = (outerProps) => {
         const user = users.find((sys) => sys.id === userId);
         return user ? user.name : 'Unknown user';
     };
-    const truncatedDescription = (description) => {
-        return description.length > 122 ? `${description.slice(0, 122)}...` : description;
-    };
+
     const NavUserMenuDropdownMenu = React.memo(
-        React.forwardRef(({ style, className, item }, ref) => {
+        React.forwardRef(({ style, className }, ref) => {
             return (
                 <div ref={ref} style={style} className={classNames('dropdown-menu dropdown-menu-end user-menu wide', className)}>
-                    {(item.status === 'Шинэ' || item.status === "eSchool хүлээж авсан") && (
+                    {(data[0].status === 'Шинэ' || data.status === "eSchool хүлээж авсан") && (
                         <Dropdown.Item onClick={() => ticketReply()}>
-                            <img src="/img/ticket/icon/file-input.png" alt="dot-icon" className="color-info me-1" />Хариу бичих
+                            <img src="/img/ticket/icon/file-input.png" alt="dot-icon" className="color-info me-1" /><span style={{ color: '#000000', fontSize: 14 }}> Хариу бичих</span>
                         </Dropdown.Item>
                     )}
-                    <Dropdown.Item onClick={() => ticketClose()}> <img src="/img/ticket/icon/file-check-2.png" alt="dot-icon" className="color-info me-1" />Хүсэлтийг хаах
+                    <Dropdown.Item onClick={() => ticketClose()}> <img src="/img/ticket/icon/file-check-2.png" alt="dot-icon" className="color-info me-1" /><span style={{ color: '#000000', fontSize: 14 }}> Хүсэлтийг хаах</span>
                     </Dropdown.Item>
                 </div>
             );
@@ -156,101 +168,51 @@ const view = (outerProps) => {
                     <Row key={i} style={{ marginTop: 10 }}>
                         <Card className="mb-3">
                             <Card.Body>
-                                <div className="d-flex " style={{ marginTop: 10 }} >
-                                    <Col lg={1}>
+                                <Row className='d-flex'>
+                                    <div style={{ width: '5%' }}>
                                         <img className="profile d-inline me-3  rounded-circle" width='50' alt={item.createdUser}
                                             src={getUserAvatar(item.createdUser) ? `${getUserAvatar(item.createdUser)}` : '../img/system/default-profile.png'} />
-                                    </Col>
-                                    <Col lg={11}>
-                                    <Row className="d-flex flex-row align-content-center align-items-center position-relative ">
-                                    <Col className="d-flex align-items-start justify-content-start ">
-                                                <Button
-                                                    type="button"
-                                                    size="sm"
-                                                    disabled
-                                                    style={getButtonColor(item.status)}
-                                                >
-                                                    {item.status}
-                                                </Button>
-                                            </Col>
-                                            <Col className="d-flex align-items-end justify-content-end ">
-                                                <Link to={{ pathname: `/ticket/index` }} style={{ textAlign: 'center', color: '#FD7845', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}>
-                                                    Жагсаалт руу буцах
-                                                </Link>
-                                            </Col>
-                                        </Row>
-                                        <Row>
-                                            <div style={{ color: 'black', fontSize: 14 }}>
-                                                <div>
-                                                    {getUsername(item.createdUser)} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span>{' '}
-                                                    {(item.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span>{item.type} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span>{' '}
-                                                    {getSystemName(item.systemId)}
-                                                </div>
-
+                                    </div>
+                                    <Col style={{ marginLeft: isPhoneScreen ? 30 : 0 }}>
+                                        <Button
+                                            type="button"
+                                            size="sm"
+                                            disabled
+                                            style={getButtonColor(item.status)}
+                                        >
+                                            {item.status}
+                                        </Button>
+                                        <div style={{ color: 'black', fontSize: 14 }}>
+                                                {getUsername(item.createdUser)} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span>{' '}
+                                                {(item.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span>{item.type} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span>{' '}
+                                                {getSystemName(item.systemId)}
                                             </div>
-                                        </Row>
                                     </Col>
-                                </div>
-                                <div style={{ marginTop: 10 }} >
+                                        <Col className="d-flex align-items-start justify-content-end ">
+                                            <Link to={{ pathname: `/ticket/index` }} style={{ textAlign: 'center', color: '#FD7845', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}>
+                                                Жагсаалт руу буцах
+                                            </Link>
+                                        </Col>
+       
+
                                     <div style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
                                         #{item.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}> {item.description}</span>
                                     </div>
-                                </div>
-                                <div className="d-flex " style={{ marginTop: 10 }} >
-                                    <Col lg={11}>
-                                        <Row>
-                                            {item.files && item.files.map((dtem, index) => (
-                                                <Col key={index} xs="auto" className="d-flex align-items-start">
-                                                    <div className="text-center">
-                                                        <img
-                                                            src={dtem.path}
-                                                            alt={`Image ${index}`}
-                                                            width='100' height='70'
-                                                            onClick={() => openImageInNewWindow(dtem.path)}
-                                                        />
-                                                    </div>
-                                                </Col>
-                                            ))}
-                                        </Row>
-                                    </Col>
+                                    <div className="d-flex " style={{ marginTop: 10 }} >
 
-                                </div>
-                                <Row className="d-flex align-items-end justify-content-end " >
-                                <Col lg={1} className="d-flex align-items-end justify-content-end ">
-                                        <Dropdown as="div" bsPrefix="user-container d-flex" drop="down">
-                                            <Dropdown.Toggle as={NavUserMenuDropdownToggle} />
-                                            <Dropdown.Menu
-                                                as={(props) => (
-                                                    <NavUserMenuDropdownMenu {...props} item={item} />
-                                                )}
-                                                // user={person}
-                                                className="dropdown-menu dropdown-menu-start wide"
-                                                style={{
-                                                    position: 'absolute',
-                                                    transform: 'translate(-130px, 40px)'
-                                                }}
-                                                popperConfig={{
-                                                    modifiers: [
-                                                        {
-                                                            name: 'offset',
-                                                            options: {
-                                                                offset: () => {
-                                                                    if (placement === MENU_PLACEMENT.Horizontal) {
-                                                                        return [0, 7];
-                                                                    }
-                                                                    if (window.innerWidth < 768) {
-                                                                        return [-84, 7];
-                                                                    }
-
-                                                                    return [-78, 7];
-                                                                },
-                                                            },
-                                                        },
-                                                    ],
-                                                }}
-                                            />
-                                        </Dropdown>
-                                    </Col>
+                                        {item.files && item.files.map((dtem, index) => (
+                                            <Col key={index} xs="auto" className="d-flex align-items-start">
+                                                <div className="text-center">
+                                                    <img
+                                                        src={dtem.path}
+                                                        alt={`Image ${index}`}
+                                                        width='100' height='70'
+                                                        onClick={() => openImageInNewWindow(dtem.path)}
+                                                    />
+                                                </div>
+                                            </Col>
+                                        ))}
+                                    </div>
                                 </Row>
                             </Card.Body>
                         </Card>
@@ -260,70 +222,90 @@ const view = (outerProps) => {
             </>
 
             {replyData.map((item, i) => (
-                <div key={i} style={{ marginLeft: '5%', width: '95.6%' }}>
-                     <Card className="mb-3">
-                            <Card.Body>
-                                <div className="d-flex " style={{ marginTop: 10 }} >
-                                    <Col lg={1}>
-                                        <img className="profile d-inline me-3  rounded-circle" width='50' alt={item.createdUser}
-                                            src={getUserAvatar(item.createdUser) ? `${getUserAvatar(item.createdUser)}` : '../img/system/default-profile.png'} />
-                                    </Col>
-                                    <Col lg={11}>
-                                        <Row>
-                                            <Col lg={1}>
-                                                <Button
-                                                    type="button"
-                                                    size="sm"
-                                                    disabled
-                                                    style={getButtonColor(item.status)}
-                                                >
-                                                    {item.status}
-                                                </Button>
-                                            </Col>
-                                            <Col lg={11} className="d-flex align-items-center justify-content-end ">
-                                                {/* <Link to={{ pathname: `/ticket/index` }} style={{ textAlign: 'center', color: '#FD7845', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}>
-                                                    Жагсаалт руу буцах
-                                                </Link> */}
-                                            </Col>
-                                        </Row>
-                                        <Row>
-                                            <div style={{ color: 'black', fontSize: 14 }}>
-                                                <div>
-                                                    {getUsername(item.createdUser)} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span>{' '}
-                                                    {(item.createdDate?.date).replace(/\.\d+$/, '')} 
-                                                </div>
-
-                                            </div>
-                                        </Row>
-                                    </Col>
+                <div key={i} style={{ marginLeft: '5%', width: '95.8%' }}>
+                    <Card className="mb-3">
+                        <Card.Body>
+                            <Row className='d-flex'>
+                                <div style={{ width: '5%' }}>
+                                    <img className="profile d-inline me-3  rounded-circle" width='50' alt={item.createdUser}
+                                        src={getUserAvatar(item.createdUser) ? `${getUserAvatar(item.createdUser)}` : '../img/system/default-profile.png'} />
                                 </div>
-                                <div style={{ marginTop: 10 }} >
-                                    <div style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
-                                        #{item.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}> {item.description}</span>
+                                <Col style={{ marginLeft: isPhoneScreen ? 20 : 0 }}>
+                                    <Button
+                                        type="button"
+                                        size="sm"
+                                        disabled
+                                        style={getButtonColor(item.status)}
+                                    >
+                                        {item.status}
+                                    </Button>
+                                    <div style={{ color: 'black', fontSize: 14 }}>
+                                        {getUsername(item.createdUser)} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span>{' '}
+                                        {(item.createdDate?.date).replace(/\.\d+$/, '')}
                                     </div>
-                                </div>
-                                <div className="d-flex " style={{ marginTop: 10 }} >
-                                    <Col lg={11}>
-                                        <Row>
-                                            {item.file && item.file.map((dtem, index) => (
-                                                <Col key={index} xs="auto" className="d-flex align-items-start">
-                                                    <div className="text-center">
-                                                        <img
-                                                            src={dtem.path}
-                                                            alt={`Image ${index}`}
-                                                            width='100' height='70'
-                                                            onClick={() => openImageInNewWindow(dtem.path)}
-                                                        />
-                                                    </div>
-                                                </Col>
-                                            ))}
-                                        </Row>
-                                    </Col>
 
-                                   
+                                </Col>
+                                
+                                {data[0].status !== 'Хаагдсан' && (
+                                    <div style={{ width: '10%' }} className="d-flex align-items-start justify-content-end ">   <Dropdown as="div" bsPrefix="user-container d-flex" drop="down">
+                                        <Dropdown.Toggle as={NavUserMenuDropdownToggle} />
+                                        <Dropdown.Menu
+                                            as={(props) => (
+                                                <NavUserMenuDropdownMenu {...props} />
+                                            )}
+                                            // user={person}
+                                            className="dropdown-menu dropdown-menu-start wide"
+                                            style={{
+                                                position: 'absolute',
+                                                transform: 'translate(-130px, 40px)'
+                                            }}
+                                            popperConfig={{
+                                                modifiers: [
+                                                    {
+                                                        name: 'offset',
+                                                        options: {
+                                                            offset: () => {
+                                                                if (placement === MENU_PLACEMENT.Horizontal) {
+                                                                    return [0, 7];
+                                                                }
+                                                                if (window.innerWidth < 768) {
+                                                                    return [-84, 7];
+                                                                }
+
+                                                                return [-78, 7];
+                                                            },
+                                                        },
+                                                    },
+                                                ],
+                                            }}
+                                        />
+                                    </Dropdown>
+                                    </div>
+                                )}
+                                
+                            <div style={{ marginTop: 10 }} >
+                                <div style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
+                                    Хариу тайлбар. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}> {item.description}</span>
                                 </div>
-                            </Card.Body>
-                        </Card>
+                            </div>
+                                <div className="d-flex " style={{ marginTop: 10 }} >
+
+                                    {item.file && item.file.map((dtem, index) => (
+                                        <Col key={index} xs="auto" className="d-flex align-items-start">
+                                            <div className="text-center">
+                                                <img
+                                                    src={dtem.path}
+                                                    alt={`Image ${index}`}
+                                                    width='100' height='70'
+                                                    onClick={() => openImageInNewWindow(dtem.path)}
+                                                />
+                                            </div>
+                                        </Col>
+                                    ))}
+                                </div>
+                            </Row>
+                        </Card.Body>
+                    </Card>
                 </div>
 
             ))}

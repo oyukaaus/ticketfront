@@ -21,7 +21,7 @@ const TicketMobile = () => {
         attrMenuAnimate,
     } = useSelector((state) => state.menu);
     const { color } = useSelector((state) => state.settings);
-    const { tickets, selectedSchool } = useSelector((state) => ({
+    const { tickets, selectedSchool } = useSelector(() => ({
         tickets: [
             { id: 1, title: 'Ticket 1', description: 'Description for Ticket 1' },
             { id: 2, title: 'Ticket 2', description: 'Description for Ticket 2' },
@@ -45,7 +45,7 @@ const TicketMobile = () => {
 
 
     const NavUserMenuDropdownMenu = React.memo(
-        React.forwardRef(({ style, className, item }, ref) => {
+        React.forwardRef(({ style, className }, ref) => {
             return (
                 <div ref={ref} style={style} className={classNames('dropdown-menu dropdown-menu-start user-menu wide', className)}>
 

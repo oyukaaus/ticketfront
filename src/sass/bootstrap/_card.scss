@@ -11,7 +11,7 @@
   background: var(--foreground);
   border-radius: var(--border-radius-lg);
   border: initial;
-  box-shadow: 0 4px 10px rgb(255 91 29 / 15%) !important;
+  box-shadow: 0 0px 10px rgb(255 91 29 / 15%) !important;
   &.no-shadow {
     box-shadow: initial !important;
   }

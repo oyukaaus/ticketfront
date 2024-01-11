@@ -1,5 +1,5 @@
 import { React, useEffect, useState } from 'react';
-import { NavLink, useHistory, useParams } from 'react-router-dom';
+import { NavLink, useHistory } from 'react-router-dom';
 import { useDispatch, useSelector } from "react-redux";
 import { Form } from 'react-bootstrap';
 import * as Yup from 'yup';

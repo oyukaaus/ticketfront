@@ -854,7 +854,7 @@ export const TRANSLATIONS_MN = {
         chooseImg: 'Зураг сонгох',
         chooseFile: 'Файл сонгох',
         fileSizeWarning: 'Файлын хэмжээ нь 50MB -аас ихгүй байхыг анхаарна уу.',
-        imageTypeError: 'Файлын төрөл тохирохгүй байна. Файлын төрөл /png, x-png, jpg, jpeg, gif, docx, xlsx, pptx, wmv, mp4, mp3, mpeg / байхаар тохируулна уу.',
+        imageTypeError: 'Файлын төрөл тохирохгүй байна. Файлын төрөл /png, x-png, jpg, jpeg, gif / байхаар тохируулна уу.',
     },
     person: {
         birthdate: 'Төрсөн өдөр',
@@ -1263,7 +1263,7 @@ export const TRANSLATIONS_MN = {
       ticketEdit: 'Хүсэлт засах',
       comment: 'Тайлбар',
       selectAssignee: 'Хариуцагчийг солих',
-      requester: 'Хүсэлт гаргагч',
+      requester: 'Хүсэлт илгээгч',
       ok: 'ok',
       closeModal: 'Хаах',
       school: 'Сургууль',
@@ -1275,6 +1275,7 @@ export const TRANSLATIONS_MN = {
       search: 'Шүүх',
       startDate: 'Эхлэх',
       endDate: 'Дуусах',
-      attachment: 'Файл хавсаргах'
+      attachment: 'Файл хавсаргах',
+      question:'Түгээмэл асуулт'
     }
 };

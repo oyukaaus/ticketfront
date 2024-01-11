@@ -6,10 +6,6 @@ import { MENU_PLACEMENT } from 'constants.js';
 import { changeLang } from 'lang/langSlice';
 import { layoutShowingNavMenu } from 'layout/layoutSlice';
 
-const whiteColor = {
-  color: `#fff`,
-  display: 'inline-flex'
-}
 const MENU_NAME = 'NavLanguageSwitcher';
 const NavLanguageSwitcher = () => {
   const dispatch = useDispatch();

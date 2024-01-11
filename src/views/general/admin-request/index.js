@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
 import { Card, Row, Col, Button } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
@@ -11,20 +11,18 @@ import { ticketReport, ticketList } from 'utils/fetchRequest/Urls';
 import DatePickerRange from 'modules/Form/DatePickerRange';
 import Select from 'modules/Form/Select';
 import * as XLSX from 'xlsx';
-import Forms from 'modules/Form/Forms';
 
 const AdminRequest = () => {
     const history = useHistory();
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const formRef = useRef();
     const { schools } = useSelector(state => state.schoolData);
     const schoolData = [];
     schools.map((param) =>
         schoolData.push({
             value: param?.id,
             text: param?.name,
-            longName: param?.longName,
+            longName: param?.schoolName,
         })
     )
 
@@ -45,12 +43,8 @@ const AdminRequest = () => {
     const [assignees, setAssignees] = useState([]);
     const [requesters, setRequester] = useState([]);
     const [avatars, setUserAvatars] = useState([]);
-    const current = new Date();
-    // const [dateRange, setDateRange] = useState({
-    //     startDate: new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000),
-    //     endDate: new Date(),
-    // });
-   
+    const [createdUsers, setCreatedUsers] = useState([]);
+
     const openImageInNewWindow = (path) => {
         window.open(path, '_blank');
     };
@@ -242,6 +236,7 @@ const AdminRequest = () => {
                 const { success = false, message = null } = res;
                 if (success) {
                     setData(res?.tickets);
+                    setCreatedUsers(res?.users);
                     console.log('ticketIndex: ', res);
                     const assigneeOption = [];
                     res?.assignees.map((param) =>
@@ -262,7 +257,7 @@ const AdminRequest = () => {
                     res?.users.map((param) =>
                         useravatar.push({
                             id: param?.userId,
-                            avatar: param?.avatar,
+                            avatar: param?.avatar
                         })
                     )
                     setUserAvatars(useravatar);
@@ -300,7 +295,20 @@ const AdminRequest = () => {
             fetchInfo()
         }
     };
+    const [isPhoneScreen, setIsPhoneScreen] = useState(false);
 
+    useEffect(() => {
+        const handleResize = () => {
+            setIsPhoneScreen(window.innerWidth <= 767);
+        };
+        handleResize();
+        window.addEventListener('resize', handleResize);
+
+        // Cleanup on component unmount
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
     const getUserAvatar = (userId) => {
         const user = avatars.find((sys) => sys.id === userId);
         return user?.avatar || '/img/system/default-profile.png';
@@ -325,7 +333,11 @@ const AdminRequest = () => {
         const school = schoolData.find((sys) => sys.value === parseInt(schoolId, 10));
         return school ? school.longName : 'Unknown School';
     };
-
+    const getCreatedPhone = (userId) => {
+        const user = createdUsers.find((sys) => sys.userId === userId);
+        return user ? user.phone || 'Unknown Phone' : 'Unknown Phone';
+    };
+    
     const getAssigneeAvatar = (userId) => {
         const user = assignees.find((sys) => sys.userId === userId);
         return user?.avatar || '/img/system/default-profile.png';
@@ -445,22 +457,7 @@ const AdminRequest = () => {
                                                 selectedStartDate={startDate}
                                                 selectedEndDate={endDate}
                                             />
-                                            {/* <div className={feedbackClassName} style={{ display: message ? 'block' : undefined }}>
-                                                {message}
-                                            </div> */}
                                         </div>
-                                        {/* <Forms key="change-date-range" ref={formRef} fields={fields} /> */}
-                                            {/* <DatePickerRange
-                                                onChange={(val) => handleInspectionDateChange(val)}
-                                                firstPlaceHolder={t('ticket.startDate')}
-                                                lastPlaceHolder={t('ticket.endDate')}
-                                                selectedStartDate={startDate}
-                                                selectedEndDate={endDate}
-                                                isDisabled={false}
-                                                clearable={false}
-                                                disableWithFirst={true}
-                                                disableWithLast={true}
-                                            />
                                             {
                                                 errorDueDate &&
                                                 <Row className='d-flex justify-content-between '>
@@ -470,7 +467,7 @@ const AdminRequest = () => {
                                                         </div>
                                                     </Col>
                                                 </Row>
-                                            } */}
+                                            } 
                                         </Col>
                                     </Row>
                                 </Col>
@@ -545,20 +542,14 @@ const AdminRequest = () => {
                     </Col>
                 </Row>
                 {data.map((item, i) => (
-                    <Row key={i} style={{ marginTop: 10 }} onClick={() => history.push(`/admin/view/${item.id}`)}>
-                        <Card className="mb-3">
+                    <Row key={i} className="d-flex " style={{ marginTop: 10, marginLeft:1 }} onClick={() => history.push(`/admin/view/${item.id}`)} >
+                        <Card style={{ width: '99.5%' }} >
                             <Card.Body>
-                                <Row className="d-flex flex-row align-content-center align-items-center position-relative">
-                                    <Col xs={1} className="text-center">
-                                        <Row style={{ display: 'flex' }}>
-                                            <div className="d-flex justify-content-center">
+                                <Row className="d-flex ">
+                                        <div  style={{width:'5%'}}>
                                                 <img className="profile rounded-circle" width='45' alt={item.createdUserId} src={getUserAvatar(item.createdUserId) ? `${getUserAvatar(item.createdUserId)}` : '../img/system/default-profile.png'} />
                                             </div>
-                                        </Row>
-                                    </Col>
-                                    <Col>
-                                        <Row>
-                                            <Col className='mb-2'>
+                                            <Col style={{ marginLeft: isPhoneScreen ? 20 : 0 }}>
                                                 <Button className='position-relative d-inline-flex '
                                                     type="button"
                                                     size="sm"
@@ -575,20 +566,25 @@ const AdminRequest = () => {
                                                 >
                                                     {getSchoolName(item.schoolId)}
                                                 </Button>
-                                            </Col>
-                                        </Row>
-
-                                        <div style={{ color: 'black', fontSize: 14, fontWeight: 'semibold', opacity: 1 }}>
+                                                <Button className='position-relative d-inline-flex'
+                                                    type="button"
+                                                    size="sm"
+                                                    disabled
+                                                    style={{ backgroundColor: '#047857',  marginLeft: 10, marginTop:10 }}
+                                                >
+                                                    <span style={{color:'#000000', opacity:1, fontFamily: 'Mulish'}}>
+                                                    {getCreatedPhone(item.createdUserId)}</span>
+                                                </Button>
+             
+                                                <div style={{ color: 'black', fontSize: 14, fontWeight: 'semibold', opacity: 1 }}>
                                             {item?.createdDate?.date && (item?.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight: 'bold', opacity: 1 }}> <span style={{ color: 'orange', fontWeight: 'bold', opacity: 1 }}> | </span> </span> {getTypeName(item?.typeId)} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {getSystemName(item?.systemId)}
                                         </div>
                                     </Col>
                                 </Row>
-                                <Row>
                                     <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold', opacity: 1 }}>
                                         #{item?.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {truncatedDescription(item?.description)}</span>
                                     </div>
-                                </Row>
-                                <Row className="d-flex align-items-end justify-content-end " >
+                                <div className="d-flex align-items-end justify-content-end " >
                                     <Col>
                                         {item?.files && item?.files.map((dtlItem, index) => (
                                             <Button key={index} variant="default" style={{ backgroundColor: '#FFFFFF', marginTop: 10, marginLeft:5, border: '1px solid #979797' }} width="80%" size="sm"  onClick={() => openImageInNewWindow(dtlItem.path)} >
@@ -596,7 +592,7 @@ const AdminRequest = () => {
                                             </Button>
                                         ))}
                                     </Col>
-                                </Row>
+                                </div>
                                 <Row className="d-flex align-items-end justify-content-end " >
                                     <Col lg={1}>
                                     <Button variant="default" style={{ backgroundColor: '#E5E7EB', marginTop: 10 }} width="80%" size="sm" onClick={onSeeClick}>

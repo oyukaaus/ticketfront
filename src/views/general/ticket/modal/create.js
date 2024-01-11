@@ -1,8 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { Modal, Button, Row, Col, Form, ListGroup } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import Forms from 'modules/Form/Forms';
-import CollectionsIcon from '@mui/icons-material/Collections';
 import { setLoading } from 'utils/redux/action';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchRequest } from 'utils/fetchRequest';
@@ -19,7 +17,7 @@ const createTicketModal = ({
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const history = useHistory();
-    const formRefRequest = useRef();
+    const fileInputRef = useRef(null);
     const { person } = useSelector((state) => state.auth);
     const { schools } = useSelector((state) => state.schoolData);
     const schoolData = [];
@@ -29,16 +27,16 @@ const createTicketModal = ({
             text: param?.name,
         })
     )
+
     const [isIssue, setIsIssue] = useState(true);
     const [selectedSystem, setSelectedSystem] = useState(null);
     const [selectedMenu, setSelectedMenu] = useState(null);
     const [selectedSubMenu, setSelectedSubMenu] = useState(null);
-    const [selectedSchool, setSelectedSchool] = useState(null);
+       const [selectedSchool, setSelectedSchool] = useState(schoolData.length === 1 ? schoolData[0].value : null);
     const [description, setDescription] = useState('');
     const [example, setExample] = useState('');
     const [menuList, setMenuList] = useState([]);
     const [subMenus, setSubMenus] = useState([]);
-    const [file, setFile] = React.useState();
     const [fileData, setFileData] = useState([]);
     const [systemErrorMsg, setSystemErrorMsg] = useState(false);
     const [menuErrorMsg, setMenuErrorMsg] = useState(false);
@@ -46,7 +44,7 @@ const createTicketModal = ({
     const [schoolErrorMsg, setSchoolErrorMsg] = useState(false);
     const [descriptionErrorMsg, setDescriptionErrorMsg] = useState(false);
     const [exampleErrorMsg, setExampleErrorMsg] = useState(false);
-    const [imageError, setImageError] = useState(false);
+    const [imageError, setImageError] = useState({});
 
     const fetchMenu = async (item) => {
         fetchRequest(ticketMenu, 'POST', {
@@ -122,52 +120,78 @@ const createTicketModal = ({
         setExampleErrorMsg(false)
     }
 
-    const requestFields = [
-        {
-            key: 'image',
-            // label: 'Файл хавсаргах',
-            value: '',
-            type: 'fileUpload',
-            // required: true,
-            error: imageError,
-            fileName: '',
-            multiple: true,
-            isExtendedButton: true,
-            isExtendedButtonText: (
-                <>
-                    <CollectionsIcon /> {t('survey.selectImage')}
-                </>
-            ),
-            isExtendedButtonClass: 'btn btn-outline-warning mr-5',
-            altImage: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>',
-            altImageClass: 'd-none',
-            accept: 'image/*',
-            fileType: 'image',
-            clearButton: true,
-            isClearButtonText: (
-                <>
-                    <CollectionsIcon style={{ opacity: 0, width: 0 }} /> {t('foodManagement.deletePhoto')}
-                </>
-            ),
-            isClearButtonClass: 'btn btn-outline-danger m-btn m-btn--icon m-btn--icon-only m-btn--circle-28',
-            onChange: (files) => {
-                const [image] = !files ? [] : files;
-                if (image) {
-                    const reader = new FileReader();
-                    reader.addEventListener(
-                        'load',
-                        () => {
-                            setFile(reader.result);
-                        },
-                        false
-                    );
-                    reader.readAsDataURL(image);
-                    setFileData(image);
-                    console.log('image: ', image);
+    const verifyFile = (files) => {
+        const acceptedType = [
+            'image/png',
+            'image/jpg',
+            'image/jpeg',
+            'image/gif',
+        ];
+        const acceptedSize = 52428800;
+
+        if (files && files.length > 0) {
+            let isFalse = true;
+            for (let i = 0; i < files.length; i++) {
+                const imageSize = files[i].size;
+                const imageType = files[i].type;
+                if (imageSize > acceptedSize) {
+                    setImageError({status: true, text: t('newsfeed.fileSizeWarning')})
+                    isFalse = false;
                 }
-            },
-        },
-    ];
+
+                if (!acceptedType.includes(imageType)) {
+                    setImageError({status: true,text:t('newsfeed.imageTypeError')});
+                    isFalse = false;
+                }
+            }
+            return isFalse;
+        }
+        return undefined
+    };
+
+    const onFileInputChange = (e) => {
+        const files = e.target.files;
+        const verified = verifyFile(files);
+
+        if (verified) {
+        const [image] = !files ? [] : files;
+        const updatedFileData = [...fileData];
+
+        if (image) {
+            const reader = new FileReader();
+            reader.addEventListener(
+                'load',
+                () => {
+                    const fileObject = {
+                        content: reader.result,
+                        file: image,
+                        fileName: image.name
+                    };
+                    updatedFileData.push(fileObject);
+                    setFileData(updatedFileData);
+                },
+                false
+            );
+
+            reader.readAsDataURL(image);
+        }
+    }
+    };
+
+    const onFileUploadButtonHandler = () => {
+        if (fileInputRef.current) {
+            fileInputRef.current.click();
+        }
+    };
+
+    const handleImageRemoval = (item) => {
+        if (Array.isArray(fileData)) {
+            const updatedFileData = fileData.filter((file1) => file1.name !== item.name);
+            setFileData(updatedFileData);
+        } else {
+            console.error('fileData is not an array');
+        }
+    };
 
     const onSaveClick = () => {
         let hasError = false;
@@ -196,10 +220,10 @@ const createTicketModal = ({
                 setExampleErrorMsg(true);
                 hasError = true;
             }
-            if (fileData.length === 0) {
-                setImageError(true);
-                hasError = true;
-            }
+            // if (fileData.length === 0) {
+            //     setImageError(true);
+            //     hasError = true;
+            // }
         } else {
             if (selectedSchool === null) {
                 setSchoolErrorMsg(true);
@@ -212,12 +236,8 @@ const createTicketModal = ({
             if (description === '') {
                 setDescriptionErrorMsg(true);
                 hasError = true;
-            } if (fileData.length === 0) {
-                setImageError(true);
-                hasError = true;
-            }
+            } 
         }
-
         if (!hasError) {
             const postData = {
                 systemId: selectedSystem,
@@ -232,16 +252,21 @@ const createTicketModal = ({
                 createdBy: person.id,
                 schoolId: selectedSchool
             };
-            if (fileData && fileData.name) {
-                postData.file = {
-                    name: fileData.name,
-                    type: fileData.type,
-                    size: fileData.size,
-                    path: '/',
-                    content: file,
-                };
+            if (fileData) {
+                const rawFile = [];
+                fileData.forEach(item2 => {
+                    rawFile.push({
+                        name: item2.file.name,
+                        type: item2.file.type,
+                        size: item2.file.size,
+                        path: '/',
+                        content: item2.content,
+                    })
+                })
+                postData.file = rawFile;
             }
             console.log('postData: ', postData);
+            dispatch(setLoading(true));
             fetchRequest(ticketCreate, 'POST', postData)
                 .then((res) => {
                     console.log('response: ', res)
@@ -261,10 +286,10 @@ const createTicketModal = ({
                     dispatch(setLoading(false));
                     showMessage(t('errorMessage.title'));
                 });
-            // }
-        }
+            }
+        
     };
-
+    
     const renderIssue = () => {
         return (
             <>
@@ -622,18 +647,58 @@ const createTicketModal = ({
                     <div className='modal-content-container'>
                         <table className='w-100'>
                             <thead>
+                                <tr style={{ display: 'flex' }}>
+                                    {fileData && Array.isArray(fileData) && fileData.map((fileD, index) => (
+                                        <th key={index}>
+                                            <div style={{ display: 'flex', marginTop: '0.8rem', justifyContent: 'flex-start' }} >
+                                                <img
+                                                    style={{ marginLeft: 10, alignItems: 'left' }}
+                                                    src={URL.createObjectURL(fileD.file)}
+                                                    width="100"
+                                                    height="100"
+                                                    alt='empty'
+                                                />
+                                                <img
+                                                    src='../img/ticket/icon/delete.png'
+                                                    alt='delete-icon'
+                                                    className='color-info me-1'
+                                                    onClick={() => handleImageRemoval(fileD.file)}
+
+                                                    style={{ width: '20px', height: '20px', position: 'absolute', cursor: 'pointer', transform: 'translate(90px, -10px' }}
+                                                />
+                                            </div>
+                                        </th>
+                                    ))}
+                                </tr>
                                 <tr>
                                     <th className='width-equal pe-2  d-flex align-items-center text-right'>
-                                        <Forms ref={formRefRequest} fields={requestFields} />
+                                        <div style={{ display: 'flex', marginTop: '0.8rem' }}>
+                                            <input
+                                                ref={fileInputRef}
+                                                style={{ display: 'none' }}
+                                                type='file'
+                                                // multiple={true}
+                                                placeholder='test'
+                                                onChange={(e) => onFileInputChange(e)}
+                                            />
+                                            <Button
+                                                className="btn btn-outline-warning mr-5"
+                                                type='button'
+                                                onClick={() => onFileUploadButtonHandler()}
+                                            >
+                                                Зураг оруулах
+                                            </Button>
+                                           
+                                        </div>
+                                    </th>
                                         {
-                                            imageError ?
+                                            imageError && imageError.status===true ?
                                                 <div className='invalid-feedback d-block'>
-                                                    {t('errorMessage.imageError')}
+                                                    {imageError.text}
                                                 </div>
                                                 :
                                                 null
                                         }
-                                    </th>
                                 </tr>
                             </thead>
                         </table>

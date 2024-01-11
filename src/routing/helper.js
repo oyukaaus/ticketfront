@@ -19,13 +19,6 @@ const clearMenuItem = (menuItem) => {
   });
   return item;
 };
-const clearFlattedMenuItem = (menuItem) => {
-  const item = {};
-  ['path', 'label', 'isExternal'].forEach((key) => {
-    if (menuItem[key]) item[key] = menuItem[key];
-  });
-  return item;
-};
 
 export const convertToRoutes = ({
   data = [],
@@ -36,7 +29,6 @@ export const convertToRoutes = ({
   loginPath = DEFAULT_PATHS.LOGIN,
   invalidAccessPath = DEFAULT_PATHS.INVALID_ACCESS,
   noLayout = false,
-  selectedSchool = null
 }) => {
   let items = [];
   // if (selectedSchool && selectedSchool.roleCodes) {
@@ -140,7 +132,7 @@ export const convertToRoutes = ({
   };
 };
 
-export const convertToMenuItems = ({ data = [], authGuardActive = IS_AUTH_GUARD_ACTIVE, isLogin = false, userRole = null, selectedSchool = null }) => {
+export const convertToMenuItems = ({ data = [], authGuardActive = IS_AUTH_GUARD_ACTIVE, isLogin = false, userRole = null }) => {
 
   let items = [];
 

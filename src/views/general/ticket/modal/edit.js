@@ -1,9 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { Modal, Button, Row, Col, Form, ListGroup } from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
-import Forms from 'modules/Form/Forms';
 import 'css/addInvoice.css';
-import CollectionsIcon from '@mui/icons-material/Collections';
 import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from 'utils/redux/action';
 import { fetchRequest } from 'utils/fetchRequest';
@@ -19,9 +17,9 @@ const editTicket = ({
     systemList
 }) => {
     const { t } = useTranslation();
-    const formRefRequest = useRef();
     const dispatch = useDispatch();
     const history = useHistory();
+    const fileInputRef = useRef(null);
     const { schools } = useSelector((state) => state.schoolData);
     const schoolData = [];
     schools.map((param) =>
@@ -40,14 +38,14 @@ const editTicket = ({
     const [example, setExample] = useState(selectedOne?.example);
     const [menuList, setMenuList] = useState([]);
     const [subMenus, setSubMenus] = useState([]);
-    const [file, setFile] = React.useState();
     const [fileData, setFileData] = useState([]);
-    const [existingImage, setExistingImage] = useState([]);
+    const [existedData, setExistedData] = useState([]);
     const [systemErrorMsg, setSystemErrorMsg] = useState(false);
     const [menuErrorMsg, setMenuErrorMsg] = useState(false);
     const [subMenuErrorMsg, setSubMenuErrorMsg] = useState(false);
     const [descriptionErrorMsg, setDescriptionErrorMsg] = useState(false);
     const [schoolErrorMsg, setSchoolErrorMsg] = useState(false);
+    const [imageError, setImageError] = useState({});
 
     const fetchMenu = async (item) => {
         fetchRequest(ticketMenu, 'POST', {
@@ -116,134 +114,182 @@ const editTicket = ({
     const onChangeExample = (e) => {
         setExample(e.target.value);
     }
-    const requestFields = [
-        {
-            key: 'image',
-            // label: 'Файл хавсаргах',
-            value: '',
-            type: 'fileUpload',
-            required: false,
-            fileName: '',
-            multiple: true,
-            isExtendedButton: true,
-            files: [fileData],
-            isExtendedButtonText: (
-                <>
-                    <CollectionsIcon /> {t('survey.selectImage')}
-                </>
-            ),
-            isExtendedButtonClass: 'btn btn-outline-warning mr-5',
-            altImage: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg"/>',
-            altImageClass: 'd-none',
-            accept: 'image/*',
-            fileType: 'image',
-            clearButton: true,
-            isClearButtonText: (
-                <>
-                    <CollectionsIcon style={{ opacity: 0, width: 0 }} /> {t('foodManagement.deletePhoto')}
-                </>
-            ),
-            isClearButtonClass: 'btn btn-outline-danger m-btn m-btn--icon m-btn--icon-only m-btn--circle-28',
-            onChange: (files) => {
-                const [image] = !files ? [] : files;
-                if (image) {
-                    const reader = new FileReader();
-                    reader.addEventListener(
-                        'load',
-                        () => {
-                            setFile(reader.result);
-                        },
-                        false
-                    );
-                    reader.readAsDataURL(image);
-                    setFileData(image);
-                    console.log('image: ', image);
-                }
-            },
-        },
-    ];
 
-    const onSaveClick = () => {
-        const [isValid] = formRefRequest.current.validate();
-        if (isValid) {
 
-            let hasError = false;
+    const verifyFile = (files) => {
+        const acceptedType = [
+            'image/png',
+            'image/jpg',
+            'image/jpeg',
+            'image/gif',
+        ];
+        const acceptedSize = 52428800;
 
-            // Check required fields based on issue type
-            if (isIssue) {
-                if (selectedSystem === null) {
-                    setSystemErrorMsg(true);
-                    hasError = true;
+        if (files && files.length > 0) {
+            let isFalse = true;
+            for (let i = 0; i < files.length; i++) {
+                const imageSize = files[i].size;
+                const imageType = files[i].type;
+                if (imageSize > acceptedSize) {
+                    setImageError({ status: true, text: t('newsfeed.fileSizeWarning') })
+                    isFalse = false;
                 }
-                if (selectedMenu === null) {
-                    setMenuErrorMsg(true);
-                    hasError = true;
-                }
-                if (selectedSubMenu === null) {
-                    setSubMenuErrorMsg(true);
-                    hasError = true;
-                }
-                if (description === '') {
-                    setDescriptionErrorMsg(true);
-                    hasError = true;
-                }
-            } else {
-                if (selectedSystem === null) {
-                    setSystemErrorMsg(true);
-                    hasError = true;
-                }
-                if (description === '') {
-                    setDescriptionErrorMsg(true);
-                    hasError = true;
+
+                if (!acceptedType.includes(imageType)) {
+                    setImageError({ status: true, text: t('newsfeed.imageTypeError') });
+                    isFalse = false;
                 }
             }
+            return isFalse;
+        }
+        return undefined
+    };
 
-            if (!hasError) {
-                const postData = {
-                    ticketId: selectedOne.id,
-                    systemId: selectedSystem,
-                    menuId: selectedMenu,
-                    subMenuId: selectedSubMenu,
-                    // title: 'Title',
-                    description: description,
-                    typeId: isIssue ? 1 : 2,
-                    statusId: 1,
-                    example: example,
-                    schoolId: selectedSchool
-                };
-                console.log('fileData: ', fileData.length)
-                if (fileData && fileData.name) {
-                    postData.file = {
-                        name: fileData.name,
-                        type: fileData.type,
-                        size: fileData.size,
-                        path: '/',
-                        content: file,
-                    };
-                }
+    const onFileInputChange = (e) => {
+        const files = e.target.files;
+        const verified = verifyFile(files);
 
-                console.log('postDatas: ', postData);
-                fetchRequest(ticketEdit, 'POST', postData)
-                    .then((res) => {
-                        console.log('response: ', res)
-                        const { success = false, message = null } = res;
-                        if (success) {
-                            history.replace(`/ticket/index`);
-                            window.location.reload();
-                            showMessage(message, true);
-                        } else {
-                            console.log('res: ', res);
-                            showMessage(message || t('errorMessage.title'));
-                        }
-                        dispatch(setLoading(false));
-                    })
-                    .catch((e) => {
-                        console.log('e', e)
-                        dispatch(setLoading(false));
-                        showMessage(t('errorMessage.title'));
-                    });
+        if (verified) {
+            const [image] = !files ? [] : files;
+            const updatedFileData = [...fileData];
+
+            if (image) {
+                const reader = new FileReader();
+                reader.addEventListener(
+                    'load',
+                    () => {
+                        const fileObject = {
+                            content: reader.result,
+                            file: image,
+                            fileName: image.name
+                        };
+                        updatedFileData.push(fileObject);
+                        setFileData(updatedFileData);
+                    },
+                    false
+                );
+
+                reader.readAsDataURL(image);
             }
         }
+    };
+
+    console.log('fileData: ', fileData)
+    const onFileUploadButtonHandler = () => {
+        if (fileInputRef.current) {
+            fileInputRef.current.click();
+        }
+    };
+
+    const handleImageRemoval = (item) => {
+        if (Array.isArray(fileData)) {
+            const updatedFileData = fileData.filter((file1) => file1.name !== item.name);
+            setFileData(updatedFileData);
+        } else {
+            console.error('fileData is not an array');
+        }
+    };
+
+    const handleExistedImageRemoval = (item) => {
+        console.log('item: ', item)
+        if (Array.isArray(existedData)) {
+            const updatedFileData = existedData.filter((file1) => file1.id !== item.id);
+            setExistedData(updatedFileData);
+        } else {
+            console.error('fileData is not an array');
+        }
+    };
+
+    const onSaveClick = () => {
+        let hasError = false;
+        if (isIssue) {
+            if (selectedSystem === null) {
+                setSystemErrorMsg(true);
+                hasError = true;
+            }
+            if (selectedMenu === null) {
+                setMenuErrorMsg(true);
+                hasError = true;
+            }
+            if (selectedSubMenu === null) {
+                setSubMenuErrorMsg(true);
+                hasError = true;
+            }
+            if (description === '') {
+                setDescriptionErrorMsg(true);
+                hasError = true;
+            }
+        } else {
+            if (selectedSystem === null) {
+                setSystemErrorMsg(true);
+                hasError = true;
+            }
+            if (description === '') {
+                setDescriptionErrorMsg(true);
+                hasError = true;
+            }
+        }
+
+        if (!hasError) {
+            const postData = {
+                ticketId: selectedOne.id,
+                systemId: selectedSystem,
+                menuId: selectedMenu,
+                subMenuId: selectedSubMenu,
+                // title: 'Title',
+                description: description,
+                typeId: isIssue ? 1 : 2,
+                statusId: 1,
+                example: example,
+                schoolId: selectedSchool
+            };
+            if (fileData) {
+                console.log('fileData: ', fileData)
+                const rawFile = [];
+                fileData.forEach(item2 => {
+                    rawFile.push({
+                        name: item2.file.name,
+                        type: item2.file.type,
+                        size: item2.file.size,
+                        path: '/',
+                        content: item2.content,
+                    })
+                })
+                postData.file = rawFile;
+            }
+            if (existedData) {
+                const rawFile = [];
+                existedData.forEach(item3 => {
+                    rawFile.push(
+                        item3.id
+
+                    )
+                })
+                postData.existedFile = rawFile;
+            }
+
+            console.log('postDatas: ', postData);
+            fetchRequest(ticketEdit, 'POST', postData)
+                .then((res) => {
+                    console.log('response: ', res)
+                    const { success = false, message = null } = res;
+                    if (success) {
+                        history.replace(`/ticket/index`);
+                        window.location.reload();
+                        showMessage(message, true);
+                    } else {
+                        console.log('res: ', res);
+                        showMessage(message || t('errorMessage.title'));
+                    }
+                    dispatch(setLoading(false));
+                })
+                .catch((e) => {
+                    console.log('e', e)
+                    dispatch(setLoading(false));
+                    showMessage(t('errorMessage.title'));
+                });
+        }
+        // }
     };
 
     const loadInfo = () => {
@@ -260,9 +306,7 @@ const editTicket = ({
                 setSelectedMenu(res?.ticket[0].menuId);
                 setSelectedSubMenu(res?.ticket[0].subMenuId);
                 setSelectedSchool(res?.ticket[0].schoolId);
-                setFile(res?.ticket[0].files[0]);
-                setFileData(res?.ticket[0].files[0]);
-                setExistingImage(res?.ticket[0].files);
+                setExistedData(res?.ticket[0].files);
             } else {
                 showMessage(res?.message || t('errorMessage.title'));
             }
@@ -478,9 +522,6 @@ const editTicket = ({
         window.open(path, '_blank');
     };
 
-    const removeImage = () => {
-        setExistingImage([])
-    }
     const renderIdea = () => {
         return (
             <>
@@ -631,18 +672,85 @@ const editTicket = ({
                     <div className='modal-content-container'>
                         <table className='w-100'>
                             <thead>
+                                <tr style={{ display: 'flex' }}>
+                                    {existedData && existedData.map((item) => (
+                                        <div key={item.id} className="d-flex align-items-start" style={{ marginLeft: 10 }}>
+                                            <div className="text-center">
+                                                {item.type === 'image/png' ? (
+                                                    <div style={{ display: 'flex', marginTop: '0.8rem', justifyContent: 'flex-start' }} >
+                                                        <img
+                                                            style={{ marginLeft: 10 }}
+                                                            src={item.path}
+                                                            alt={`Image ${item.name}`}
+                                                            width="100"
+                                                            height="100"
+                                                            onClick={() => openImageInNewWindow(item.path)}
+                                                        />
+                                                        <img
+                                                            src='../img/ticket/icon/delete.png'
+                                                            alt='delete-icon'
+                                                            className='color-info me-1'
+                                                            onClick={() => handleExistedImageRemoval(item)}
+                                                            style={{ width: '20px', height: '20px', position: 'absolute', cursor: 'pointer', transform: 'translate(90px, -10px' }}
+                                                        />
+                                                    </div>
+                                                ) : (
+                                                    <p>{item.name}</p>
+                                                )}
+                                            </div>
+                                        </div>
+                                    ))}
+                                    {fileData && Array.isArray(fileData) && fileData.map((fileD, index) => (
+                                        <th key={index}>
+                                            <div style={{ display: 'flex', marginTop: '0.8rem', justifyContent: 'flex-start' }} >
+                                                <img
+                                                    style={{ marginLeft: 10 }}
+                                                    src={URL.createObjectURL(fileD.file)}
+                                                    width="100"
+                                                    height="100"
+                                                    alt='empty'
+                                                />
+                                                <img
+                                                    src='../img/ticket/icon/delete.png'
+                                                    alt='delete-icon'
+                                                    className='color-info me-1'
+                                                    onClick={() => handleImageRemoval(fileD.file)}
+
+                                                    style={{ width: '20px', height: '20px', position: 'absolute', cursor: 'pointer', transform: 'translate(90px, -10px' }}
+                                                />
+                                            </div>
+                                        </th>
+                                    ))}
+                                </tr>
                                 <tr>
-                                    <th className='width-equal d-flex align-items-center text-right'>
-                                        <Forms ref={formRefRequest} fields={requestFields} fileData={existingImage} />
-                                        {/* {
-                                            imageError ?
-                                                <div className='invalid-feedback d-block'>
-                                                    {t('errorMessage.imageError')}
-                                                </div>
-                                                :
-                                                null
-                                        } */}
+                                    <th className='width-equal pe-2  d-flex align-items-center text-right'>
+                                        <div style={{ display: 'flex', marginTop: '0.8rem' }}>
+                                            <input
+                                                ref={fileInputRef}
+                                                style={{ display: 'none' }}
+                                                type='file'
+                                                // multiple={true}
+                                                placeholder='test'
+                                                onChange={(e) => onFileInputChange(e)}
+                                            />
+                                            <Button
+                                                className="btn btn-outline-warning mr-5"
+                                                type='button'
+                                                onClick={() => onFileUploadButtonHandler()}
+                                            >
+                                                Зураг оруулах
+                                            </Button>
+
+                                        </div>
                                     </th>
+                                    {
+                                        imageError && imageError.status === true ?
+                                            <div className='invalid-feedback d-block'>
+                                                {imageError.text}
+                                            </div>
+                                            :
+                                            null
+                                    }
                                 </tr>
                             </thead>
                         </table>

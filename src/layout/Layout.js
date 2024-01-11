@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col } from 'react-bootstrap';
 import { useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
 import useLayout from 'hooks/useLayout';
 import Nav from 'layout/nav/Nav';
 import SidebarMenu from 'layout/nav/sidebar-menu/SidebarMenu';
@@ -9,8 +9,8 @@ import routesAndMenuItems from "../routes";
 
 const Layout = ({ children }) => {
   useLayout();
-  const { isLogin } = useSelector((state) => state.auth);
-  const { selectedSchool } = useSelector(state => state.schoolData);
+  // const { isLogin } = useSelector((state) => state.auth);
+  // const { selectedSchool } = useSelector(state => state.schoolData);
 
   const { pathname } = useLocation();
   const [hideSideMenu, setHideSideMenu] = useState(false);

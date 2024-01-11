@@ -37,7 +37,7 @@ const CancelRequest = ({id, show, setShow }) => {
     return (
         <Modal centered show={show} onHide={() => setShow(false)} size="xl">
             <Modal.Header closeButton>
-                <Modal.Title className="fs-16" style={{color:"#FF5B1D"}}>{t('common.cancel')}</Modal.Title>
+                <Modal.Title className="fs-16" style={{color:"#FF5B1D", fontSize:16}}>{t('common.cancel')}</Modal.Title>
             </Modal.Header>
             <Modal.Body className='px-0'>
                 <Col>

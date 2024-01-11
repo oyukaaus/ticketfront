@@ -1,7 +1,6 @@
 import { lazy } from 'react';
 // import { USER_ROLE } from 'constants.js';
 import { DEFAULT_PATHS } from 'config.js';
-import { trimEnd } from 'lodash';
 
 const index = {
   home: lazy(() => import('views/general/ticket/index')),
