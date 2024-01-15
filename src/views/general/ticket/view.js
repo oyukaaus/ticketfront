@@ -169,11 +169,11 @@ const view = (outerProps) => {
                         <Card className="mb-3">
                             <Card.Body>
                                 <Row className='d-flex'>
-                                    <div style={{ width: '5%' }}>
+                                    <div className='ticket-row'>
                                         <img className="profile d-inline me-3  rounded-circle" width='50' alt={item.createdUser}
                                             src={getUserAvatar(item.createdUser) ? `${getUserAvatar(item.createdUser)}` : '../img/system/default-profile.png'} />
                                     </div>
-                                    <Col style={{ marginLeft: isPhoneScreen ? 30 : 0 }}>
+                                    <div  className='ticket-button'>
                                         <Button
                                             type="button"
                                             size="sm"
@@ -187,14 +187,12 @@ const view = (outerProps) => {
                                                 {(item.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span>{item.type} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span>{' '}
                                                 {getSystemName(item.systemId)}
                                             </div>
-                                    </Col>
-                                        <Col className="d-flex align-items-start justify-content-end ">
+                                    </div>
+                                        <div className="d-flex align-items-start justify-content-end ticket-drop">
                                             <Link to={{ pathname: `/ticket/index` }} style={{ textAlign: 'center', color: '#FD7845', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}>
                                                 Жагсаалт руу буцах
                                             </Link>
-                                        </Col>
-       
-
+                                        </div>     
                                     <div style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
                                         #{item.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}> {item.description}</span>
                                     </div>

@@ -207,10 +207,10 @@ const view = (outerProps) => {
                         <Card className="mb-4">
                             <Card.Body>
                                 <Row className='d-flex'>
-                                    <div style={{ width: '5%' }}>
+                                    <div className='ticket-row'>
                                         <img className="profile d-inline me-3  rounded-circle" width='50' alt={item.createdUser} src={getUserAvatar(item.createdUser) ? `${getUserAvatar(item.createdUser)}` : '../img/system/default-profile.png'} />
                                     </div>
-                                    <Col style={{ marginLeft: isPhoneScreen ? 30 : 0 }}>
+                                    <div  className='ticket-button'>
                                         <Button className='position-relative d-inline-flex m-1'
                                             type="button"
                                             size="sm"
@@ -231,12 +231,12 @@ const view = (outerProps) => {
                                         <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold' }}>
                                             {item.type} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {(item.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span>  {getSystemName(item.systemId)}
                                         </div>
-                                    </Col>
-                                    <Col className="d-flex align-items-start justify-content-end ">
+                                    </div>
+                                    <div className="d-flex align-items-start justify-content-end ticket-drop">
                                     <Link to={{ pathname: `/admin/index` }} style={{ textAlign: 'right', color: '#FF2F1A', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}>
                                         Жагсаалт руу буцах
                                     </Link>
-                                    </Col>
+                                    </div>
                                 </Row>
 
                                 <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>

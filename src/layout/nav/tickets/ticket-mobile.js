@@ -87,7 +87,7 @@ const TicketMobile = () => {
 
     if (tickets && tickets.length > 0) {
         return (
-            <Col md={10} lg={8} xl={8} style={{ marginLeft: 40 }}>
+            <Col style={{ marginLeft: 40 }}>
                 <Dropdown as="div" bsPrefix="user-container d-flex" drop="down">
                     <Dropdown.Toggle as={NavUserMenuDropdownToggle} />
                     <Dropdown.Menu

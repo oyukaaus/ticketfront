@@ -186,7 +186,7 @@ const createTicketModal = ({
 
     const handleImageRemoval = (item) => {
         if (Array.isArray(fileData)) {
-            const updatedFileData = fileData.filter((file1) => file1.name !== item.name);
+            const updatedFileData = fileData.filter((file1) => file1.fileName !== item.name);
             setFileData(updatedFileData);
         } else {
             console.error('fileData is not an array');

@@ -236,11 +236,10 @@ const NavUserMenu = () => {
         return <></>;
     }
     return (
-        <Row>
-            <Col xl={4} lg={1} sm={1} ></Col>
+        <div className="d-flex align-items-center justify-content-end">
             {isPhoneScreen === false && (
-                <>
-                    <Col xl={1} lg={1} md={1} sm={1}>
+                <div className='d-flex row align-items-start justify-content-center'>
+                    <div className='nav-drop1'>
                         <Dropdown as="div" bsPrefix="user-container d-flex" onToggle={onToggle} drop="down">
                             <Dropdown.Toggle as={NavNotifDropdownToggle} />
                             <Dropdown.Menu
@@ -267,12 +266,12 @@ const NavUserMenu = () => {
                                 }}
                             />
                         </Dropdown>
-                    </Col>
-                    <Col xl={3} lg={4} md={5} sm={4} className="d-flex align-items-center justify-content-center ">
-                        <span style={{ fontFamily: 'Mulish', fontWeight: 'bold', fontSize: 14, color: 'white', marginRight: 20 }}>  {person.lastName}{' '}  {person.firstName.toUpperCase()} </span>
-                    </Col>
-                </>)}
-            <Col xl={1} lg={1} md={1} sm={1}>
+                    </div>
+                    <div className="d-flex align-items-center justify-content-center nav-drop2">
+                        <span style={{ fontFamily: 'Mulish', fontWeight: 'bold', fontSize: 14, color: 'white' }}>  {person.lastName}{' '}  {person.firstName.toUpperCase()} </span>
+                    </div>
+                </div>)}
+            <div className='nav-drop3'>
                 <Dropdown as="div" bsPrefix="user-container d-flex" onToggle={onToggle} drop="down">
                     <Dropdown.Toggle as={NavUserMenuDropdownToggle} user={person} />
                     <Dropdown.Menu
@@ -300,9 +299,8 @@ const NavUserMenu = () => {
                         }}
                     />
                 </Dropdown>
-            </Col>
-            <Col xl={3} lg={2} sm={2}></Col>
-        </Row>
+            </div>
+        </div>
     );
 };
 export default React.memo(NavUserMenu);

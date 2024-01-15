@@ -261,10 +261,10 @@ const TicketPage = () => {
                     <Card className="mb-2">
                         <Card.Body >
                             <Row className='d-flex'>
-                                <div  style={{width:'5%'}}>
+                                <div className='ticket-row'>
                                     <img className="profile rounded-circle" width='50' alt={item.createdUserId} src={getUserAvatar(item.createdUserId) ? `${getUserAvatar(item.createdUserId)}` : '../img/system/default-profile.png'} />
                                 </div>
-                                <Col style={{ marginLeft: isPhoneScreen ? 20 : 0 }}>
+                                <div className='ticket-button'>
                                     <Button
                                         type="button"
                                         size="sm"
@@ -277,8 +277,8 @@ const TicketPage = () => {
                                     <div style={{ color: 'black', fontSize: 14, fontFamily: 'Mulish', marginLeft: 10 }}>
                                         {(item.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {getTypeName(item.typeId)} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {getSystemName(item.systemId)}
                                     </div>
-                                </Col>
-                                <div style={{width:'10%'}} className="d-flex align-items-start justify-content-end ">
+                                </div>
+                                <div className="d-flex align-items-start justify-content-end ticket-drop">
                                             <Dropdown as="div" bsPrefix="user-container d-flex" drop="down">
                                                 <Dropdown.Toggle as={NavUserMenuDropdownToggle} />
                                                 <Dropdown.Menu

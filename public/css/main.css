@@ -16,7 +16,291 @@
     src: url(../font/line-awesome/line-awesome.svg?v=1.1.#fa) format('svg');
   }
 }
+@media (min-width: 2001px) {
+  .new-row {
+    width: 3%;
+    flex-direction: row;
+  }
+  .new-button {
+    width: 97%;
+  }  
+  .ticket-row {
+    width: 3%;
+    flex-direction: row;
+  }
+  .ticket-button {
+    width: 87%;
+  }
+  .ticket-drop {
+    width: 10%;
+  }  
+  .new-content {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+  }
+  .new-logo {
+    width: 5%;
+  }
+  .new-menu {
+    width:50%
+  }
+    .new-user-menu {
+    width: 45%;
+  }
+  .nav-drop1 {
+    width: 10%;
+  }
+  .nav-drop2 {
+    width: 80%;
+  }
+  .nav-drop3 {
+    width: 10%;
+  }
+}
 
+@media (max-width: 2000px) {
+  .new-row {
+    width: 3%;
+    flex-direction: row;
+  }
+  .new-button {
+    width: 97%;
+  }  
+  .ticket-row {
+    width: 4%;
+    flex-direction: row;
+  }
+  .ticket-button {
+    width: 84%;
+  }
+  .ticket-drop {
+    width: 12%;
+  }   
+  .new-content {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+  }
+  .new-logo {
+    width: 5%;
+  }
+  .new-menu {
+    width:50%
+  }
+    .new-user-menu {
+    width: 45%;
+  }
+  .nav-drop1 {
+    width: 10%;
+  }
+  .nav-drop2 {
+    width: 80%;
+  }
+  .nav-drop3 {
+    width: 10%;
+  }
+}
+
+@media (min-width: 1421px) and (max-width: 1499px) {
+  .new-row {
+    width: 4%;
+    flex-direction: row;
+  }
+  .new-button {
+    width: 95%;
+  }
+  .ticket-row {
+    width: 4%;
+    flex-direction: row;
+  }
+  .ticket-button {
+    width: 82%;
+  }
+  .ticket-drop {
+    width: 14%;
+  } 
+  .new-content {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+  }
+  .new-logo {
+    width: 5%;
+  }
+  .new-menu {
+    width:50%
+  }
+    .new-user-menu {
+    width: 45%;
+  }
+  .nav-drop1 {
+    width: 10%;
+  }
+  .nav-drop2 {
+    width: 80%;
+  }
+  .nav-drop3 {
+    width: 10%;
+  }
+}
+
+@media (min-width: 1001px) and (max-width: 1420px) {
+  .new-row {
+    width: 4%;
+    flex-direction: row;
+  }
+  .new-button {
+    width: 96%;
+  }  
+  .ticket-row {
+    width: 5%;
+    flex-direction: row;
+  }
+  .ticket-button {
+    width: 75%;
+  }
+  .ticket-drop {
+    width: 20%;
+  }   
+  .new-content {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+  }
+  .new-logo {
+    width: 5%;
+  }
+  .new-menu {
+    width:50%
+  }
+    .new-user-menu {
+    width: 45%;
+  }
+  .nav-drop1 {
+    width: 10%;
+  }
+  .nav-drop2 {
+    width: 80%;
+  }
+  .nav-drop3 {
+    width: 10%;
+  }
+}
+
+@media (min-width: 769px) and (max-width: 1000px) {
+  .new-row {
+    width: 5%;
+    flex-direction: row;
+  }
+  .new-button {
+    width: 95%;
+  }  
+  .ticket-row {
+    width: 8%;
+    flex-direction: row;
+  }
+  .ticket-button {
+    width: 62%;
+  }
+  .ticket-drop {
+    width: 30%;
+  }   
+  .new-content {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+  }
+  .new-logo {
+    width: 5%;
+  }
+  .new-menu {
+    width:85%
+  }
+    .new-user-menu {
+    width: 50%;
+  }
+  .nav-drop1 {
+    width: 10%;
+  }
+  .nav-drop2 {
+    width: 80%;
+  }
+  .nav-drop3 {
+    width: 10%;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 768px) {
+  .new-row {
+    width: 10%;
+    flex-direction: row;
+  }
+  .new-button {
+    width: 90%;
+  }  
+  .ticket-row {
+    width: 12%;
+    flex-direction: row;
+  }
+  .ticket-button {
+    width: 68%;
+  }
+  .ticket-drop {
+    width: 20%;
+  }  
+  .new-content {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+  }
+  .new-logo {
+    width: 35%;
+  }
+  .new-menu {
+    width:5%
+  }
+    .new-user-menu {
+    width: 60%;
+  }
+}
+
+@media (max-width: 480px) {
+  .new-row {
+    width: 3%;
+    flex-direction: row;
+  }
+  .new-button {
+    width: 97%;
+  }  
+  .ticket-row {
+    width: 17%;
+    flex-direction: row;
+  }
+  .ticket-button {
+    width: 63%;
+  }
+  .ticket-drop {
+    width: 20%;
+  }
+  .new-content {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+  }
+  .new-logo {
+    width: 50%;
+  }
+  .new-menu {
+    width:35%
+  }
+    .new-user-menu {
+    width: 15%;
+  }
+  .nav-drop3 {
+    width:60%;
+  }
+}
 .icon-wait {
   background: url('../font/custom/waitIcon.png');
   background-repeat: no-repeat;

@@ -17,7 +17,8 @@ const Nav = () => {
 
     useEffect(() => {
         const handleResize = () => {
-            setIsPhoneScreen(window.innerWidth <= 767);
+            console.log('window.innerWidth: ', window.innerWidth)
+            setIsPhoneScreen(window.innerWidth <= 870);
         };
         handleResize();
         window.addEventListener('resize', handleResize);
@@ -46,9 +47,7 @@ const Nav = () => {
             onMouseEnterDelay();
         }, DELAY);
     };
-
-    // Vertical menu semihidden state hiding
-    // Only works when the vertical menu is active and mobile menu closed
+    
     const onMouseLeaveDelay = () => {
         if (placementStatus.placementHtmlData === MENU_PLACEMENT.Vertical && behaviourStatus.behaviourHtmlData === MENU_BEHAVIOUR.Unpinned && attrMobile !== true) {
             dispatch(menuChangeCollapseAll(true));
@@ -64,20 +63,19 @@ const Nav = () => {
     };
 
     return (
-        <div id="nav" className={classNames('nav-container d-flex', navClasses)} onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} style={{ background: '#FD7845' }}>
+        <div id="nav" className='nav-container d-flex' onMouseEnter={onMouseEnter} onMouseLeave={onMouseLeave} style={{ background: '#FD7845' }}>
             <div
-                className="nav-content d-flex"
+                className="new-content d-flex align-items-center"
                 style={placementStatus.placementHtmlData === MENU_PLACEMENT.Horizontal && menuPadding ? { paddingRight: menuPadding } : {}}
             >
-                <NavLogo />
-                <Col xl={6} lg={6} md={8} sm={2}>
-                    {isPhoneScreen ? <NavTicketMobile /> : <NavTicketSwitcher />}
-                    </Col>
-                <Col xl={6} lg={6} md={6} sm={10}>
+                <NavLogo className='new-logo d-flex  justify-content-start' />
+                <div className='new-menu d-flex justify-content-start align-items-center'>
+                    {isPhoneScreen ? <NavTicketMobile /> : <NavTicketSwitcher className='new-switcher align-items-center d-flex  ' />}
+                </div>
+                <div className='new-user-menu d-flex align-items-center justify-content-end '>
                     <NavUserMenu />
-                </Col>
+                </div>
             </div>
-            <div className="nav-shadow" />
         </div>
     );
 };

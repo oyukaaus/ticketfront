@@ -189,33 +189,6 @@ const AdminRequest = () => {
         }
     };
 
-    // const loadDetailsClear = (start = null, end = null, page = 1, pageSize = 10, query = null, sortBy = null, order = null) => {
-    //     dispatch(setLoading(true));
-    //     const postData = {
-    //         startDate: start,
-    //         endDate: end,
-    //         page,
-    //         pageSize,
-    //         query,
-    //         sortBy,
-    //         order
-    //     };
-    //     fetchRequest(ticketList, 'POST', postData)
-    //         .then(res => {
-    //             const { success = false, message = null } = res
-    //             if (success) {
-    //                 setData(res?.tickets);
-    //             } else {
-    //                 showMessage(message || t('errorMessage.title'), false)
-    //             }
-    //             dispatch(setLoading(false));
-    //         })
-    //         .catch(() => {
-    //             dispatch(setLoading(false));
-    //             showMessage(t('errorMessage.title'))
-    //         });
-    // }
-
     const onclickClear = () => {
         setStartDate('');
         setEndDate('');
@@ -226,7 +199,6 @@ const AdminRequest = () => {
         setSelectedTypes([]);
         setSelectedSystems([]);
         console.log('startDate: ',startDate)
-        // loadDetailsClear(startDate, endDate);
     };
 
     const fetchInfo = async () => {
@@ -365,9 +337,9 @@ const AdminRequest = () => {
                     />
                 </Col>
                 <>
-                    <Card className="mb-3">
+                    <Card className="mb-3 ">
                         <Card.Body>
-                            <Row lg={12} className="d-flex flex-row align-content-center align-items-center position-relative">
+                            <Row lg={12} className="d-flex flex-row align-content-center align-items-center position-relative " >
                                 <Col lg={4}>
                                     <Row className='d-flex justify-content-between align-items-center'>
                                         <Col lg={4}>
@@ -546,10 +518,10 @@ const AdminRequest = () => {
                         <Card style={{ width: '99.5%' }} >
                             <Card.Body>
                                 <Row className="d-flex ">
-                                        <div  style={{width:'5%'}}>
+                                        <div className='new-row'>
                                                 <img className="profile rounded-circle" width='45' alt={item.createdUserId} src={getUserAvatar(item.createdUserId) ? `${getUserAvatar(item.createdUserId)}` : '../img/system/default-profile.png'} />
                                             </div>
-                                            <Col style={{ marginLeft: isPhoneScreen ? 20 : 0 }}>
+                                            <div className='new-button'>
                                                 <Button className='position-relative d-inline-flex '
                                                     type="button"
                                                     size="sm"
@@ -579,7 +551,7 @@ const AdminRequest = () => {
                                                 <div style={{ color: 'black', fontSize: 14, fontWeight: 'semibold', opacity: 1 }}>
                                             {item?.createdDate?.date && (item?.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight: 'bold', opacity: 1 }}> <span style={{ color: 'orange', fontWeight: 'bold', opacity: 1 }}> | </span> </span> {getTypeName(item?.typeId)} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {getSystemName(item?.systemId)}
                                         </div>
-                                    </Col>
+                                    </div>
                                 </Row>
                                     <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold', opacity: 1 }}>
                                         #{item?.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {truncatedDescription(item?.description)}</span>
@@ -587,7 +559,7 @@ const AdminRequest = () => {
                                 <div className="d-flex align-items-end justify-content-end " >
                                     <Col>
                                         {item?.files && item?.files.map((dtlItem, index) => (
-                                            <Button key={index} variant="default" style={{ backgroundColor: '#FFFFFF', marginTop: 10, marginLeft:5, border: '1px solid #979797' }} width="80%" size="sm"  onClick={() => openImageInNewWindow(dtlItem.path)} >
+                                            <Button key={index} variant="default" style={{ backgroundColor: '#FFFFFF', marginTop: 10, marginRight:5, border: '1px solid #979797' }} width="80%" size="sm"  onClick={() => openImageInNewWindow(dtlItem.path)} >
                                                 <img src='../img/ticket/icon/image.png' alt='school-icon' className='color-info me-1' /> <span style={{ color: 'black',  }}>{truncatedName(dtlItem.name)}</span>
                                             </Button>
                                         ))}
