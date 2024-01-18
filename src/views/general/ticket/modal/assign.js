@@ -3,7 +3,7 @@ import { Modal, Button} from 'react-bootstrap';
 import { useTranslation } from 'react-i18next';
 import Forms from 'modules/Form/Forms';
 import { setLoading } from 'utils/redux/action';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { fetchRequest } from 'utils/fetchRequest';
 import { ticketAssign } from 'utils/fetchRequest/Urls';
 import showMessage from 'modules/message';
@@ -19,6 +19,7 @@ const AssignTicket = ({
     const dispatch = useDispatch();
     const history = useHistory();
     const formRef = useRef();
+    const { person } = useSelector((state) => state.auth);
     const [selectedAssignee, setSelectedAssignee] = useState(null);
     const onAssigneeChange = (e) => {
         setSelectedAssignee(e)
@@ -57,7 +58,8 @@ const AssignTicket = ({
                 ticketId: selectedId,
                 assignee: selectedAssignee,
                 statusId: 2,
-                description: values.description
+                description: values.description,
+                updatedUser: person.id
             };
             console.log('postData: ', postData)
             fetchRequest(ticketAssign, 'POST', postData)

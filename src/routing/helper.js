@@ -29,23 +29,16 @@ export const convertToRoutes = ({
   loginPath = DEFAULT_PATHS.LOGIN,
   invalidAccessPath = DEFAULT_PATHS.INVALID_ACCESS,
   noLayout = false,
+  user 
+  
 }) => {
   let items = [];
-  // if (selectedSchool && selectedSchool.roleCodes) {
-  //   if (selectedSchool.roleCodes.indexOf('ROLE_DOCTOR') > -1) {
-  //     if (selectedSchool.roleCodes.indexOf('ROLE_TEACHER') > -1) {
-  //       items = [...data.teacherAndDoctorSidebarItems];
-  //     } else {
-        // items = [...data.doctorSidebarItems];
-  //     }
-  //   } else if (selectedSchool.roleCodes.indexOf('ROLE_TEACHER') > -1) {
-      items = [...data.teacherSidebarItems];
-  //   } else {
-  //     items = [...data.sidebarItems];
-  //   }
-  // } else {
-  //   items = [...data.sidebarItems];
-  // }  
+  if(user === true) {
+    items = [...data.adminSidebarItems];
+  } else {
+    items = [...data.teacherSidebarItems];
+  }
+
   const routes = [];
   return () => {
     const itemMapper = (item) => {
@@ -132,7 +125,7 @@ export const convertToRoutes = ({
   };
 };
 
-export const convertToMenuItems = ({ data = [], authGuardActive = IS_AUTH_GUARD_ACTIVE, isLogin = false, userRole = null }) => {
+export const convertToMenuItems = ({ data = [], authGuardActive = IS_AUTH_GUARD_ACTIVE, isLogin = false, userRole = null, selectedSchool = null }) => {
 
   let items = [];
 
@@ -220,7 +213,7 @@ export const convertToMenuItems = ({ data = [], authGuardActive = IS_AUTH_GUARD_
   return items.map(itemMapper).filter((x) => Object.keys(x).length > 0);
 };
 
-export const getRoutes = ({ data, isLogin, userRole, selectedSchool = null }) =>
+export const getRoutes = ({ data, isLogin, userRole, user }) =>
   convertToRoutes({
     data,
     isLogin,
@@ -230,7 +223,7 @@ export const getRoutes = ({ data, isLogin, userRole, selectedSchool = null }) =>
     loginPath: DEFAULT_PATHS.LOGIN,
     invalidAccessPath: DEFAULT_PATHS.INVALID_ACCESS,
     noLayout: false,
-    selectedSchool
+    user
   })();
 
 export const getLayoutlessRoutes = ({ data }) => convertToRoutes({ data, noLayout: true })();

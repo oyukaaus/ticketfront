@@ -30,32 +30,20 @@ const TicketPage = () => {
     const [itemId, setItemId] = useState();
     const [searchInput, setSearchInput] = useState('');
     const types = [{ value: 1, text: 'Алдаа' }, { value: 2, text: 'Санал хүсэлт' }];
-    const { placementStatus: { view: placement } } = useSelector((state) => state.menu);
-    const MENU_PLACEMENT = {
-        Vertical: 'vertical',
-        Horizontal: 'horizontal',
-    };
+
     const breadcrumbs = [
         { to: '', text: t('menu.home') },
         { to: '/ticket/index', text: 'Санал хүсэлт' },
 
     ];
-    
-    const [isPhoneScreen, setIsPhoneScreen] = useState(false);
+    const [openDropdown, setOpenDropdown] = useState(null);
+    const closeDropdown = () => {
+        setOpenDropdown(null);
+    };
 
-    useEffect(() => {
-        const handleResize = () => {
-            setIsPhoneScreen(window.innerWidth <= 767);
-        };
-        handleResize();
-        window.addEventListener('resize', handleResize);
-
-        // Cleanup on component unmount
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
-
+    const toggleDropdown = (id) => {
+        setOpenDropdown((prev) => (prev === id ? null : id));
+    };
     useEffect(() => {
         dispatch(setLoading(true));
 
@@ -184,7 +172,7 @@ const TicketPage = () => {
             return (
                 <div ref={ref} style={style} className={classNames('dropdown-menu dropdown-menu-end user-menu wide', className)}>
                     <Dropdown.Item onClick={() => history.push(`/ticket/view/${item.id}`)}>
-                        <img src="/img/ticket/icon/view.png" alt="dot-icon" className="color-info me-1" /><span style={{ color: '#000000', fontSize: 14 }}> Дэлгэрэнгүй харах</span>
+                        <img src="/img/ticket/icon/view.png" alt="dot-icon" className="color-info me-1" /><span style={{ color: '#000000', fontSize: 14 }}>Дэлгэрэнгүй харах</span>
                     </Dropdown.Item>
                     {item.status === 'Шинэ' && (
                         <>
@@ -208,7 +196,7 @@ const TicketPage = () => {
         <>
             <>
                 <Col lg={12} className="mb-3">
-                    <h2 className='font-standard mb-0'>
+                    <h2 className='mb-0' style={{ fontSize: 20, color: "#000000" }}>
                         {t('ticket.ticket')}
                     </h2>
                     <BreadcrumbList
@@ -222,21 +210,18 @@ const TicketPage = () => {
                         <Row>
                             <Card>
                                 <Card.Body>
-                                    <Row className='justify-content-center'>
-                                        <Col lg={2}></Col>
-                                        <Col lg={1}>
-                                            <img src='../img/ticket/Group.png' alt='school-icon' className='color-info me-1' /></Col>
-                                        <Col lg={8} xs={8} className='d-flex align-items-center justify-content-center'>
-                                            <Row className='d-flex align-items-center'>
-                                                <div style={{ textAlign: 'center', color: '#000000', fontFamily: 'Mulish', fontSize: 14 }}>
-                                                    Системтэй холбоотой санал хүсэлт, алдааны мэдээллээ бидэнд илгээнэ үү.
-                                                </div>
-                                                <div className='ml-auto' style={{ marginTop: 20, textAlign: 'center', fontFamily: 'Mulish' }}>
-                                                    <Button style={{ backgroundColor: '#FD7845', fontWeight: 'normal', fontFamily: 'Mulish' }} onClick={createRequest}>Санал хүсэлт илгээх</Button>
-                                                </div>
-                                            </Row>
-                                        </Col>
-                                        <Col lg={1}></Col>
+                                    <Row className="new-container">
+                                        <div className='new-image d-flex  align-items-end justify-content-end '>
+                                            <img src='../img/ticket/Group.png' alt='school-icon' className='color-info me-1' />
+                                        </div>
+                                        <div className='new-desc d-flex flex-column justify-content-center'>
+                                            <div className='new-content' style={{ textAlign: 'center', color: '#000000', fontFamily: 'Mulish', fontSize: 14 }}>
+                                                Системтэй холбоотой санал хүсэлт, алдааны мэдээллээ бидэнд илгээнэ үү.
+                                            </div>
+                                            <div className='new-content' style={{ color: 'black', fontSize: 14, fontWeight: 'semibold', opacity: 1, textAlign: 'center', marginTop: 20 }} >
+                                                <Button style={{ backgroundColor: '#FD7845', fontWeight: 'normal', fontFamily: 'Mulish' }} onClick={createRequest}>Санал хүсэлт илгээх</Button>
+                                            </div>
+                                        </div>
                                     </Row>
                                 </Card.Body>
                             </Card>
@@ -244,7 +229,7 @@ const TicketPage = () => {
                     </Col>
                 </Row>
                 <Row style={{ marginTop: 20 }}>
-                    <Col lg={4} style={{ color: '#FD7845', fontSize: 16, fontWeight: 'bolder', fontFamily: 'Mulish' }}>Миний илгээсэн санал хүсэлтүүд</Col>
+                    <Col lg={4} style={{ color: '#FD7845', fontSize: 16, fontWeight: 'bold', fontFamily: 'Mulish' }}>Миний илгээсэн санал хүсэлтүүд</Col>
                     <Col lg={5}></Col>
                     <Col lg={3} className="d-flex align-items-end justify-content-end ">
                         <input
@@ -258,67 +243,49 @@ const TicketPage = () => {
                 </Row>
                 {data.map((item, i) => (
                     <Row key={i} style={{ marginTop: 10 }}>
-                    <Card className="mb-2">
-                        <Card.Body >
-                            <Row className='d-flex'>
-                                <div className='ticket-row'>
-                                    <img className="profile rounded-circle" width='50' alt={item.createdUserId} src={getUserAvatar(item.createdUserId) ? `${getUserAvatar(item.createdUserId)}` : '../img/system/default-profile.png'} />
-                                </div>
-                                <div className='ticket-button'>
-                                    <Button
-                                        type="button"
-                                        size="sm"
-                                        disabled
-                                        style={getButtonColor(item.status)}
-                                    >
-                                        {item.status}
-                                    </Button>
-
-                                    <div style={{ color: 'black', fontSize: 14, fontFamily: 'Mulish', marginLeft: 10 }}>
-                                        {(item.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {getTypeName(item.typeId)} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {getSystemName(item.systemId)}
+                        <Card className="mb-2">
+                            <Card.Body >
+                                <Row className='d-flex'>
+                                    <div className='ticket-row'>
+                                        <img className="profile rounded-circle" width='50' alt={item.createdUserId} src={getUserAvatar(item.createdUserId) ? `${getUserAvatar(item.createdUserId)}` : '../img/system/default-profile.png'} />
                                     </div>
-                                </div>
-                                <div className="d-flex align-items-start justify-content-end ticket-drop">
-                                            <Dropdown as="div" bsPrefix="user-container d-flex" drop="down">
-                                                <Dropdown.Toggle as={NavUserMenuDropdownToggle} />
-                                                <Dropdown.Menu
-                                                    as={(props) => (
-                                                        <NavUserMenuDropdownMenu {...props} item={item} />
-                                                    )}
-                                                    className="dropdown-menu dropdown-menu-end user-menu wide"
-                                                    style={{
-                                                        position: 'absolute',
-                                                        transform: 'translate(-130px, 40px)'
-                                                    }}
-                                                    popperConfig={{
-                                                        modifiers: [
-                                                            {
-                                                                name: 'offset',
-                                                                options: {
-                                                                    offset: () => {
-                                                                        if (placement === MENU_PLACEMENT.Horizontal) {
-                                                                            return [0, 7];
-                                                                        }
-                                                                        if (window.innerWidth < 768) {
-                                                                            return [-84, 7];
-                                                                        }
+                                    <div className='ticket-button'>
+                                        <Button
+                                            type="button"
+                                            size="sm"
+                                            disabled
+                                            style={getButtonColor(item.status)}
+                                        >
+                                            {item.status}
+                                        </Button>
 
-                                                                        return [-78, 7];
-                                                                    },
-                                                                },
-                                                            },
-                                                        ],
-                                                    }}
-                                                />
-                                            </Dropdown>
+                                        <div style={{ color: 'black', fontSize: 14, fontFamily: 'Mulish', marginLeft: 10 }}>
+                                            {(item.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: '#FD7845', fontWeight: 'bold' }}> | </span> {getTypeName(item.typeId)} <span style={{ color: '#FD7845', fontWeight: 'bold' }}> | </span> {getSystemName(item.systemId)}
                                         </div>
-                            </Row>
-                            <div style={{ textAlign: 'left', color: '#FF5B1D', fontSize: 14, fontWeight: 'bold' }}>
-                                            #{item?.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {truncatedDescription(item?.description)}</span>
-                                        </div>
-                        </Card.Body>
-                    </Card>
-                     </Row>
+                                    </div>
+                                    <div className="d-flex align-items-start justify-content-end ticket-drop">
+                                        <Dropdown as="div" bsPrefix="user-container d-flex" drop="down" show={openDropdown === item.id}
+                                            onSelect={closeDropdown}>
+                                            <Dropdown.Toggle as={NavUserMenuDropdownToggle} onClick={() => toggleDropdown(item.id)} />
+                                            <Dropdown.Menu
+                                                as={(props) => (
+                                                    <NavUserMenuDropdownMenu {...props} item={item} />
+                                                )}
+                                                className="dropdown-menu dropdown-menu-end user-menu wide"
+                                                style={{
+                                                    position: 'absolute',
+                                                    transform: 'translate(-140px, 40px)'
+                                                }}
+                                            />
+                                        </Dropdown>
+                                    </div>
+                                </Row>
+                                <div style={{ textAlign: 'left', color: '#FF5B1D', fontSize: 14, fontWeight: 'bold' }}>
+                                    #{item?.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {truncatedDescription(item?.description)}</span>
+                                </div>
+                            </Card.Body>
+                        </Card>
+                    </Row>
                 ))}
             </>
             <Row>

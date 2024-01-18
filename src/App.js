@@ -16,7 +16,8 @@ import { systemMain } from 'utils/fetchRequest/Urls';
 import { setLoading, setSelectedSchool } from 'utils/redux/action';
 
 const App = () => {
-    const { currentUser, isLogin } = useSelector((state) => state.auth);
+    const { currentUser, isLogin, person } = useSelector((state) => state.auth);
+    const isEschoolUser = person.isEschoolUser || false;
     const { selectedSchool } = useSelector(state => state.schoolData);
     const [isFirstCycle, setIsFirstCycle] = useState(false);
     // ene state iig menu data hadgalhad uldeev
@@ -44,7 +45,7 @@ const App = () => {
         }
     }, [isFirstCycle])
 
-    const routes = useMemo(() => getRoutes({ data: routesAndMenuItems, isLogin, userRole: currentUser?.role, selectedSchool }), [isLogin, currentUser]);
+    const routes = useMemo(() => getRoutes({ data: routesAndMenuItems, isLogin, userRole: currentUser?.role, user: isEschoolUser }), [isLogin, currentUser]);
     if (routes) {
         return (
             <Layout>

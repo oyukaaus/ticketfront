@@ -4,13 +4,14 @@ import { useTranslation } from 'react-i18next';
 import { fetchRequest } from 'utils/fetchRequest';
 import { ticketClose } from 'utils/fetchRequest/Urls';
 import showMessage from 'modules/message';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from 'utils/redux/action';
 
 const CloseTicket = ({selectedId, show, setShow }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const [selectedRating, setSelectedRating] = useState(0);
+    const { person } = useSelector((state) => state.auth);
     const handleRatingClick = (rating) => {
         setSelectedRating(rating);
     };
@@ -19,7 +20,8 @@ const CloseTicket = ({selectedId, show, setShow }) => {
         const postData = {
             ticketId: selectedId,
             statusId: 3,
-            rating: selectedRating
+            rating: selectedRating,
+            updatedUser: person.id
         };
         console.log('id: ',selectedId)
         fetchRequest(ticketClose, 'POST', postData)

@@ -37,9 +37,9 @@ const DatePickerRange = ({
 }) => {
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
-    const [mainStartDate, setMainStartDate] = useState(null);
-    const [mainEndDate, setMainEndDate] = useState(null);
-    const [selectionComplete, toggleSelectionComplete] = useState(false);
+    // const [mainStartDate, setMainStartDate] = useState(null);
+    // const [mainEndDate, setMainEndDate] = useState(null);
+    // const [selectionComplete, toggleSelectionComplete] = useState(false);
     const [isMain, setIsMain] = useState(false);
     const [isStart, setIsStart] = useState(false);
     const [isEnd, setIsEnd] = useState(false);
@@ -48,30 +48,30 @@ const DatePickerRange = ({
         endDate: null,
     }]);
 
-    const handleDateChange = (date) => {
-        if (!selectionComplete && !mainStartDate) {
-            setMainStartDate(date);
-            toggleSelectionComplete(false)
-            return;
-        }
+    // const handleDateChange = (date) => {
+    //     if (!selectionComplete && !mainStartDate) {
+    //         setMainStartDate(date);
+    //         toggleSelectionComplete(false)
+    //         return;
+    //     }
 
-        if (!selectionComplete && mainStartDate && !mainEndDate) {
-            setMainEndDate(date);
-            toggleSelectionComplete(true);
-            return;
-        }
+    //     if (!selectionComplete && mainStartDate && !mainEndDate) {
+    //         setMainEndDate(date);
+    //         toggleSelectionComplete(true);
+    //         return;
+    //     }
 
-        if (selectionComplete && mainStartDate && mainEndDate) {
-            setMainStartDate(date);
-            setMainEndDate(undefined);
-            toggleSelectionComplete(false);
-        }
-    };
+    //     if (selectionComplete && mainStartDate && mainEndDate) {
+    //         setMainStartDate(date);
+    //         setMainEndDate(undefined);
+    //         toggleSelectionComplete(false);
+    //     }
+    // };
 
-    const handleSelect = (date) => {
-        handleDateChange(date);
-        setIsMain(true);
-    };
+    // const handleSelect = (date) => {
+    //     handleDateChange(date);
+    //     setIsMain(true);
+    // };
 
     // const handleStartDateChange = (date, e) => {
     //     if (date) {
@@ -111,21 +111,24 @@ const DatePickerRange = ({
     //         onChange(array);
     //     }
     // };
+    const clearDate = () => {
+        setStartDate(undefined);
+        setEndDate(undefined);
+    }
+    // const handleMainCalendarClose = () => {
+    //     setIsMain(false);
+    //     if (mainStartDate) {
+    //         setStartDate(mainStartDate);
+    //         array[0].startDate = format(mainStartDate, 'yyyy-MM-dd');
+    //     }
 
-    const handleMainCalendarClose = () => {
-        setIsMain(false);
-        if (mainStartDate) {
-            setStartDate(mainStartDate);
-            array[0].startDate = format(mainStartDate, 'yyyy-MM-dd');
-        }
+    //     if (mainEndDate) {
+    //         setEndDate(mainEndDate);
+    //         array[0].endDate = format(mainEndDate, 'yyyy-MM-dd');
+    //     }
 
-        if (mainEndDate) {
-            setEndDate(mainEndDate);
-            array[0].endDate = format(mainEndDate, 'yyyy-MM-dd');
-        }
-
-        onChange(array);
-    };
+    //     onChange(array);
+    // };
 
     const handleFirstCalendarClose = () => {
         setIsStart(false);
@@ -135,16 +138,16 @@ const DatePickerRange = ({
         setIsEnd(false);
     };
 
-    const handleCalendarOpen = () => {
-        setStartDate(undefined);
-        setEndDate(undefined);
-        setMainStartDate(undefined);
-        setMainEndDate(undefined);
-        toggleSelectionComplete(false);
-        array[0].startDate = null;
-        array[0].endDate = null;
-        onChange(array);
-    };
+    // const handleCalendarOpen = () => {
+    //     setStartDate(undefined);
+    //     setEndDate(undefined);
+    //     setMainStartDate(undefined);
+    //     setMainEndDate(undefined);
+    //     toggleSelectionComplete(false);
+    //     array[0].startDate = null;
+    //     array[0].endDate = null;
+    //     onChange(array);
+    // };
 
     const disableOtherDatesWithFirst = (thisDay, howManyMonth = 1) => {
         const thisDayConvert = new Date(thisDay).getTime()
@@ -179,9 +182,8 @@ const DatePickerRange = ({
     return (
         <div className='date-picker-range-container'>
             <DatePicker
-                style={{ fontSize: placeHolderFontSize ? undefined : 14 }}
                 locale={mn}
-                selected={startDate ? new Date(startDate) : selectedStartDate ? new Date(selectedStartDate) : null}
+                selected={startDate ? new Date(startDate) : startDate ? new Date(startDate) : null}
                 onChange={(date) => setStartDate(date)}
                 startDate={startDate}
                 maxDate={endDate}
@@ -193,26 +195,19 @@ const DatePickerRange = ({
                 dayClassName={(thisDay) => disableWithLast ? disableOtherDatesWithLast(thisDay, disableWithLast) : ''}
                 {...rest}
             />
+            <div
+                className='d-flex align-items-end justify-content-center'
+                style={{
+                    width: 80, border: '0.5px solid hsl(0, 0%, 70%)', borderLeft: 'none',
+                    borderRight: 'none', backgroundColor: '#EBEDF2', opacity: 0.5, cursor: 'pointer'
+                }}
+                onClick={clearDate}
+            >
+                ...
+            </div>
             <DatePicker
                 locale={mn}
-                className='react-datepicker-with-icon'
-                onChange={handleDateChange}
-                onSelect={handleSelect}
-                startDate={mainStartDate}
-                endDate={mainEndDate}
-                selectsRange="true"
-                selectsStart="true"
-                selectsEnd="true"
-                customInput={<CustomIcon className={''} />}
-                shouldCloseOnSelect={false}
-                onCalendarOpen={handleCalendarOpen}
-                onCalendarClose={handleMainCalendarClose}
-                disabled={isDisabled || disableWithFirst || disableWithLast ? true : false}
-                {...rest}
-            />
-            <DatePicker
-                locale={mn}
-                selected={endDate ? new Date(endDate) : selectedEndDate ? new Date(selectedEndDate) : null}
+                selected={endDate ? new Date(endDate) : endDate ? new Date(endDate) : null}
                 minDate={startDate}
                 onChange={(date) => setEndDate(date)}
                 endDate={endDate}

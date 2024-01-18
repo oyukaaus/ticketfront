@@ -19,6 +19,7 @@ const createTicketModal = ({
     const history = useHistory();
     const fileInputRef = useRef(null);
     const { person } = useSelector((state) => state.auth);
+    console.log('person: ', person)
     const { schools } = useSelector((state) => state.schoolData);
     const schoolData = [];
     schools.map((param) =>
@@ -608,7 +609,7 @@ const createTicketModal = ({
             size='xl'
         >
             <Modal.Header closeButton>
-                <Modal.Title className='fs-16' color="#FF5B1D">
+                <Modal.Title>
                     {t('common.requestSend')}
                 </Modal.Title>
             </Modal.Header>
@@ -663,7 +664,6 @@ const createTicketModal = ({
                                                     alt='delete-icon'
                                                     className='color-info me-1'
                                                     onClick={() => handleImageRemoval(fileD.file)}
-
                                                     style={{ width: '20px', height: '20px', position: 'absolute', cursor: 'pointer', transform: 'translate(90px, -10px' }}
                                                 />
                                             </div>
@@ -671,8 +671,8 @@ const createTicketModal = ({
                                     ))}
                                 </tr>
                                 <tr>
-                                    <th className='width-equal pe-2  d-flex align-items-center text-right'>
-                                        <div style={{ display: 'flex', marginTop: '0.8rem' }}>
+                                    <th className='width-equal pe-2  align-content-center align-items-center  text-right'>
+                                        <div style={{ display: 'flex',}}>
                                             <input
                                                 ref={fileInputRef}
                                                 style={{ display: 'none' }}
@@ -688,7 +688,6 @@ const createTicketModal = ({
                                             >
                                                 Зураг оруулах
                                             </Button>
-                                           
                                         </div>
                                     </th>
                                         {

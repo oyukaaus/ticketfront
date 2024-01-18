@@ -14,8 +14,8 @@ const Tickets = () => {
         attrMenuAnimate,
     } = useSelector((state) => state.menu);
     const { color } = useSelector((state) => state.settings);
-    const { schools } = useSelector(state => state.schoolData);
-    const hasAdminRole = schools && schools.some(school => school.roleCodes.includes("ROLE_ADMIN"));
+    const { person } = useSelector((state) => state.auth);
+    const hasAdminRole = person && person.isEschoolUser;
 
     useEffect(() => {
         dispatch(layoutShowingNavMenu(''));
@@ -35,7 +35,7 @@ const Tickets = () => {
                     </Link>
                 </div>
             </div>
-            {hasAdminRole && (
+            {hasAdminRole===true && (
                 <div className="position-relative d-inline-flex flex-column">
                     <div className='d-flex align-items-center'>
                         <Link to={{

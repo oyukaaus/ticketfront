@@ -4,17 +4,19 @@ import { useTranslation } from 'react-i18next';
 import { fetchRequest } from 'utils/fetchRequest';
 import { ticketCancel } from 'utils/fetchRequest/Urls';
 import showMessage from 'modules/message';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { setLoading } from 'utils/redux/action';
 
 const CancelRequest = ({id, show, setShow }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
+    const { person } = useSelector((state) => state.auth);
     const onSaveClick = () => {
         setShow(false)
         const postData = {
             ticketId: id,
-            statusId: 4
+            statusId: 4,
+            updatedUser: person.id
         };
         fetchRequest(ticketCancel, 'POST', postData)
         .then((res) => {

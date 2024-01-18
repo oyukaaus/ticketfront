@@ -33,7 +33,31 @@ const routesAndMenuItems = {
       to: `${appRoot}`,
     },
   ],
+  
   teacherSidebarItems: [
+    {
+      path: `${appRoot}/home`,
+      label: 'home.title',
+      icon: 'send-1',
+      exact: true,
+      redirect: true,
+      to: `${appRoot}/ticket/index`,
+      subs: [{ path: '/index', label: 'home.title', icon: 'dashboard', component: index.home }],
+    },
+    {
+      path: `${appRoot}/ticket`,
+      label: 'home.ticket',
+      icon: 'send-1',
+      exact: true,
+      redirect: true,
+      to: `${appRoot}/ticket/index`,
+      subs: [
+        { path: '/index', label: 'home.ticket', icon: 'ticket', component: ticket.index },
+        { path: '/view/:id', exact: true, label: 'home.ticket', hideInMenu: true, icon: 'send', component: ticket.view },
+      ],
+    },
+  ],
+  adminSidebarItems: [
     {
       path: `${appRoot}/home`,
       label: 'home.title',
@@ -67,7 +91,6 @@ const routesAndMenuItems = {
         { path: '/view/:id', exact: true, label: 'home.admin', hideInMenu: true, icon: 'send', component: admin.view },
       ],
     },
-
   ],
   sidebarItems: [
     {

@@ -1,7 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import classNames from 'classnames';
-import { Col } from 'react-bootstrap';
 import { MENU_BEHAVIOUR, MENU_PLACEMENT } from 'constants.js';
 import NavUserMenu from './NavUserMenu';
 import NavLogo from './NavLogo';
@@ -17,8 +15,7 @@ const Nav = () => {
 
     useEffect(() => {
         const handleResize = () => {
-            console.log('window.innerWidth: ', window.innerWidth)
-            setIsPhoneScreen(window.innerWidth <= 870);
+            setIsPhoneScreen(window.innerWidth <= 894);
         };
         handleResize();
         window.addEventListener('resize', handleResize);
@@ -28,7 +25,7 @@ const Nav = () => {
             window.removeEventListener('resize', handleResize);
         };
     }, []);
-    const { navClasses, placementStatus, behaviourStatus, attrMobile, menuPadding } = useSelector((state) => state.menu);
+    const {  placementStatus, behaviourStatus, attrMobile, menuPadding } = useSelector((state) => state.menu);
     const mouseActionTimer = useRef(null);
     // Vertical menu semihidden state showing
     // Only works when the vertical menu is active and mobile menu closed

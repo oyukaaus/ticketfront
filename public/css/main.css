@@ -43,10 +43,11 @@
     width: 5%;
   }
   .new-menu {
-    width:50%
+    width:50%;
   }
     .new-user-menu {
     width: 45%;
+    margin-right: 1.25rem;
   }
   .nav-drop1 {
     width: 10%;
@@ -60,6 +61,7 @@
 }
 
 @media (max-width: 2000px) {
+
   .new-row {
     width: 3%;
     flex-direction: row;
@@ -90,6 +92,7 @@
   }
     .new-user-menu {
     width: 45%;
+    margin-right: 1.25rem;
   }
   .nav-drop1 {
     width: 10%;
@@ -109,6 +112,10 @@
   }
   .new-button {
     width: 95%;
+  }
+  .one-button {
+    width: 25%;
+    align-items: flex-start;
   }
   .ticket-row {
     width: 4%;
@@ -133,6 +140,7 @@
   }
     .new-user-menu {
     width: 45%;
+    margin-right: 1.25rem;
   }
   .nav-drop1 {
     width: 10%;
@@ -152,7 +160,10 @@
   }
   .new-button {
     width: 96%;
-  }  
+  }
+  .view-button {
+    width: 96%;
+  }    
   .ticket-row {
     width: 5%;
     flex-direction: row;
@@ -176,6 +187,7 @@
   }
     .new-user-menu {
     width: 45%;
+    margin-right: 1.25rem;
   }
   .nav-drop1 {
     width: 10%;
@@ -188,13 +200,57 @@
   }
 }
 
-@media (min-width: 769px) and (max-width: 1000px) {
+@media (min-width: 830px) and (max-width: 1000px) {
   .new-row {
-    width: 5%;
+    width: 7%;
     flex-direction: row;
   }
   .new-button {
-    width: 95%;
+    width: 93%;
+  }  
+  .ticket-row {
+    width: 6%;
+    flex-direction: row;
+  }
+  .ticket-button {
+    width: 64%;
+  }
+  .ticket-drop {
+    width: 30%;
+  }   
+  .new-content {
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+  }
+  .new-logo {
+    width: 5%;
+  }
+  .new-menu {
+    width:85%
+  }
+    .new-user-menu {
+    width: 50%;
+    margin-right: 2rem;
+  }
+  .nav-drop1 {
+    width: 10%;
+  }
+  .nav-drop2 {
+    width: 80%;
+  }
+  .nav-drop3 {
+    width: 10%;
+  }
+}
+
+@media (min-width: 620px) and (max-width: 829px) {
+  .new-row {
+    width: 7%;
+    flex-direction: row;
+  }
+  .new-button {
+    width: 93%;
   }  
   .ticket-row {
     width: 8%;
@@ -219,6 +275,7 @@
   }
     .new-user-menu {
     width: 50%;
+    margin-right: 2rem;
   }
   .nav-drop1 {
     width: 10%;
@@ -230,8 +287,7 @@
     width: 10%;
   }
 }
-
-@media (min-width: 481px) and (max-width: 768px) {
+@media (min-width: 481px) and (max-width: 619px) {
   .new-row {
     width: 10%;
     flex-direction: row;
@@ -262,6 +318,7 @@
   }
     .new-user-menu {
     width: 60%;
+    margin-right: 2rem;
   }
 }
 
@@ -296,11 +353,33 @@
   }
     .new-user-menu {
     width: 15%;
+    margin-right: 1.25rem;
   }
   .nav-drop3 {
     width:60%;
   }
 }
+.customButton {
+  margin-left: 10px;
+  /* margin-right: 10px; */
+  margin-top: 10px;
+  padding: 8px 10px;
+  font-size: 0.75rem;
+  border-radius: 10px;
+  line-height: 1;
+  height: auto;
+  font-family: 'Mulish';
+}
+.new-image {
+  width: 40%;
+}
+.new-desc {
+  width: 40%;
+}
+.additional {
+  width: 20%;
+}
+
 .icon-wait {
   background: url('../font/custom/waitIcon.png');
   background-repeat: no-repeat;
@@ -482,7 +561,7 @@ th {
 
 .modal .modal-title {
   font-size: 0.9rem;
-  color: #ff4900;
+  color: #FF5B1D;
   font-family: 'Pinnacle-DemiBold';
 }
 
@@ -506,26 +585,30 @@ th {
 .react-datetime-picker .react-datetime-picker__wrapper .react-datetime-picker__inputGroup {
   padding: 0.65rem 1rem;
   border-radius: 0.42rem;
-  border: 1px solid #575962;
+  /* border: 0.5px solid rgb(87, 89, 98); */
   text-align: center;
   height: 37px;
   line-height: 1;
 }
 
 .react-datepicker-wrapper .react-datepicker__input-container input {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  outline: none;
   display: block;
-  border: 2px solid var(--separator);
   width: 100%;
   height: 38px;
   padding: 0.65rem 1rem;
   font-size: 0.8rem;
   font-weight: 400;
   line-height: 1.5;
-  color: #575962;
+  color: #505050;
   background-color: #ffffff;
   background-clip: padding-box;
   border-radius: 4px;
   box-shadow: none;
+  border: solid 0.5px hsl(0, 0%, 80%) !important;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
 
@@ -535,7 +618,8 @@ th {
 
 .react-datepicker-wrapper .react-datepicker__input-container input:focus {
   outline: none;
-  border-color: var(--info);
+  /* border:none; */
+  border: 1px solid #ff5b1d !important;
 }
 
 /************ datetime picker css end ***********/
@@ -544,7 +628,9 @@ th {
   width: 100%;
   display: flex;
   justify-content: space-between;
-  /* display: inline-flex; */
+  display: inline-flex;
+  /* border: 0.5px solid rgb(87, 89, 98) */
+
 }
 
 .date-picker-range-container .first-datepicker {

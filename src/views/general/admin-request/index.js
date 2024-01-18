@@ -8,9 +8,11 @@ import { setLoading } from 'utils/redux/action';
 import showMessage from "modules/message";
 import { fetchRequest } from 'utils/fetchRequest';
 import { ticketReport, ticketList } from 'utils/fetchRequest/Urls';
-import DatePickerRange from 'modules/Form/DatePickerRange';
 import Select from 'modules/Form/Select';
 import * as XLSX from 'xlsx';
+import { mn } from 'date-fns/locale';
+import DatePicker from 'react-datepicker';
+import format from 'date-fns/format';
 
 const AdminRequest = () => {
     const history = useHistory();
@@ -23,21 +25,22 @@ const AdminRequest = () => {
             value: param?.id,
             text: param?.name,
             longName: param?.schoolName,
+            userTitle: param?.userTitle
         })
     )
-
+    console.log('schools: ', schools)
     const [data, setData] = useState([]);
-    const [startDate, setStartDate] = useState('');
-    const [endDate, setEndDate] = useState('');
-    const [errorDueDate, setErrorDueDate] = useState(false);
+    const [startDate, setStartDate] = useState(null);
+    const [endDate, setEndDate] = useState(null);
+    // const [errorDueDate, setErrorDueDate] = useState(false);
     const [searchInput, setSearchInput] = useState('');
-    const [selectedTypesIds, setSelectedTypes] = useState([]);
+    const [selectedTypesIds, setSelectedTypes] = useState('');
     const types = [{ value: 1, text: 'Алдаа' }, { value: 2, text: 'Санал хүсэлт' }];
-    const [selectedRequestersIds, setSelectedRequesters] = useState([]);
-    const [selectedAssigneeIds, setSelectedAssignees] = useState([]);
-    const [selectedSystemIds, setSelectedSystems] = useState([]);
+    const [selectedRequestersIds, setSelectedRequesters] = useState('');
+    const [selectedAssigneeIds, setSelectedAssignees] = useState('');
+    const [selectedSystemIds, setSelectedSystems] = useState('');
     const [systems, setSystems] = useState([]);
-    const [selectedSchoolIds, setSelectedSchools] = useState([]);
+    const [selectedSchoolIds, setSelectedSchools] = useState('');
     const [selectedStatusIds, setSelectedStatus] = useState([]);
     const [statuses, setStatuses] = useState([]);
     const [assignees, setAssignees] = useState([]);
@@ -87,15 +90,15 @@ const AdminRequest = () => {
     const getButtonColor = (type) => {
         switch (type) {
             case 1:
-                return { backgroundColor: '#FF003D', color: '#FFFFFF', fontFamily: 'Mulish', opacity: 1, marginLeft: 10, marginTop:10 };
+                return { backgroundColor: '#FF003D', color: '#FFFFFF', fontFamily: 'Mulish', opacity: 1 };
             case 2:
-                return { backgroundColor: '#EDB414', color: '#000000', fontFamily: 'Mulish', opacity: 1, marginLeft: 10 , marginTop:10};
+                return { backgroundColor: '#EDB414', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
             case 3:
-                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity: 1, marginLeft: 10 , marginTop:10};
+                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
             case 4:
-                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity: 1 , marginLeft: 10, marginTop:10};
+                return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
             default:
-                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish', opacity: 1, marginLeft: 10, marginTop:10 };
+                return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
         }
     };
 
@@ -110,19 +113,24 @@ const AdminRequest = () => {
             labelBold: true,
             selectedStartDate: startDate,
             selectedEndDate: endDate,
-            firstPlaceHolder:t('ticket.startDate'),
-            lastPlaceHolder:t('ticket.endDate'),
-            width:'100%',
-          
+            firstPlaceHolder: t('ticket.startDate'),
+            lastPlaceHolder: t('ticket.endDate'),
+            width: '100%',
+
         },
     ];
     const handerRangePicker = (dates) => {
-        console.log('range: ', dates);
-        setStartDate(dates[0].startDate);
-        setEndDate(dates[0].endDate);
+        console.log('dates: ', dates)
+        setStartDate(dates[0] && dates[0].startDate || null);
+        setEndDate(dates[0] && dates[0].endDate || null);
     };
-    
-    const loadDetails = (start = null, end = null, page = 1, pageSize = 10, query = null, sortBy = null, order = null) => {
+
+    const defaultDate = {
+        startDate: format((new Date(Date.now() - 30 * 24 * 60 * 60 * 1000)), 'yyyy-MM-dd'),
+        endDate: format((new Date()), 'yyyy-MM-dd'),
+    };
+
+    const loadDetails = (page = 1, pageSize = 10, query = null, sortBy = null, order = null) => {
         dispatch(setLoading(true));
         const postData = {
             type: selectedTypesIds,
@@ -131,8 +139,8 @@ const AdminRequest = () => {
             system: selectedSystemIds,
             school: selectedSchoolIds,
             status: selectedStatusIds,
-            startDate: start,
-            endDate: end,
+            startDate: startDate !== null ? format(startDate, 'yyyy-MM-dd') : defaultDate.startDate,
+            endDate: endDate !== null ? format(endDate, 'yyyy-MM-dd') : defaultDate.endDate,
             page,
             pageSize,
             query,
@@ -162,11 +170,13 @@ const AdminRequest = () => {
     }
 
     const handleRequesterChange = (value) => {
-        setSelectedRequesters(value)
+        const intValue = parseInt(value, 10);
+        setSelectedRequesters(intValue)
     }
 
     const handleAssigneeChange = (value) => {
-        setSelectedAssignees(value)
+        const intValue = parseInt(value, 10);
+        setSelectedAssignees(intValue)
     }
 
     const handleSystemChange = (value) => {
@@ -180,25 +190,23 @@ const AdminRequest = () => {
     }
 
     const onSeeClick = () => {
-        console.log('startDate', startDate);
         if (startDate && endDate) {
-            setErrorDueDate(false);
             loadDetails(startDate, endDate);
         } else {
-            setErrorDueDate(true);
+            loadDetails(defaultDate.startDate, defaultDate.endDate);
         }
     };
 
     const onclickClear = () => {
-        setStartDate('');
-        setEndDate('');
-        setSelectedAssignees([]);
-        setSelectedSchools([]);
+        handerRangePicker([]);
+        setStartDate(null);
+        setEndDate(null);
+        setSelectedAssignees(null);
+        setSelectedSchools(null);
         setSelectedStatus([]);
-        setSelectedRequesters([]);
-        setSelectedTypes([]);
-        setSelectedSystems([]);
-        console.log('startDate: ',startDate)
+        setSelectedRequesters(null);
+        setSelectedTypes(null);
+        setSelectedSystems(null);
     };
 
     const fetchInfo = async () => {
@@ -213,7 +221,7 @@ const AdminRequest = () => {
                     const assigneeOption = [];
                     res?.assignees.map((param) =>
                         assigneeOption.push({
-                            value: param?.id,
+                            value: param?.userId,
                             text: param?.firstName,
                         })
                     );
@@ -267,20 +275,7 @@ const AdminRequest = () => {
             fetchInfo()
         }
     };
-    const [isPhoneScreen, setIsPhoneScreen] = useState(false);
 
-    useEffect(() => {
-        const handleResize = () => {
-            setIsPhoneScreen(window.innerWidth <= 767);
-        };
-        handleResize();
-        window.addEventListener('resize', handleResize);
-
-        // Cleanup on component unmount
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
     const getUserAvatar = (userId) => {
         const user = avatars.find((sys) => sys.id === userId);
         return user?.avatar || '/img/system/default-profile.png';
@@ -305,23 +300,43 @@ const AdminRequest = () => {
         const school = schoolData.find((sys) => sys.value === parseInt(schoolId, 10));
         return school ? school.longName : 'Unknown School';
     };
+
+    const getTitle = (schoolId) => {
+        const school = schoolData.find((sys) => sys.value === parseInt(schoolId, 10));
+        return school ? school.userTitle : 'Unknown Title';
+    };
+
     const getCreatedPhone = (userId) => {
         const user = createdUsers.find((sys) => sys.userId === userId);
         return user ? user.phone || 'Unknown Phone' : 'Unknown Phone';
     };
-    
+
     const getAssigneeAvatar = (userId) => {
         const user = assignees.find((sys) => sys.userId === userId);
         return user?.avatar || '/img/system/default-profile.png';
     };
 
-    const truncatedDescription = (description) =>{
+    const truncatedDescription = (description) => {
         return description.length > 122 ? `${description.slice(0, 122)}...` : description;
     };
 
-    const truncatedName = (name) =>{
+    const truncatedName = (name) => {
         return name.length > 25 ? `${name.slice(0, 25)}.png` : name;
     };
+
+    const [setIsStart] = useState(false);
+    const [setIsEnd] = useState(false);
+    const handleFirstCalendarClose = () => {
+        setIsStart(false);
+    };
+
+    const handleLastCalendarClose = () => {
+        setIsEnd(false);
+    };
+    const clearDate = () => {
+        setStartDate(null);
+        setEndDate(null);
+    }
 
     return (
         <>
@@ -347,7 +362,6 @@ const AdminRequest = () => {
                                         </Col>
                                         <Col lg={8}>
                                             <Select
-                                                multiple
                                                 clearable={false}
                                                 options={types}
                                                 value={selectedTypesIds}
@@ -363,7 +377,6 @@ const AdminRequest = () => {
                                         </Col>
                                         <Col lg={8}>
                                             <Select
-                                                multiple
                                                 clearable={false}
                                                 options={requesters}
                                                 value={selectedRequestersIds}
@@ -379,7 +392,6 @@ const AdminRequest = () => {
                                         </Col>
                                         <Col lg={8}>
                                             <Select
-                                                multiple
                                                 clearable={false}
                                                 options={assignees}
                                                 value={selectedAssigneeIds}
@@ -397,7 +409,6 @@ const AdminRequest = () => {
                                         </Col>
                                         <Col lg={8}>
                                             <Select
-                                                multiple
                                                 clearable={false}
                                                 options={systems}
                                                 value={selectedSystemIds}
@@ -412,34 +423,62 @@ const AdminRequest = () => {
                                             <label className='modal-label'>{t('common.date')}</label>
                                         </Col>
                                         <Col lg={8}>
-                                        <div
-                                            style={{
-                                                display: 'flex',
-                                                flex: field.inputWidth ? undefined : field?.inputFlex || 1,
-                                                flexDirection: 'column',
-                                                // marginLeft: 10,
-                                                // width: field?.inputWidth || 'auto',
-                                                fontFamily: field.labelBold ? 'Pinnacle-Bold' : 'Pinnacle',
-                                            }}
-                                        >
-                                            <DatePickerRange
+                                            <div
+                                                style={{
+                                                    display: 'flex',
+                                                    flex: field.inputWidth ? undefined : field?.inputFlex || 1,
+                                                    flexDirection: 'column',
+                                                    fontFamily: field.labelBold ? 'Pinnacle-Bold' : 'Pinnacle',
+                                                    border: 1
+                                                }}
+                                            >
+                                                {/* <DatePickerRange
                                                 onChange={(val) => handerRangePicker(val)}
                                                 firstPlaceHolder={t('ticket.startDate')}
                                                 lastPlaceHolder={t('ticket.endDate')}
                                                 selectedStartDate={startDate}
                                                 selectedEndDate={endDate}
-                                            />
-                                        </div>
-                                            {
-                                                errorDueDate &&
-                                                <Row className='d-flex justify-content-between '>
-                                                    <Col sm={8} className='d-flex'>
-                                                        <div className='invalid-feedback d-block'>
-                                                            {t('errorMessage.selectDate')}
-                                                        </div>
-                                                    </Col>
-                                                </Row>
-                                            } 
+                                            /> */}
+                                                <div className='date-picker-range-container'>
+                                                    <DatePicker
+                                                        locale={mn}
+                                                        selected={startDate ? new Date(startDate) : startDate ? new Date(startDate) : null}
+                                                        onChange={(date) => setStartDate(date)}
+                                                        startDate={startDate}
+                                                        maxDate={endDate}
+                                                        dateFormat='yyyy-MM-dd'
+                                                        disabled={false}
+                                                        className='first-datepicker'
+                                                        onCalendarClose={handleFirstCalendarClose}
+                                                        placeholderText={t('ticket.startDate')}
+                                                        dayClassName=''
+                                                    />
+                                                    <div
+                                                        className='d-flex align-items-end justify-content-center'
+                                                        style={{
+                                                            width: 80, border: '0.5px solid hsl(0, 0%, 70%)', borderLeft: 'none',
+                                                            borderRight: 'none', backgroundColor: '#EBEDF2', opacity: 0.5, cursor: 'pointer'
+                                                        }}
+                                                        onClick={clearDate}
+                                                    >
+                                                        ...
+                                                    </div>
+                                                    <DatePicker
+                                                        locale={mn}
+                                                        selected={endDate ? new Date(endDate) : endDate ? new Date(endDate) : null}
+                                                        minDate={startDate}
+                                                        onChange={(date) => setEndDate(date)}
+                                                        endDate={endDate}
+                                                        dateFormat='yyyy-MM-dd'
+                                                        disabled={false}
+                                                        className='last-datepicker'
+                                                        onCalendarClose={handleLastCalendarClose}
+                                                        shouldCloseOnSelect={false}
+                                                        placeholderText={t('ticket.endDate')}
+                                                        dayClassName=''
+                                                    />
+                                                </div>
+                                            </div>
                                         </Col>
                                     </Row>
                                 </Col>
@@ -455,7 +494,6 @@ const AdminRequest = () => {
                                         </Col>
                                         <Col lg={8}>
                                             <Select
-                                                multiple
                                                 clearable={false}
                                                 options={schoolData}
                                                 value={selectedSchoolIds}
@@ -490,8 +528,8 @@ const AdminRequest = () => {
                                     <Button onClick={onclickClear} size="sm" variant="link" style={{ fontSize: 14 }}>
                                         {t('common.clear')}
                                     </Button>
-                                    <Button variant="aqua" style={{ color: 'white', marginLeft: 20, fontSize: 14, width:120 }} size="sm" onClick={onSeeClick}>
-                                        <img src='../img/ticket/icon/filter.png' alt='school-icon' className='color-info me-1' />{t('ticket.search')}
+                                    <Button variant="aqua" style={{ color: 'white', marginLeft: 20, fontSize: 14, width: 109, height: 30 }} className='d-flex justify-content-center' size="sm" onClick={onSeeClick}>
+                                        <img src='../img/ticket/icon/filter.png' alt='school-icon' style={{ alignSelf: 'center', marginRight: 5 }} />{t('ticket.search')}
                                     </Button>
                                 </Col>
                                 <Col></Col>
@@ -514,60 +552,64 @@ const AdminRequest = () => {
                     </Col>
                 </Row>
                 {data.map((item, i) => (
-                    <Row key={i} className="d-flex " style={{ marginTop: 10, marginLeft:1 }} onClick={() => history.push(`/admin/view/${item.id}`)} >
+                    <Row key={i} className="d-flex " style={{ marginTop: 10, marginLeft: 1 }} onClick={() => history.push(`/admin/view/${item.id}`)} >
                         <Card style={{ width: '99.5%' }} >
                             <Card.Body>
                                 <Row className="d-flex ">
-                                        <div className='new-row'>
-                                                <img className="profile rounded-circle" width='45' alt={item.createdUserId} src={getUserAvatar(item.createdUserId) ? `${getUserAvatar(item.createdUserId)}` : '../img/system/default-profile.png'} />
-                                            </div>
-                                            <div className='new-button'>
-                                                <Button className='position-relative d-inline-flex '
-                                                    type="button"
-                                                    size="sm"
-                                                    disabled
-                                                    style={getButtonColor(item?.statusId)}
-                                                >
-                                                    {getStatusName(item?.statusId)}
-                                                </Button>
-                                                <Button className='position-relative d-inline-flex'
-                                                    type="button"
-                                                    size="sm"
-                                                    disabled
-                                                    style={{ backgroundColor: '#FD7845', fontFamily: 'Mulish', color: '#000000', marginLeft: 10, marginTop:10 }}
-                                                >
-                                                    {getSchoolName(item.schoolId)}
-                                                </Button>
-                                                <Button className='position-relative d-inline-flex'
-                                                    type="button"
-                                                    size="sm"
-                                                    disabled
-                                                    style={{ backgroundColor: '#047857',  marginLeft: 10, marginTop:10 }}
-                                                >
-                                                    <span style={{color:'#000000', opacity:1, fontFamily: 'Mulish'}}>
-                                                    {getCreatedPhone(item.createdUserId)}</span>
-                                                </Button>
-             
-                                                <div style={{ color: 'black', fontSize: 14, fontWeight: 'semibold', opacity: 1 }}>
-                                            {item?.createdDate?.date && (item?.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight: 'bold', opacity: 1 }}> <span style={{ color: 'orange', fontWeight: 'bold', opacity: 1 }}> | </span> </span> {getTypeName(item?.typeId)} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {getSystemName(item?.systemId)}
+                                    <div className='new-row'>
+                                        <img className="profile rounded-circle" width='45' alt={item.createdUserId} src={getUserAvatar(item.createdUserId) ? `${getUserAvatar(item.createdUserId)}` : '../img/system/default-profile.png'} />
+                                    </div>
+                                    <div className='new-button '>
+                                        <div className='view-button ' >
+                                            <Button className='customButton position-relative d-inline-flex '    
+                                                type="button"
+                                                size="sm"
+                                                style={getButtonColor(item?.statusId)}
+                                            >
+                                                {getStatusName(item?.statusId)}
+                                            </Button>
+                                            <Button className='customButton position-relative d-inline-flex'
+                                                type="button"
+                                                size="sm"
+                                                style={{ backgroundColor: 'rgba(253, 120, 69, 0.2)', color: '#000000' }}
+                                            >
+                                                {getSchoolName(item.schoolId)}
+                                            </Button>
+                                            <Button className='customButton position-relative d-inline-flex'
+                                                type="button"
+                                                size="sm"
+                                                style={{ backgroundColor: 'rgba(59, 130, 246, 0.2)', color: '#000000' }}
+                                            >
+                                                {getTitle(item.schoolId)}
+                                            </Button>
+                                            <Button className='customButton position-relative d-inline-flex'
+                                                type="button"
+                                                size="sm"
+                                                style={{ backgroundColor: 'rgba(4, 120, 87, 0.2)', color: 'rgba(0, 0, 0, 1)' }}
+                                            >
+                                                {getCreatedPhone(item.createdUserId)}
+                                            </Button>
+                                        </div>
+                                        <div style={{ color: 'black', fontSize: 14, fontWeight: 'semibold', opacity: 1, marginLeft:10 }}>
+                                            {item?.createdDate?.date && (item?.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: '#FD7845', fontWeight: 'bold', opacity: 1 }}> <span style={{ color: '#FD7845', fontWeight: 'bold', opacity: 1 }}> | </span> </span> {getTypeName(item?.typeId)} <span style={{ color: '#FD7845', fontWeight: 'bold' }}> | </span> {getSystemName(item?.systemId)}
                                         </div>
                                     </div>
                                 </Row>
-                                    <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold', opacity: 1 }}>
-                                        #{item?.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {truncatedDescription(item?.description)}</span>
-                                    </div>
+                                <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold', opacity: 1 }}>
+                                    #{item?.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {truncatedDescription(item?.description)}</span>
+                                </div>
                                 <div className="d-flex align-items-end justify-content-end " >
                                     <Col>
                                         {item?.files && item?.files.map((dtlItem, index) => (
-                                            <Button key={index} variant="default" style={{ backgroundColor: '#FFFFFF', marginTop: 10, marginRight:5, border: '1px solid #979797' }} width="80%" size="sm"  onClick={() => openImageInNewWindow(dtlItem.path)} >
-                                                <img src='../img/ticket/icon/image.png' alt='school-icon' className='color-info me-1' /> <span style={{ color: 'black',  }}>{truncatedName(dtlItem.name)}</span>
+                                            <Button key={index} variant="default" style={{ backgroundColor: '#FFFFFF', marginTop: 10, marginRight: 5, border: '1px solid #979797' }} width="80%" size="sm" onClick={() => openImageInNewWindow(dtlItem.path)} >
+                                                <img src='../img/ticket/icon/image.png' alt='school-icon' className='color-info me-1' /> <span style={{ color: 'black', }}>{truncatedName(dtlItem.name)}</span>
                                             </Button>
                                         ))}
                                     </Col>
                                 </div>
                                 <Row className="d-flex align-items-end justify-content-end " >
                                     <Col lg={1}>
-                                    <Button variant="default" style={{ backgroundColor: '#E5E7EB', marginTop: 10 }} width="80%" size="sm" onClick={onSeeClick}>
+                                        <Button variant="default" style={{ backgroundColor: '#E5E7EB', marginTop: 10 }} width="80%" size="sm" onClick={onSeeClick}>
                                             <img src='../img/ticket/icon/reply.png' alt='school-icon' className='color-info me-1' /> <span style={{ color: 'black' }}>{item.replyCount}</span>
                                         </Button>
                                     </Col>

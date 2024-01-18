@@ -21,6 +21,7 @@ const editTicket = ({
     const history = useHistory();
     const fileInputRef = useRef(null);
     const { schools } = useSelector((state) => state.schoolData);
+    const { person } = useSelector((state) => state.auth);
     const schoolData = [];
     schools.map((param) =>
         schoolData.push({
@@ -241,7 +242,8 @@ const editTicket = ({
                 typeId: isIssue ? 1 : 2,
                 statusId: 1,
                 example: example,
-                schoolId: selectedSchool
+                schoolId: selectedSchool,
+                updatedUser: person.id
             };
             if (fileData) {
                 console.log('fileData: ', fileData)

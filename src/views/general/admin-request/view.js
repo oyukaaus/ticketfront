@@ -144,21 +144,7 @@ const view = (outerProps) => {
     const truncatedName = (name) => {
         return name.length > 25 ? `${name.slice(0, 25)}.png` : name;
     };
-    
-    const [isPhoneScreen, setIsPhoneScreen] = useState(false);
 
-    useEffect(() => {
-        const handleResize = () => {
-            setIsPhoneScreen(window.innerWidth <= 767);
-        };
-        handleResize();
-        window.addEventListener('resize', handleResize);
-
-        // Cleanup on component unmount
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
     const NavUserMenuDropdownMenu = React.memo(
         React.forwardRef(({ style, className, item }, ref) => {
             return (
@@ -169,7 +155,7 @@ const view = (outerProps) => {
                             <Dropdown.Item onClick={() => ticketReply()}><img src="../../img/ticket/icon/file-input.png" alt="fileinput-icon" /> <span style={{ color: '#000000', fontSize: 14 }}> Хариу бичих</span></Dropdown.Item>
                             <Dropdown.Item onClick={() => ticketClose()}><img src="../../img/ticket/icon/file-check-2.png" alt="filecheck-icon" /> <span style={{ color: '#000000', fontSize: 14 }}> Хүсэлтийг хаах</span></Dropdown.Item>
                         </>)}
-                    <Dropdown.Item onClick={() => statusLogShow()}><img src="../../img/ticket/icon/file-check-2.png" alt="filecheck-icon" />Төлөв шилжилт харах</Dropdown.Item>
+                    <Dropdown.Item onClick={() => statusLogShow()}><img src="../../img/ticket/icon/file-check-2.png" alt="filecheck-icon" /><span style={{ color: '#000000', fontSize: 14 }}> Төлөв шилжилт харах</span></Dropdown.Item>
                 </div>
             );
         })
@@ -210,7 +196,7 @@ const view = (outerProps) => {
                                     <div className='ticket-row'>
                                         <img className="profile d-inline me-3  rounded-circle" width='50' alt={item.createdUser} src={getUserAvatar(item.createdUser) ? `${getUserAvatar(item.createdUser)}` : '../img/system/default-profile.png'} />
                                     </div>
-                                    <div  className='ticket-button'>
+                                    <div className='ticket-button'>
                                         <Button className='position-relative d-inline-flex m-1'
                                             type="button"
                                             size="sm"
@@ -227,15 +213,15 @@ const view = (outerProps) => {
                                         >
                                             {getSchoolName(item.schoolId)}
                                         </Button>
-                                        
+
                                         <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold' }}>
-                                            {item.type} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {(item.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span>  {getSystemName(item.systemId)}
+                                            {item.type} <span style={{ color: '#FD7845', fontWeight: 'bold' }}> | </span> {(item.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: '#FD7845', fontWeight: 'bold' }}> | </span>  {getSystemName(item.systemId)}
                                         </div>
                                     </div>
                                     <div className="d-flex align-items-start justify-content-end ticket-drop">
-                                    <Link to={{ pathname: `/admin/index` }} style={{ textAlign: 'right', color: '#FF2F1A', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}>
-                                        Жагсаалт руу буцах
-                                    </Link>
+                                        <Link to={{ pathname: `/admin/index` }} style={{ textAlign: 'right', color: '#FF2F1A', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}>
+                                            Жагсаалт руу буцах
+                                        </Link>
                                     </div>
                                 </Row>
 
@@ -244,11 +230,11 @@ const view = (outerProps) => {
                                 </div>
                                 <div className="d-flex align-items-end justify-content-end " >
                                     <Col>
-                                    {item?.files && item?.files.map((dtlItem, index) => (
-                                        <Button key={index} variant="default" style={{ backgroundColor: '#FFFFFF', marginTop: 10, marginLeft: 5, border: '1px solid #979797' }} width="80%" size="sm" onClick={() => openImageInNewWindow(dtlItem.path)} >
-                                            <img src='/img/ticket/icon/image.png' alt='school-icon' className='color-info me-1' /> <span style={{ color: 'black', }}>{truncatedName(dtlItem.name)}</span>
-                                        </Button>
-                                    ))}
+                                        {item?.files && item?.files.map((dtlItem, index) => (
+                                            <Button key={index} variant="default" style={{ backgroundColor: '#FFFFFF', marginTop: 10, marginLeft: 5, border: '1px solid #979797' }} width="80%" size="sm" onClick={() => openImageInNewWindow(dtlItem.path)} >
+                                                <img src='/img/ticket/icon/image.png' alt='school-icon' className='color-info me-1' /> <span style={{ color: 'black', }}>{truncatedName(dtlItem.name)}</span>
+                                            </Button>
+                                        ))}
                                     </Col>
                                 </div>
                                 <Row className="d-flex align-items-end justify-content-end " >
@@ -264,7 +250,7 @@ const view = (outerProps) => {
                                                 className="dropdown-menu dropdown-menu-end user-menu wide"
                                                 style={{
                                                     position: 'absolute',
-                                                    transform: 'translate(-200px, 40.6667px)'
+                                                    transform: 'translate(-164px, 40.6667px)'
                                                 }}
                                                 popperConfig={{
                                                     modifiers: [
@@ -298,31 +284,24 @@ const view = (outerProps) => {
 
             <>
                 {replyData.map((item1, i) => (
-                    <div key={i} style={{ marginLeft: '5%', width: '95.7%' }}>
+                    <div key={i} style={{ marginLeft: '5%', width: '95.5%' }}>
                         <Card className="mb-4">
                             <Card.Body>
-                                <Row className="d-flex flex-row align-content-center align-items-center position-relative ">
-                                    <Col lg={1} className="text-center flex-row">
-                                        {/* <Row style={{ display: 'flex' }}>
-                                            <div style={{ textAlign: 'center' }}> */}
+                                <Row className='d-flex'>
+                                    <div className='ticket-row'>
                                         <img className="profile d-inline me-3  rounded-circle" width='50' alt={item1.createdUser} src={getUserAvatar(item1.createdUser) ? `${getUserAvatar(item1.createdUser)}` : '../img/system/default-profile.png'} />
-                                        {/* </div>
-                                        </Row> */}
-                                    </Col>
-                                    <Col>
-                                        <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold' }}>
-                                            {getUsername(item1.createdUser)} <span style={{ color: 'orange', fontWeight: 'bold' }}> | </span> {(item1.createdDate?.date).replace(/\.\d+$/, '')}
+                                    </div>
+                                    <div className='ticket-button d-flex align-items-center justify-content-start'>
+                                        <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold', marginLeft: 10 }}>
+                                            {getUsername(item1.createdUser)} <span style={{ color: '#FD7845', fontWeight: 'bold' }}> | </span> {(item1.createdDate?.date).replace(/\.\d+$/, '')}
                                         </div>
-                                    </Col>
+                                    </div>
                                 </Row>
-                                <Row>
-                                    <Col>
-                                        <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
-                                            Хариу тайлбар. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {item1.description}</span>
-                                        </div>
-                                    </Col>
-                                </Row>
-                                <Row className="d-flex align-items-end justify-content-end " >
+
+                                <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
+                                    Хариу тайлбар. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {item1.description}</span>
+                                </div>
+                                <div className="d-flex align-items-end justify-content-end " >
                                     <Col>
                                         {item1?.file && item1?.file.map((dtlItem, index) => (
                                             <Button key={index} variant="default" style={{ backgroundColor: '#FFFFFF', marginTop: 10, marginLeft: 5, border: '1px solid #979797' }} width="80%" size="sm" onClick={() => openImageInNewWindow(dtlItem.path)} >
@@ -330,9 +309,7 @@ const view = (outerProps) => {
                                             </Button>
                                         ))}
                                     </Col>
-                                    <Col ></Col>
-
-                                </Row>
+                                </div>
                             </Card.Body>
                         </Card>
                     </div>
