@@ -34,13 +34,13 @@ const AdminRequest = () => {
     const [endDate, setEndDate] = useState(null);
     // const [errorDueDate, setErrorDueDate] = useState(false);
     const [searchInput, setSearchInput] = useState('');
-    const [selectedTypesIds, setSelectedTypes] = useState('');
+    const [selectedTypesIds, setSelectedTypes] = useState(null);
     const types = [{ value: 1, text: 'Алдаа' }, { value: 2, text: 'Санал хүсэлт' }];
-    const [selectedRequestersIds, setSelectedRequesters] = useState('');
-    const [selectedAssigneeIds, setSelectedAssignees] = useState('');
-    const [selectedSystemIds, setSelectedSystems] = useState('');
+    const [selectedRequestersIds, setSelectedRequesters] = useState(null);
+    const [selectedAssigneeIds, setSelectedAssignees] = useState(null);
+    const [selectedSystemIds, setSelectedSystems] = useState(null);
     const [systems, setSystems] = useState([]);
-    const [selectedSchoolIds, setSelectedSchools] = useState('');
+    const [selectedSchoolIds, setSelectedSchools] = useState(null);
     const [selectedStatusIds, setSelectedStatus] = useState([]);
     const [statuses, setStatuses] = useState([]);
     const [assignees, setAssignees] = useState([]);
@@ -324,14 +324,14 @@ const AdminRequest = () => {
         return name.length > 25 ? `${name.slice(0, 25)}.png` : name;
     };
 
-    const [setIsStart] = useState(false);
-    const [setIsEnd] = useState(false);
+    // const [setIsStart] = useState(false);
+    // const [setIsEnd] = useState(false);
     const handleFirstCalendarClose = () => {
-        setIsStart(false);
+        // setIsStart(false);
     };
 
     const handleLastCalendarClose = () => {
-        setIsEnd(false);
+        // setIsEnd(false);
     };
     const clearDate = () => {
         setStartDate(null);
