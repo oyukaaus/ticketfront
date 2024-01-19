@@ -18,6 +18,7 @@ export const ticketView = 'ticket/view';
 export const ticketEdit = 'ticket/edit';
 export const ticketInfo = 'ticket/info';
 export const ticketDtlCreate = 'ticket/dtl';
+export const adminReply = 'ticket/reply';
 export const ticketCancel = 'ticket/cancel';
 export const ticketClose = 'ticket/close';
 export const ticketAssign = 'ticket/assign';

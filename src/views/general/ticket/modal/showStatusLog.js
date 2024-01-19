@@ -57,6 +57,7 @@ const ShowStatusLog = ({
             .then((res) => {
                 const { success = false, message = null } = res;
                 if (success) {
+                    console.log('res status: ', res)
                     setTableData(res?.statusLogs.map(obj => {
                         return {
                             beforeStatusId: obj?.beforeStatus,

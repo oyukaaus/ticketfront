@@ -408,7 +408,8 @@ export const TRANSLATIONS_MN = {
         subMenuErrorMsg: 'Туслах меню сонгоно уу',
         exampleErrorMsg: 'Жишээ оруулна уу',
         schoolErrorMsg: 'Сургууль сонгоно уу',
-        imageError: 'Жишээ зураг оруулна уу'
+        imageError: 'Жишээ зураг оруулна уу',
+        statusErrorMsg: 'Төлөв сонгоно уу'
     },
     home: {
         'title': 'Нүүр хуудас',
@@ -1276,6 +1277,7 @@ export const TRANSLATIONS_MN = {
       startDate: 'Эхлэх',
       endDate: 'Дуусах',
       attachment: 'Файл хавсаргах',
-      question:'Түгээмэл асуулт'
+      question:'Түгээмэл асуулт',
+      status: 'Төлөв'
     }
 };

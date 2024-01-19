@@ -12,6 +12,7 @@ import CloseTicket from '../ticket/modal/close';
 import AssignRequest from '../ticket/modal/assign';
 import ShowStatusLog from '../ticket/modal/showStatusLog';
 import classNames from '../../../../node_modules/classnames';
+import ReplyAdmin from '../ticket/modal/adminReply';
 
 const view = (outerProps) => {
     const { match } = outerProps;
@@ -35,6 +36,8 @@ const view = (outerProps) => {
     const [systems, setSystems] = useState([]);
     const [assignees, setAssignees] = useState([]);
     const [userlist, setUserList] = useState([]);
+    const [statuses, setStatusList] = useState([]);
+    const [statusId, setStatusId] = useState('')
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const { placementStatus: { view: placement } } = useSelector((state) => state.menu);
@@ -96,6 +99,8 @@ const view = (outerProps) => {
                     setUsers(res?.users);
                     setAssignees(res?.assignees);
                     setSystems(res?.systems);
+                    setStatusId(res?.ticket[0].statusId)
+                    setStatusList(res?.statuses);
                     const userOption = [];
                     res?.assignees.map((param) =>
                         userOption.push({
@@ -155,7 +160,7 @@ const view = (outerProps) => {
                             <Dropdown.Item onClick={() => ticketReply()}><img src="../../img/ticket/icon/file-input.png" alt="fileinput-icon" /> <span style={{ color: '#000000', fontSize: 14 }}> Хариу бичих</span></Dropdown.Item>
                             <Dropdown.Item onClick={() => ticketClose()}><img src="../../img/ticket/icon/file-check-2.png" alt="filecheck-icon" /> <span style={{ color: '#000000', fontSize: 14 }}> Хүсэлтийг хаах</span></Dropdown.Item>
                         </>)}
-                    <Dropdown.Item onClick={() => statusLogShow()}><img src="../../img/ticket/icon/file-check-2.png" alt="filecheck-icon" /><span style={{ color: '#000000', fontSize: 14 }}> Төлөв шилжилт харах</span></Dropdown.Item>
+                    {/* <Dropdown.Item onClick={() => statusLogShow()}><img src="../../img/ticket/icon/file-check-2.png" alt="filecheck-icon" /><span style={{ color: '#000000', fontSize: 14 }}> Төлөв шилжилт харах</span></Dropdown.Item> */}
                 </div>
             );
         })
@@ -219,7 +224,7 @@ const view = (outerProps) => {
                                         </div>
                                     </div>
                                     <div className="d-flex align-items-start justify-content-end ticket-drop">
-                                        <Link to={{ pathname: `/admin/index` }} style={{ textAlign: 'right', color: '#FF2F1A', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}>
+                                        <Link to={{ pathname: `/admin/index` }} style={{ textAlign: 'right', color: '#FF2F1A', fontSize: 14, fontWeight: 'bold', fontFamily: 'Pinnacle' }}>
                                             Жагсаалт руу буцах
                                         </Link>
                                     </div>
@@ -291,7 +296,27 @@ const view = (outerProps) => {
                                     <div className='ticket-row'>
                                         <img className="profile d-inline me-3  rounded-circle" width='50' alt={item1.createdUser} src={getUserAvatar(item1.createdUser) ? `${getUserAvatar(item1.createdUser)}` : '../img/system/default-profile.png'} />
                                     </div>
-                                    <div className='ticket-button d-flex align-items-center justify-content-start'>
+                                 
+                                    <div className='ticket-button'>
+                                    {item1.statusLog&&item1.statusLog[0] && (
+                                        <>
+                                        <Button className='position-relative d-inline-flex m-1'
+                                            type="button"
+                                            size="sm"
+                                            disabled
+                                            style={getButtonColor(item1.statusLog[0].beforeStatus)}
+                                        >
+                                            {item1.statusLog[0].beforeStatus}
+                                        </Button>
+                                        <img src="../../img/ticket/icon/arrow-right.png" alt="view-icon" />
+                                        <Button className='position-relative d-inline-flex m-1'
+                                            type="button"
+                                            size="sm"
+                                            disabled
+                                            style={getButtonColor(item1.statusLog[0].afterStatus)}
+                                        >
+                                            {item1.statusLog[0].afterStatus}
+                                        </Button></>)}
                                         <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold', marginLeft: 10 }}>
                                             {getUsername(item1.createdUser)} <span style={{ color: '#FD7845', fontWeight: 'bold' }}> | </span> {(item1.createdDate?.date).replace(/\.\d+$/, '')}
                                         </div>
@@ -329,8 +354,10 @@ const view = (outerProps) => {
             <Row>
                 {
                     showReplyTicket &&
-                    <ReplyRequest
+                    <ReplyAdmin
                         selectedId={id}
+                        statusId={statusId}
+                        statuses={statuses}
                         tag='admin'
                         show={showReplyTicket}
                         setShow={setShowReplyTicket}

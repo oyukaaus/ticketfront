@@ -134,7 +134,7 @@ const view = (outerProps) => {
         React.forwardRef(({ style, className }, ref) => {
             return (
                 <div ref={ref} style={style} className={classNames('dropdown-menu dropdown-menu-end user-menu wide', className)}>
-                    {(data[0].status === 'Шинэ' || data.status === "eSchool хүлээж авсан") && (
+                    {(data[0].status === 'Шинэ' || data[0].status === "eSchool хүлээж авсан") && (
                         <Dropdown.Item onClick={() => ticketReply()}>
                             <img src="/img/ticket/icon/file-input.png" alt="dot-icon" className="color-info me-1" /><span style={{ color: '#000000', fontSize: 14 }}> Хариу бичих</span>
                         </Dropdown.Item>
@@ -196,7 +196,7 @@ const view = (outerProps) => {
                                         </div>
                                     </div>
                                     <div className="d-flex align-items-start justify-content-end ticket-drop">
-                                        <Link to={{ pathname: `/ticket/index` }} style={{ textAlign: 'center', color: '#FF2F1A', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}>
+                                        <Link to={{ pathname: `/ticket/index` }} style={{ textAlign: 'center', color: '#FF2F1A', fontSize: 14, fontWeight: 'bold', fontFamily: 'Pinnacle' }}>
                                             Жагсаалт руу буцах
                                         </Link>
                                     </div>
