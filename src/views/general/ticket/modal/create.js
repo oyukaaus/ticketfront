@@ -19,10 +19,8 @@ const createTicketModal = ({
     const history = useHistory();
     const fileInputRef = useRef(null);
     const { person } = useSelector((state) => state.auth);
-    console.log('person: ', person)
     const { schools } = useSelector((state) => state.schoolData);
     const schoolData = [];
-    console.log('school: ', schools)
     schools.map((param) =>
         schoolData.push({
             value: param?.id,
@@ -113,9 +111,10 @@ const createTicketModal = ({
 
     const onChangeSchool = (e) => {
         setSelectedSchool(e);
-        const school = schoolData.filter((file1) => file1.value === selectedSchool);
-        setSchoolName(school.text || '');
-        setUserTitle(school.userTitle  || '');
+
+        const school = schoolData.filter((file1) => file1.value === e);
+        setSchoolName(school[0].text || '');
+        setUserTitle(school[0].userTitle  || '');
         setSchoolErrorMsg(false);
     }
     const onChangeDescription = (e) => {
