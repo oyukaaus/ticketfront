@@ -186,6 +186,12 @@ const editTicket = ({
         if (Array.isArray(fileData)) {
             const updatedFileData = fileData.filter((file1) => file1.fileName !== item.name);
             setFileData(updatedFileData);
+            if (item.onChange) {
+                item.onChange(null, null, 'clear');
+            }
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
         } else {
             console.error('fileData is not an array');
         }
@@ -678,7 +684,7 @@ const editTicket = ({
                                     {existedData && existedData.map((item) => (
                                         <div key={item.id} className="d-flex align-items-start" style={{ marginLeft: 10 }}>
                                             <div className="text-center">
-                                                {item.type === 'image/png' ? (
+                                                {(item.type === 'image/png' || item.type === 'image/jpeg'|| item.type === 'image/jpg' )? (
                                                     <div style={{ display: 'flex', marginTop: '0.8rem', justifyContent: 'flex-start' }} >
                                                         <img
                                                             style={{ marginLeft: 10 }}

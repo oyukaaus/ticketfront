@@ -18,7 +18,6 @@ const view = (outerProps) => {
     const [systems, setSystems] = useState([]);
     const [replyData, setReplyData] = useState([]);
     const [users, setUsers] = useState([]);
-    // const [files, setFiles] = useState([]);
     const [showReplyTicket, setShowReplyTicket] = useState(false);
     const [showCloseTicket, setShowCloseTicket] = useState(false);
     const { t } = useTranslation();
@@ -47,21 +46,6 @@ const view = (outerProps) => {
                 return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
         }
     };
-
-    const [isPhoneScreen, setIsPhoneScreen] = useState(false);
-
-    useEffect(() => {
-        const handleResize = () => {
-            setIsPhoneScreen(window.innerWidth <= 767);
-        };
-        handleResize();
-        window.addEventListener('resize', handleResize);
-
-        // Cleanup on component unmount
-        return () => {
-            window.removeEventListener('resize', handleResize);
-        };
-    }, []);
 
     const ticketReply = () => {
         setShowReplyTicket(true);

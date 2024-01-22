@@ -125,7 +125,7 @@ export const convertToRoutes = ({
   };
 };
 
-export const convertToMenuItems = ({ data = [], authGuardActive = IS_AUTH_GUARD_ACTIVE, isLogin = false, userRole = null, selectedSchool = null }) => {
+export const convertToMenuItems = ({ data = [], authGuardActive = IS_AUTH_GUARD_ACTIVE, isLogin = false, userRole = null }) => {
 
   let items = [];
 

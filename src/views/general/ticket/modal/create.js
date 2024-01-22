@@ -22,10 +22,12 @@ const createTicketModal = ({
     console.log('person: ', person)
     const { schools } = useSelector((state) => state.schoolData);
     const schoolData = [];
+    console.log('school: ', schools)
     schools.map((param) =>
         schoolData.push({
             value: param?.id,
             text: param?.name,
+            userTitle: param?.userTitle
         })
     )
 
@@ -33,7 +35,9 @@ const createTicketModal = ({
     const [selectedSystem, setSelectedSystem] = useState(null);
     const [selectedMenu, setSelectedMenu] = useState(null);
     const [selectedSubMenu, setSelectedSubMenu] = useState(null);
-       const [selectedSchool, setSelectedSchool] = useState(schoolData.length === 1 ? schoolData[0].value : null);
+    const [schoolName, setSchoolName] = useState(schoolData.length === 1 ? schoolData[0].text : null);
+    const [selectedSchool, setSelectedSchool] = useState(schoolData.length === 1 ? schoolData[0].value : null);
+    const [userTitle, setUserTitle] = useState(schoolData.length === 1 ? schoolData[0].userTitle : null);
     const [description, setDescription] = useState('');
     const [example, setExample] = useState('');
     const [menuList, setMenuList] = useState([]);
@@ -109,6 +113,9 @@ const createTicketModal = ({
 
     const onChangeSchool = (e) => {
         setSelectedSchool(e);
+        const school = schoolData.filter((file1) => file1.value === selectedSchool);
+        setSchoolName(school.text || '');
+        setUserTitle(school.userTitle  || '');
         setSchoolErrorMsg(false);
     }
     const onChangeDescription = (e) => {
@@ -136,12 +143,12 @@ const createTicketModal = ({
                 const imageSize = files[i].size;
                 const imageType = files[i].type;
                 if (imageSize > acceptedSize) {
-                    setImageError({status: true, text: t('newsfeed.fileSizeWarning')})
+                    setImageError({ status: true, text: t('newsfeed.fileSizeWarning') })
                     isFalse = false;
                 }
 
                 if (!acceptedType.includes(imageType)) {
-                    setImageError({status: true,text:t('newsfeed.imageTypeError')});
+                    setImageError({ status: true, text: t('newsfeed.imageTypeError') });
                     isFalse = false;
                 }
             }
@@ -155,40 +162,45 @@ const createTicketModal = ({
         const verified = verifyFile(files);
 
         if (verified) {
-        const [image] = !files ? [] : files;
-        const updatedFileData = [...fileData];
-
-        if (image) {
-            const reader = new FileReader();
-            reader.addEventListener(
-                'load',
-                () => {
-                    const fileObject = {
-                        content: reader.result,
-                        file: image,
-                        fileName: image.name
-                    };
-                    updatedFileData.push(fileObject);
-                    setFileData(updatedFileData);
-                },
-                false
-            );
-
-            reader.readAsDataURL(image);
+            const [image] = !files ? [] : files;
+            const updatedFileData = [...fileData];
+            if (image) {
+                const reader = new FileReader();
+                reader.addEventListener(
+                    'load',
+                    () => {
+                        const fileObject = {
+                            content: reader.result,
+                            file: image,
+                            fileName: image.name,
+                            lastModified: image.lastModified
+                        };
+                        updatedFileData.push(fileObject);
+                        setFileData(updatedFileData);
+                    },
+                    false
+                );
+                reader.readAsDataURL(image);
+            }
         }
-    }
     };
-
     const onFileUploadButtonHandler = () => {
         if (fileInputRef.current) {
             fileInputRef.current.click();
         }
     };
 
-    const handleImageRemoval = (item) => {
+    const handleImageRemoval = (item, index) => {
+        const updatedFileData = [...fileData];
         if (Array.isArray(fileData)) {
-            const updatedFileData = fileData.filter((file1) => file1.fileName !== item.name);
+            updatedFileData.splice(index, 1);
             setFileData(updatedFileData);
+            if (item.onChange) {
+                item.onChange(null, null, 'clear');
+            }
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
         } else {
             console.error('fileData is not an array');
         }
@@ -237,9 +249,10 @@ const createTicketModal = ({
             if (description === '') {
                 setDescriptionErrorMsg(true);
                 hasError = true;
-            } 
+            }
         }
         if (!hasError) {
+
             const postData = {
                 systemId: selectedSystem,
                 menuId: selectedMenu,
@@ -251,8 +264,11 @@ const createTicketModal = ({
                 example: example,
                 userData: person,
                 createdBy: person.id,
-                schoolId: selectedSchool
+                schoolId: selectedSchool,
+                schoolName: schoolName,
+                userTitle: userTitle
             };
+
             if (fileData) {
                 const rawFile = [];
                 fileData.forEach(item2 => {
@@ -270,7 +286,6 @@ const createTicketModal = ({
             dispatch(setLoading(true));
             fetchRequest(ticketCreate, 'POST', postData)
                 .then((res) => {
-                    console.log('response: ', res)
                     const { success = false, message = null } = res;
                     if (success) {
                         history.replace(`/ticket/index`);
@@ -287,10 +302,10 @@ const createTicketModal = ({
                     dispatch(setLoading(false));
                     showMessage(t('errorMessage.title'));
                 });
-            }
-        
+        }
+
     };
-    
+
     const renderIssue = () => {
         return (
             <>
@@ -600,6 +615,7 @@ const createTicketModal = ({
         )
     }
 
+    console.log('fileData: ', fileData)
     return (
         <Modal
             // key={formKey}
@@ -663,7 +679,7 @@ const createTicketModal = ({
                                                     src='../img/ticket/icon/delete.png'
                                                     alt='delete-icon'
                                                     className='color-info me-1'
-                                                    onClick={() => handleImageRemoval(fileD.file)}
+                                                    onClick={() => handleImageRemoval(fileD.file, index)}
                                                     style={{ width: '20px', height: '20px', position: 'absolute', cursor: 'pointer', transform: 'translate(90px, -10px' }}
                                                 />
                                             </div>
@@ -672,13 +688,11 @@ const createTicketModal = ({
                                 </tr>
                                 <tr>
                                     <th className='width-equal pe-2  align-content-center align-items-center  text-right'>
-                                        <div style={{ display: 'flex',}}>
+                                        <div style={{ display: 'flex' }} >
                                             <input
                                                 ref={fileInputRef}
                                                 style={{ display: 'none' }}
                                                 type='file'
-                                                // multiple={true}
-                                                placeholder='test'
                                                 onChange={(e) => onFileInputChange(e)}
                                             />
                                             <Button
@@ -690,14 +704,14 @@ const createTicketModal = ({
                                             </Button>
                                         </div>
                                     </th>
-                                        {
-                                            imageError && imageError.status===true ?
-                                                <div className='invalid-feedback d-block'>
-                                                    {imageError.text}
-                                                </div>
-                                                :
-                                                null
-                                        }
+                                    {
+                                        imageError && imageError.status === true ?
+                                            <div className='invalid-feedback d-block'>
+                                                {imageError.text}
+                                            </div>
+                                            :
+                                            null
+                                    }
                                 </tr>
                             </thead>
                         </table>

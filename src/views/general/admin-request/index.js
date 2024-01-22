@@ -32,7 +32,6 @@ const AdminRequest = () => {
     const [data, setData] = useState([]);
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
-    // const [errorDueDate, setErrorDueDate] = useState(false);
     const [searchInput, setSearchInput] = useState('');
     const [selectedTypesIds, setSelectedTypes] = useState(null);
     const types = [{ value: 1, text: 'Алдаа' }, { value: 2, text: 'Санал хүсэлт' }];
@@ -296,10 +295,10 @@ const AdminRequest = () => {
         return status ? status.text : 'Unknown Status';
     };
 
-    const getSchoolName = (schoolId) => {
-        const school = schoolData.find((sys) => sys.value === parseInt(schoolId, 10));
-        return school ? school.longName : 'Unknown School';
-    };
+    // const getSchoolName = (schoolId) => {
+    //     const school = schoolData.find((sys) => sys.value === parseInt(schoolId, 10));
+    //     return school ? school.longName : 'Unknown School';
+    // };
 
     const getTitle = (schoolId) => {
         const school = schoolData.find((sys) => sys.value === parseInt(schoolId, 10));
@@ -308,7 +307,8 @@ const AdminRequest = () => {
 
     const getCreatedPhone = (userId) => {
         const user = createdUsers.find((sys) => sys.userId === userId);
-        return user ? user.phone || 'Unknown Phone' : 'Unknown Phone';
+        console.log('user: ', user)
+        return user ? user.phone : 'Unknown Phone';
     };
 
     const getAssigneeAvatar = (userId) => {
@@ -354,7 +354,7 @@ const AdminRequest = () => {
                 <>
                     <Card className="mb-3 ">
                         <Card.Body>
-                            <Row lg={12} className="d-flex flex-row align-content-center align-items-center position-relative " >
+                            <Row lg={12} className="d-flex flex-row align-content-center align-items-center position-relative">
                                 <Col lg={4}>
                                     <Row className='d-flex justify-content-between align-items-center'>
                                         <Col lg={4}>
@@ -456,12 +456,18 @@ const AdminRequest = () => {
                                                     <div
                                                         className='d-flex align-items-end justify-content-center'
                                                         style={{
-                                                            width: 80, border: '0.5px solid hsl(0, 0%, 70%)', borderLeft: 'none',
-                                                            borderRight: 'none', backgroundColor: '#EBEDF2', opacity: 0.5, cursor: 'pointer'
+                                                            width: 80, 
+                                                            border: '1px solid hsl(0, 0%, 70%)', 
+                                                            borderLeft: 'none',
+                                                            borderRight: 'none',
+                                                            height: 37,
+                                                            backgroundColor: '#EBEDF2', 
+                                                            opacity: 0.5, 
+                                                            cursor: 'pointer'
                                                         }}
                                                         onClick={clearDate}
-                                                    >
-                                                        ...
+                                                    ><span>
+                                                    ...</span>
                                                     </div>
                                                     <DatePicker
                                                         locale={mn}
@@ -573,14 +579,14 @@ const AdminRequest = () => {
                                                 size="sm"
                                                 style={{ backgroundColor: 'rgba(253, 120, 69, 0.2)', color: '#000000' }}
                                             >
-                                                {getSchoolName(item.schoolId)}
+                                                {item.schoolName}
                                             </Button>
                                             <Button className='customButton position-relative d-inline-flex'
                                                 type="button"
                                                 size="sm"
                                                 style={{ backgroundColor: 'rgba(59, 130, 246, 0.2)', color: '#000000' }}
                                             >
-                                                {getTitle(item.schoolId)}
+                                                {item.userTitle}
                                             </Button>
                                             <Button className='customButton position-relative d-inline-flex'
                                                 type="button"

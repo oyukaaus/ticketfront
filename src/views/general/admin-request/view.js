@@ -7,7 +7,6 @@ import { setLoading } from 'utils/redux/action';
 import showMessage from "modules/message";
 import { fetchRequest } from 'utils/fetchRequest';
 import { ticketInfo } from 'utils/fetchRequest/Urls';
-import ReplyRequest from '../ticket/modal/reply';
 import CloseTicket from '../ticket/modal/close';
 import AssignRequest from '../ticket/modal/assign';
 import ShowStatusLog from '../ticket/modal/showStatusLog';
@@ -38,6 +37,7 @@ const view = (outerProps) => {
     const [userlist, setUserList] = useState([]);
     const [statuses, setStatusList] = useState([]);
     const [statusId, setStatusId] = useState('')
+    const [createdUsers, setCreatedUsers] = useState([]);
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const { placementStatus: { view: placement } } = useSelector((state) => state.menu);
@@ -77,9 +77,9 @@ const view = (outerProps) => {
         setShowCloseTicket(true);
     };
 
-    const statusLogShow = () => {
-        setShowStatusLog(true);
-    };
+    // const statusLogShow = () => {
+    //     setShowStatusLog(true);
+    // };
 
     const openImageInNewWindow = (path) => {
         window.open(path, '_blank');
@@ -101,6 +101,7 @@ const view = (outerProps) => {
                     setSystems(res?.systems);
                     setStatusId(res?.ticket[0].statusId)
                     setStatusList(res?.statuses);
+                    setCreatedUsers(res?.users);
                     const userOption = [];
                     res?.assignees.map((param) =>
                         userOption.push({
@@ -142,12 +143,15 @@ const view = (outerProps) => {
         return user ? user.username : 'Unknown user';
     };
 
-    const getSchoolName = (schoolId) => {
-        const school = schoolData.find((sys) => sys.value === schoolId);
-        return school ? school.longName : 'Unknown School';
-    };
     const truncatedName = (name) => {
         return name.length > 25 ? `${name.slice(0, 25)}.png` : name;
+    };
+    const getCreatedPhone = (userId) => {
+        console.log('userId: ', userId);
+
+        const user = createdUsers.find((sys) => sys.userId === userId);
+        console.log('user: ', user)
+        return user ? user.phone  : 'Unknown Phone';
     };
 
     const NavUserMenuDropdownMenu = React.memo(
@@ -202,7 +206,7 @@ const view = (outerProps) => {
                                         <img className="profile d-inline me-3  rounded-circle" width='50' alt={item.createdUser} src={getUserAvatar(item.createdUser) ? `${getUserAvatar(item.createdUser)}` : '../img/system/default-profile.png'} />
                                     </div>
                                     <div className='ticket-button'>
-                                        <Button className='position-relative d-inline-flex m-1'
+                                        <Button className='customButton position-relative d-inline-flex m-1'
                                             type="button"
                                             size="sm"
                                             disabled
@@ -210,15 +214,27 @@ const view = (outerProps) => {
                                         >
                                             {item.status}
                                         </Button>
-                                        <Button className='position-relative d-inline-flex m-1'
+                                        <Button className=' customButton position-relative d-inline-flex m-1'
                                             type="button"
                                             size="sm"
-                                            disabled
-                                            style={{ backgroundColor: '#FD7845', fontFamily: 'Mulish' }}
+                                            style={{ backgroundColor:'rgba(253, 120, 69, 0.2)' , color: '#000000'}}
                                         >
-                                            {getSchoolName(item.schoolId)}
+                                            {item.schoolName}
                                         </Button>
-
+                                        <Button className='customButton position-relative d-inline-flex m-1'
+                                            type="button"
+                                            size="sm"
+                                            style={{ backgroundColor: 'rgba(59, 130, 246, 0.2)', color: '#000000' }}
+                                        >
+                                            {item.userTitle}
+                                        </Button>
+                                        <Button className=' customButton position-relative d-inline-flex m-1'
+                                            type="button"
+                                            size="sm"
+                                            style={{ backgroundColor: 'rgba(4, 120, 87, 0.2)', color: 'rgba(0, 0, 0, 1)' }}
+                                        >
+                                            {getCreatedPhone(item.createdUser)}
+                                        </Button>                                        
                                         <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold' }}>
                                             {item.type} <span style={{ color: '#FD7845', fontWeight: 'bold' }}> | </span> {(item.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: '#FD7845', fontWeight: 'bold' }}> | </span>  {getSystemName(item.systemId)}
                                         </div>
@@ -296,27 +312,27 @@ const view = (outerProps) => {
                                     <div className='ticket-row'>
                                         <img className="profile d-inline me-3  rounded-circle" width='50' alt={item1.createdUser} src={getUserAvatar(item1.createdUser) ? `${getUserAvatar(item1.createdUser)}` : '../img/system/default-profile.png'} />
                                     </div>
-                                 
+
                                     <div className='ticket-button'>
-                                    {item1.statusLog&&item1.statusLog[0] && (
-                                        <>
-                                        <Button className='position-relative d-inline-flex m-1'
-                                            type="button"
-                                            size="sm"
-                                            disabled
-                                            style={getButtonColor(item1.statusLog[0].beforeStatus)}
-                                        >
-                                            {item1.statusLog[0].beforeStatus}
-                                        </Button>
-                                        <img src="../../img/ticket/icon/arrow-right.png" alt="view-icon" />
-                                        <Button className='position-relative d-inline-flex m-1'
-                                            type="button"
-                                            size="sm"
-                                            disabled
-                                            style={getButtonColor(item1.statusLog[0].afterStatus)}
-                                        >
-                                            {item1.statusLog[0].afterStatus}
-                                        </Button></>)}
+                                        {item1.statusLog && item1.statusLog[0] && (
+                                            <>
+                                                <Button className='position-relative d-inline-flex m-1'
+                                                    type="button"
+                                                    size="sm"
+                                                    disabled
+                                                    style={getButtonColor(item1.statusLog[0].beforeStatus)}
+                                                >
+                                                    {item1.statusLog[0].beforeStatus}
+                                                </Button>
+                                                <img src="../../img/ticket/icon/arrow-right.png" alt="view-icon" />
+                                                <Button className='position-relative d-inline-flex m-1'
+                                                    type="button"
+                                                    size="sm"
+                                                    disabled
+                                                    style={getButtonColor(item1.statusLog[0].afterStatus)}
+                                                >
+                                                    {item1.statusLog[0].afterStatus}
+                                                </Button></>)}
                                         <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold', marginLeft: 10 }}>
                                             {getUsername(item1.createdUser)} <span style={{ color: '#FD7845', fontWeight: 'bold' }}> | </span> {(item1.createdDate?.date).replace(/\.\d+$/, '')}
                                         </div>

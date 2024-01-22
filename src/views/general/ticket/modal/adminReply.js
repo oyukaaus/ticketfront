@@ -102,6 +102,12 @@ const ReplyAdmin = ({
         if (Array.isArray(fileData)) {
             const updatedFileData = fileData.filter((file1) => file1.fileName !== item.name);
             setFileData(updatedFileData);
+            if (item.onChange) {
+                item.onChange(null, null, 'clear');
+            }
+            if (fileInputRef.current) {
+                fileInputRef.current.value = '';
+            }
         } else {
             console.error('fileData is not an array');
         }
@@ -261,7 +267,7 @@ const ReplyAdmin = ({
                                 </tr>
                                 <tr>
                                     <th className='width-equal pe-2  d-flex align-items-center text-right'>
-                                        <div style={{ display: 'flex', marginTop: '0.8rem' }}>
+                                        <div style={{ display: 'flex'}}>
                                             <input
                                                 ref={fileInputRef}
                                                 style={{ display: 'none' }}
