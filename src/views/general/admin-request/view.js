@@ -49,7 +49,7 @@ const view = (outerProps) => {
         dispatch(setLoading(true));
 
     }, []);
-
+    
     const getButtonColor = (type) => {
         switch (type) {
             case 'Шинэ':
@@ -144,7 +144,7 @@ const view = (outerProps) => {
     };
 
     const truncatedName = (name) => {
-        return name.length > 25 ? `${name.slice(0, 25)}.png` : name;
+        return name.length > 23 ? `${name.slice(0, 23)}.png` : name;
     };
     const getCreatedPhone = (userId) => {
         console.log('userId: ', userId);
@@ -202,10 +202,15 @@ const view = (outerProps) => {
                         <Card className="mb-4">
                             <Card.Body>
                                 <Row className='d-flex'>
-                                    <div className='ticket-row'>
+                                    <div className="d-flex align-items-start justify-content-end admin-view-list">
+                                        <Link to={{ pathname: `/admin/index` }} className='list-button-text'>
+                                            Жагсаалт руу буцах
+                                        </Link>
+                                    </div>
+                                    <div className='admin-view-img'>
                                         <img className="profile d-inline me-3  rounded-circle" width='50' alt={item.createdUser} src={getUserAvatar(item.createdUser) ? `${getUserAvatar(item.createdUser)}` : '../img/system/default-profile.png'} />
                                     </div>
-                                    <div className='ticket-button'>
+                                    <div className='admin-view-button'>
                                         <Button className='customButton position-relative d-inline-flex m-1'
                                             type="button"
                                             size="sm"
@@ -235,24 +240,20 @@ const view = (outerProps) => {
                                         >
                                             {getCreatedPhone(item.createdUser)}
                                         </Button>
-                                        <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold' }}>
+                                        <div className='admin-main-text'>
                                             {item.type} <span style={{ color: '#FD7845', fontWeight: 'bold' }}> | </span> {(item.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: '#FD7845', fontWeight: 'bold' }}> | </span>  {getSystemName(item.systemId)}
                                         </div>
                                     </div>
-                                    <div className="d-flex align-items-start justify-content-end ticket-drop">
-                                        <Link to={{ pathname: `/admin/index` }} style={{ textAlign: 'right', color: '#FF2F1A', fontSize: 14, fontWeight: 'bold', fontFamily: 'Pinnacle' }}>
-                                            Жагсаалт руу буцах
-                                        </Link>
-                                    </div>
+
                                 </Row>
 
-                                <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
+                                <div className='admin-custom-desc'>
                                     #{item.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {item.description}</span>
                                 </div>
                                 <div className="d-flex align-items-end justify-content-end " >
                                     <Col>
                                         {item?.files && item?.files.map((dtlItem, index) => (
-                                            <Button key={index} variant="default" style={{ backgroundColor: '#FFFFFF', marginTop: 10, marginLeft: 5, border: '1px solid #979797' }} width="80%" size="sm" onClick={() => openImageInNewWindow(dtlItem.path)} >
+                                            <Button key={index} variant="default" className='image-show' size="sm" onClick={() => openImageInNewWindow(dtlItem.path)} >
                                                 <img src='/img/ticket/icon/image.png' alt='school-icon' className='color-info me-1' /> <span style={{ color: 'black', }}>{truncatedName(dtlItem.name)}</span>
                                             </Button>
                                         ))}
@@ -309,11 +310,11 @@ const view = (outerProps) => {
                         <Card className="mb-4">
                             <Card.Body>
                                 <Row className='d-flex'>
-                                    <div className='ticket-row'>
+                                    <div className='admin-reply-row'>
                                         <img className="profile d-inline me-3  rounded-circle" width='50' alt={item1.createdUser} src={getUserAvatar(item1.createdUser) ? `${getUserAvatar(item1.createdUser)}` : '../img/system/default-profile.png'} />
                                     </div>
 
-                                    <div className='ticket-button'>
+                                    <div className='admin-reply-button' >
                                         {item1.statusLog && item1.statusLog[0] && (
                                             <>
                                                 <Button className='position-relative d-inline-flex m-1'
@@ -333,13 +334,13 @@ const view = (outerProps) => {
                                                 >
                                                     {item1.statusLog[0].afterStatus}
                                                 </Button></>)}
-                                        <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold', marginLeft: 10 }}>
+                                        <div className='admin-view-text' >
                                             {getUsername(item1.createdUser)} <span style={{ color: '#FD7845', fontWeight: 'bold' }}> | </span> {(item1.createdDate?.date).replace(/\.\d+$/, '')}
                                         </div>
                                     </div>
                                 </Row>
 
-                                <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
+                                <div className='admin-reply-desc'>
                                     Хариу тайлбар. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {item1.description}</span>
                                 </div>
                                 <div className="d-flex align-items-end justify-content-end " >

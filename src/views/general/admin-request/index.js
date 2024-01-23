@@ -456,18 +456,18 @@ const AdminRequest = () => {
                                                     <div
                                                         className='d-flex align-items-end justify-content-center'
                                                         style={{
-                                                            width: 80, 
-                                                            border: '1px solid hsl(0, 0%, 70%)', 
+                                                            width: 80,
+                                                            border: '1px solid hsl(0, 0%, 70%)',
                                                             borderLeft: 'none',
                                                             borderRight: 'none',
                                                             height: 37,
-                                                            backgroundColor: '#EBEDF2', 
-                                                            opacity: 0.5, 
+                                                            backgroundColor: '#EBEDF2',
+                                                            opacity: 0.5,
                                                             cursor: 'pointer'
                                                         }}
                                                         onClick={clearDate}
                                                     ><span>
-                                                    ...</span>
+                                                            ...</span>
                                                     </div>
                                                     <DatePicker
                                                         locale={mn}
@@ -544,7 +544,7 @@ const AdminRequest = () => {
                     </Card>
                 </>
                 <Row style={{ marginTop: 20 }}>
-                    <Col lg={4} style={{ color: '#FD7845', fontSize: 16, fontWeight: 'bolder', fontFamily: 'Mulish' }}>Ирсэн санал хүсэлтүүд</Col>
+                    <Col lg={4} style={{ color: '#FD7845', fontSize: 16, fontWeight: 'bolder', fontFamily: 'Mulish', marginBottom:10 }}>Ирсэн санал хүсэлтүүд</Col>
                     <Col lg={5}></Col>
                     <Col lg={3} className="d-flex align-items-end justify-content-end ">
                         <input
@@ -566,29 +566,32 @@ const AdminRequest = () => {
                                         <img className="profile rounded-circle" width='45' alt={item.createdUserId} src={getUserAvatar(item.createdUserId) ? `${getUserAvatar(item.createdUserId)}` : '../img/system/default-profile.png'} />
                                     </div>
                                     <div className='new-button '>
-                                        <div className='view-button ' >
-                                            <Button className='customButton position-relative d-inline-flex '    
+                                        <div className='admin-button' >
+                                            <Button className='customButton position-relative d-inline-flex m-1'
                                                 type="button"
                                                 size="sm"
                                                 style={getButtonColor(item?.statusId)}
                                             >
                                                 {getStatusName(item?.statusId)}
                                             </Button>
-                                            <Button className='customButton position-relative d-inline-flex'
-                                                type="button"
-                                                size="sm"
-                                                style={{ backgroundColor: 'rgba(253, 120, 69, 0.2)', color: '#000000' }}
-                                            >
-                                                {item.schoolName}
-                                            </Button>
-                                            <Button className='customButton position-relative d-inline-flex'
-                                                type="button"
-                                                size="sm"
-                                                style={{ backgroundColor: 'rgba(59, 130, 246, 0.2)', color: '#000000' }}
-                                            >
-                                                {item.userTitle}
-                                            </Button>
-                                            <Button className='customButton position-relative d-inline-flex'
+                                            {item.schoolName && (
+                                                <Button className='customButton position-relative d-inline-flex  m-1'
+                                                    type="button"
+                                                    size="sm"
+                                                    style={{ backgroundColor: 'rgba(253, 120, 69, 0.2)', color: '#000000' }}
+                                                >
+                                                    {item.schoolName}
+                                                </Button>
+                                            )}
+                                            {item.userTitle && (
+                                                <Button className='customButton position-relative d-inline-flex m-1'
+                                                    type="button"
+                                                    size="sm"
+                                                    style={{ backgroundColor: 'rgba(59, 130, 246, 0.2)', color: '#000000' }}
+                                                >
+                                                    {item.userTitle}
+                                                </Button>)}
+                                            <Button className='customButton position-relative d-inline-flex m-1'
                                                 type="button"
                                                 size="sm"
                                                 style={{ backgroundColor: 'rgba(4, 120, 87, 0.2)', color: 'rgba(0, 0, 0, 1)' }}
@@ -596,18 +599,18 @@ const AdminRequest = () => {
                                                 {getCreatedPhone(item.createdUserId)}
                                             </Button>
                                         </div>
-                                        <div style={{ color: 'black', fontSize: 14, fontWeight: 'semibold', opacity: 1, marginLeft:10 }}>
+                                        <div className='text-set' style={{ color: 'black', fontSize: 14, fontWeight: 'semibold', opacity: 1 }}>
                                             {item?.createdDate?.date && (item?.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: '#FD7845', fontWeight: 'bold', opacity: 1 }}> <span style={{ color: '#FD7845', fontWeight: 'bold', opacity: 1 }}> | </span> </span> {getTypeName(item?.typeId)} <span style={{ color: '#FD7845', fontWeight: 'bold' }}> | </span> {getSystemName(item?.systemId)}
                                         </div>
                                     </div>
                                 </Row>
-                                <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold', opacity: 1 }}>
+                                <div className='new-desc' style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold', opacity: 1 }}>
                                     #{item?.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {truncatedDescription(item?.description)}</span>
                                 </div>
                                 <div className="d-flex align-items-end justify-content-end " >
                                     <Col>
                                         {item?.files && item?.files.map((dtlItem, index) => (
-                                            <Button key={index} variant="default" style={{ backgroundColor: '#FFFFFF', marginTop: 10, marginRight: 5, border: '1px solid #979797' }} width="80%" size="sm" onClick={() => openImageInNewWindow(dtlItem.path)} >
+                                            <Button key={index} variant="default" className='image-show'  size="sm" onClick={() => openImageInNewWindow(dtlItem.path)} >
                                                 <img src='../img/ticket/icon/image.png' alt='school-icon' className='color-info me-1' /> <span style={{ color: 'black', }}>{truncatedName(dtlItem.name)}</span>
                                             </Button>
                                         ))}
@@ -615,7 +618,7 @@ const AdminRequest = () => {
                                 </div>
                                 <Row className="d-flex align-items-end justify-content-end " >
                                     <Col lg={1}>
-                                        <Button variant="default" style={{ backgroundColor: '#E5E7EB', marginTop: 10 }} width="80%" size="sm" onClick={onSeeClick}>
+                                        <Button variant="default" className='comment-button' style={{ backgroundColor: '#E5E7EB' }} width="80%" size="sm" onClick={onSeeClick}>
                                             <img src='../img/ticket/icon/reply.png' alt='school-icon' className='color-info me-1' /> <span style={{ color: 'black' }}>{item.replyCount}</span>
                                         </Button>
                                     </Col>

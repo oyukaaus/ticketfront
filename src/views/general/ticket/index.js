@@ -211,17 +211,18 @@ const TicketPage = () => {
                             <Card>
                                 <Card.Body>
                                     <Row className="new-container">
-                                        <div className='new-image d-flex  align-items-end justify-content-end '>
+                                        <div className='new-image d-flex  '>
                                             <img src='../img/ticket/Group.png' alt='school-icon' className='color-info me-1' />
                                         </div>
-                                        <div className='new-desc d-flex flex-column justify-content-center'>
-                                            <div className='new-content' style={{ textAlign: 'center', color: '#000000', fontFamily: 'Mulish', fontSize: 14 }}>
+                                        <div className='main-content d-flex flex-column justify-content-center'>
+                                            <div className='main-text'>
                                                 Системтэй холбоотой санал хүсэлт, алдааны мэдээллээ бидэнд илгээнэ үү.
                                             </div>
-                                            <div className='new-content' style={{ color: 'black', fontSize: 14, fontWeight: 'semibold', opacity: 1, textAlign: 'center', marginTop: 20 }} >
+                                            <div className='main-button' style={{ color: 'black', fontSize: 14, fontWeight: 'semibold', opacity: 1, textAlign: 'center', marginTop: 20 }} >
                                                 <Button style={{ backgroundColor: '#FD7845', fontWeight: 'normal', fontFamily: 'Mulish' }} onClick={createRequest}>Санал хүсэлт илгээх</Button>
                                             </div>
                                         </div>
+                                            <div className='space'></div>
                                     </Row>
                                 </Card.Body>
                             </Card>
@@ -229,7 +230,7 @@ const TicketPage = () => {
                     </Col>
                 </Row>
                 <Row style={{ marginTop: 20 }}>
-                    <Col lg={4} style={{ color: '#FD7845', fontSize: 16, fontWeight: 'bold', fontFamily: 'Mulish' }}>Миний илгээсэн санал хүсэлтүүд</Col>
+                    <Col lg={4} style={{ color: '#FD7845', fontSize: 16, fontWeight: 'bold', fontFamily: 'Mulish', marginBottom:10 }}>Миний илгээсэн санал хүсэлтүүд</Col>
                     <Col lg={5}></Col>
                     <Col lg={3} className="d-flex align-items-end justify-content-end ">
                         <input
@@ -280,7 +281,7 @@ const TicketPage = () => {
                                         </Dropdown>
                                     </div>
                                 </Row>
-                                <div style={{ textAlign: 'left', color: '#FF5B1D', fontSize: 14, fontWeight: 'bold' }}>
+                                <div style={{ textAlign: 'left', color: '#FF5B1D', fontSize: 14, fontWeight: 'bold' }} className='admin-custom-desc'>
                                     #{item?.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {truncatedDescription(item?.description)}</span>
                                 </div>
                             </Card.Body>

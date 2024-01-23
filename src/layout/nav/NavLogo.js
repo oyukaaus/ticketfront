@@ -4,7 +4,7 @@ import { DEFAULT_PATHS } from 'config.js';
 
 const NavLogo = () => {
   return (
-    <div className="logo position-relative" style={{minWidth: '150px'}}>
+    <div className="logo position-relative" style={{minWidth: '180px'}}>
       <Link to={DEFAULT_PATHS.APP}>
       <img src='/img/ticket/logo.png' height='43' width='173' alt='logo'/>
       </Link>
