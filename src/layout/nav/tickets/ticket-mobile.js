@@ -87,7 +87,7 @@ const TicketMobile = () => {
 
     if (tickets && tickets.length > 0) {
         return (
-            <Col className='d-flex align-items-start justify-content-end'>
+            <Col style={{ marginLeft: 40 }}>
                 <Dropdown as="div" bsPrefix="user-container d-flex" drop="down">
                     <Dropdown.Toggle as={NavUserMenuDropdownToggle} />
                     <Dropdown.Menu

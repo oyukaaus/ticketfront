@@ -160,11 +160,11 @@ const view = (outerProps) => {
                         <Card className="mb-3">
                             <Card.Body>
                                 <Row className='d-flex'>
-                                    <div className='ticket-avatar'>
+                                    <div className='ticket-row'>
                                         <img className="profile d-inline me-3  rounded-circle" width='50' alt={item.createdUser}
                                             src={getUserAvatar(item.createdUser) ? `${getUserAvatar(item.createdUser)}` : '../img/system/default-profile.png'} />
                                     </div>
-                                    <div className='ticket-view-button'>
+                                    <div className='ticket-button'>
                                         <Button
                                             type="button"
                                             size="sm"
@@ -179,12 +179,12 @@ const view = (outerProps) => {
                                             {getSystemName(item.systemId)}
                                         </div>
                                     </div>
-                                    <div className="d-flex align-items-start justify-content-end list-button">
-                                        <Link to={{ pathname: `/ticket/index`}} className='list-button-text'>
+                                    <div className="d-flex align-items-start justify-content-end ticket-drop">
+                                        <Link to={{ pathname: `/ticket/index` }} style={{ textAlign: 'center', color: '#FF2F1A', fontSize: 14, fontWeight: 'bold', fontFamily: 'Pinnacle' }}>
                                             Жагсаалт руу буцах
                                         </Link>
                                     </div>
-                                    <div  className='custom-desc'>
+                                    <div style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
                                         #{item.id}. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}> {item.description}</span>
                                     </div>
                                     <div className="d-flex " style={{ marginTop: 10 }} >
@@ -211,15 +211,15 @@ const view = (outerProps) => {
             </>
 
             {replyData.map((item, i) => (
-                <div key={i} className='ticket-view-detail'>
+                <div key={i} style={{ marginLeft: '5%', width: '95.8%' }}>
                     <Card className="mb-3">
                         <Card.Body>
                             <Row className='d-flex'>
-                                <div className='view-reply-avatar'>
+                                <div className='ticket-row'>
                                     <img className="profile d-inline me-3  rounded-circle" width='50' alt={item.createdUser}
                                         src={getUserAvatar(item.createdUser) ? `${getUserAvatar(item.createdUser)}` : '../img/system/default-profile.png'} />
                                 </div>
-                                <div className='d-flex align-items-center justify-content-start reply-view-button'>
+                                <div className='ticket-button d-flex align-items-center justify-content-start'>
                                     <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold', marginLeft: 10 }}>
                                         <div style={{ color: 'black', fontSize: 14 }}>
                                             {getUsername(item.createdUser)} <span style={{ color: '#FD7845', fontWeight: 'bold' }}> | </span>{' '}
@@ -229,7 +229,7 @@ const view = (outerProps) => {
                                 </div>
                                 
                                 {data[0].status !== 'Хаагдсан' && (
-                                    <div  className="d-flex align-items-start justify-content-end ticket-drop">  
+                                    <div style={{ width: '10%' }} className="d-flex align-items-start justify-content-end ">  
                                      <Dropdown as="div" bsPrefix="user-container d-flex" drop="down" show={openDropdown === item.id} onSelect={closeDropdown}>
                                         <Dropdown.Toggle as={NavUserMenuDropdownToggle}  onClick={() => toggleDropdown(item.id)}/>
                                         <Dropdown.Menu
@@ -267,7 +267,7 @@ const view = (outerProps) => {
                                 )}
                             </Row>
                             <div style={{ marginTop: 10 }} >
-                                <div style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold' }} className='view-reply-det'>
+                                <div style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
                                     Хариу тайлбар. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}> {item.description}</span>
                                 </div>
                             </div>
@@ -287,6 +287,89 @@ const view = (outerProps) => {
                                 ))}
                             </div>
 
+
+                            {/* 
+
+                            <Row className='d-flex'>
+                                <div style={{ width: '5%' }}>
+                                    <img className="profile d-inline me-3  rounded-circle" width='50' alt={item.createdUser}
+                                        src={getUserAvatar(item.createdUser) ? `${getUserAvatar(item.createdUser)}` : '../img/system/default-profile.png'} />
+                                </div>
+                                <Col style={{ marginLeft: isPhoneScreen ? 20 : 0 }}>
+                                    <Button
+                                        type="button"
+                                        size="sm"
+                                        disabled
+                                        style={getButtonColor(item.status)}
+                                    >
+                                        {item.status}
+                                    </Button>
+                                    <div style={{ color: 'black', fontSize: 14 }}>
+                                        {getUsername(item.createdUser)} <span style={{ color: '#FD7845', fontWeight: 'bold' }}> | </span>{' '}
+                                        {(item.createdDate?.date).replace(/\.\d+$/, '')}
+                                    </div>
+
+                                </Col>
+                                
+                                {data[0].status !== 'Хаагдсан' && (
+                                    <div style={{ width: '10%' }} className="d-flex align-items-start justify-content-end ">  
+                                     <Dropdown as="div" bsPrefix="user-container d-flex" drop="down" show={openDropdown === item.id} onSelect={closeDropdown}>
+                                        <Dropdown.Toggle as={NavUserMenuDropdownToggle}  onClick={() => toggleDropdown(item.id)}/>
+                                        <Dropdown.Menu
+                                            as={(props) => (
+                                                <NavUserMenuDropdownMenu {...props} />
+                                            )}
+                                            // user={person}
+                                            className="dropdown-menu dropdown-menu-start wide"
+                                            style={{
+                                                position: 'absolute',
+                                                transform: 'translate(-140px, 40px)'
+                                            }}
+                                            popperConfig={{
+                                                modifiers: [
+                                                    {
+                                                        name: 'offset',
+                                                        options: {
+                                                            offset: () => {
+                                                                if (placement === MENU_PLACEMENT.Horizontal) {
+                                                                    return [0, 7];
+                                                                }
+                                                                if (window.innerWidth < 768) {
+                                                                    return [-84, 7];
+                                                                }
+
+                                                                return [-78, 7];
+                                                            },
+                                                        },
+                                                    },
+                                                ],
+                                            }}
+                                        />
+                                    </Dropdown>
+                                    </div>
+                                )}
+                                
+                            <div style={{ marginTop: 10 }} >
+                                <div style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
+                                    Хариу тайлбар. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}> {item.description}</span>
+                                </div>
+                            </div>
+                                <div className="d-flex " style={{ marginTop: 10 }} >
+
+                                    {item.file && item.file.map((dtem, index) => (
+                                        <Col key={index} xs="auto" className="d-flex align-items-start">
+                                            <div className="text-center">
+                                                <img
+                                                    src={dtem.path}
+                                                    alt={`Image ${index}`}
+                                                    width='100' height='70'
+                                                    onClick={() => openImageInNewWindow(dtem.path)}
+                                                />
+                                            </div>
+                                        </Col>
+                                    ))}
+                                </div>
+                            </Row> */}
                         </Card.Body>
                     </Card>
                 </div>
