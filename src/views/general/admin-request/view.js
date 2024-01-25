@@ -58,7 +58,7 @@ const view = (outerProps) => {
                 return { backgroundColor: '#EDB414', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
             case 'Хаагдсан':
                 return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
-            case 'Цуцласан':
+            case 'Цуцалсан':
                 return { backgroundColor: '#D9D9D9', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
             default:
                 return { backgroundColor: '#FFFFFF', color: '#000000', fontFamily: 'Mulish', opacity: 1 };
