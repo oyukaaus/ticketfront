@@ -1256,7 +1256,7 @@ export const TRANSLATIONS_MN = {
       example: 'Жишээ',
       error: 'Алдаа',
       idea: 'Санал',
-      reply: 'Хүсэлтэнд хариу илгээх',
+      reply: 'Хүсэлтэд хариу илгээх',
       close: 'Хүсэлт хаах',
       tReply: 'Хариу',
       sender: 'Илгээгч',
