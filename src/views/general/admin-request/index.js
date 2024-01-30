@@ -28,7 +28,6 @@ const AdminRequest = () => {
             userTitle: param?.userTitle
         })
     )
-    console.log('schools: ', schools)
     const [data, setData] = useState([]);
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
@@ -263,15 +262,20 @@ const AdminRequest = () => {
     }, []);
 
     const handleSearch = (e) => {
-        const inputValue = e.target.value.toLowerCase();
+        const inputValue = e.target.value.trim(); // Trim whitespace
         setSearchInput(inputValue);
+    
         if (inputValue) {
             const filtered = data.filter((item) => {
-                return item.description.toLowerCase().indexOf(inputValue) !== -1;
+                const idMatch = item.id.toString().includes(inputValue);
+                const descriptionMatch = item.description.toLowerCase().includes(inputValue.toLowerCase());
+                const usernameMatch = item.createdUser.toLowerCase().includes(inputValue.toLowerCase());
+                return idMatch || descriptionMatch || usernameMatch;
             });
-            setData(filtered)
+    
+            setData(filtered);
         } else {
-            fetchInfo()
+            fetchInfo();
         }
     };
 
@@ -307,7 +311,6 @@ const AdminRequest = () => {
 
     const getCreatedPhone = (userId) => {
         const user = createdUsers.find((sys) => sys.userId === userId);
-        console.log('user: ', user)
         return user ? user.phone : 'Unknown Phone';
     };
 

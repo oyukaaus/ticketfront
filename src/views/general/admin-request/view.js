@@ -147,10 +147,7 @@ const view = (outerProps) => {
         return name.length > 25 ? `${name.slice(0, 25)}.png` : name;
     };
     const getCreatedPhone = (userId) => {
-        console.log('userId: ', userId);
-
         const user = createdUsers.find((sys) => sys.userId === userId);
-        console.log('user: ', user)
         return user ? user.phone : 'Unknown Phone';
     };
 
@@ -158,13 +155,14 @@ const view = (outerProps) => {
         React.forwardRef(({ style, className, item }, ref) => {
             return (
                 <div ref={ref} style={style} className={classNames('dropdown-menu dropdown-menu-start user-menu wide', className)}>
-                    {(item.status === 'Шинэ' || item.status === 'eSchool хүлээж авсан') && (
+                    
+                        <>
+                            <Dropdown.Item onClick={() => ticketAssign()}><img src="../../img/ticket/icon/user-profile-add.png" alt="view-icon" /> <span style={{ color: '#000000', fontSize: 14 }}> Хариуцагчийг солих</span></Dropdown.Item>
 
-                        <Dropdown.Item onClick={() => ticketAssign()}><img src="../../img/ticket/icon/user-profile-add.png" alt="view-icon" /> <span style={{ color: '#000000', fontSize: 14 }}> Хариуцагчийг солих</span></Dropdown.Item>
-                    )}
-                    <Dropdown.Item onClick={() => ticketReply()}><img src="../../img/ticket/icon/file-input.png" alt="fileinput-icon" /> <span style={{ color: '#000000', fontSize: 14 }}> Хариу бичих</span></Dropdown.Item>
-                    {(item.status === 'Шинэ' || item.status === 'eSchool хүлээж авсан') && (<Dropdown.Item onClick={() => ticketClose()}><img src="../../img/ticket/icon/file-check-2.png" alt="filecheck-icon" /> <span style={{ color: '#000000', fontSize: 14 }}> Хүсэлтийг хаах</span></Dropdown.Item>
-                    )}
+                            <Dropdown.Item onClick={() => ticketReply()}><img src="../../img/ticket/icon/file-input.png" alt="fileinput-icon" /> <span style={{ color: '#000000', fontSize: 14 }}> Хариу бичих</span></Dropdown.Item>
+                            <Dropdown.Item onClick={() => ticketClose()}><img src="../../img/ticket/icon/file-check-2.png" alt="filecheck-icon" /> <span style={{ color: '#000000', fontSize: 14 }}> Хүсэлтийг хаах</span></Dropdown.Item>
+                        </>
+                     
                 </div>
             );
         })
@@ -262,7 +260,7 @@ const view = (outerProps) => {
                                     <Col className="d-flex align-items-end justify-content-end ">
                                         <img className="profile d-inline me-3  rounded-circle" width='50' alt={item.assigneeId}
                                             src={getAssigneeAvatar(item.assigneeId) ? `${getAssigneeAvatar(item.assigneeId)}` : '../img/system/default-profile.png'} />
-                                        <Dropdown as="div" bsPrefix="user-container d-flex" drop="down">
+                                     {(item.status === 'Шинэ' || item.status === 'eSchool хүлээж авсан') && (   <Dropdown as="div" bsPrefix="user-container d-flex" drop="down">
                                             <Dropdown.Toggle as={NavUserMenuDropdownToggle} />
                                             <Dropdown.Menu
                                                 as={(props) => (
@@ -293,7 +291,7 @@ const view = (outerProps) => {
                                                     ],
                                                 }}
                                             />
-                                        </Dropdown>
+                                        </Dropdown>)}
 
                                     </Col>
                                 </Row>
@@ -338,10 +336,11 @@ const view = (outerProps) => {
                                         </div>
                                     </div>
                                 </Row>
-
-                                <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
-                                    Хариу тайлбар. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {item1.description}</span>
-                                </div>
+                                {item1.description && (
+                                    <div style={{ textAlign: 'left', color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
+                                        Хариу тайлбар. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold' }}> {item1.description}</span>
+                                    </div>
+                                )}
                                 <div className="d-flex align-items-end justify-content-end " >
                                     <Col>
                                         {item1?.file && item1?.file.map((dtlItem, index) => (

@@ -82,7 +82,6 @@ const TicketPage = () => {
                         })
                     )
                     setUsers(userOption)
-                    console.log('res: ', res)
                 } else {
                     showMessage(message || t('errorMessage.title'));
                 }
@@ -111,18 +110,24 @@ const TicketPage = () => {
     };
 
     const handleSearch = (e) => {
-        const inputValue = e.target.value.toLowerCase();
+        const inputValue = e.target.value.trim(); // Trim whitespace
         setSearchInput(inputValue);
+    
         if (inputValue) {
             const filtered = data.filter((item) => {
-                return item.description.toLowerCase().indexOf(inputValue) !== -1;
+                const idMatch = item.id.toString().includes(inputValue);
+                const descriptionMatch = item.description.toLowerCase().includes(inputValue.toLowerCase());
+                const usernameMatch = item.createdUser.toLowerCase().includes(inputValue.toLowerCase());
+                return idMatch || descriptionMatch || usernameMatch;
             });
-            setData(filtered)
+    
+            setData(filtered);
         } else {
-            fetchInfo()
+            fetchInfo();
         }
     };
-
+    
+    
     const getSystemName = (systemId) => {
         const system = systems.find((sys) => sys.value === systemId);
         return system ? system.text : 'Unknown System';
