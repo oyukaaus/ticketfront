@@ -210,28 +210,37 @@ const view = (outerProps) => {
                 ))}
             </>
 
-            {replyData.map((item, i) => (
+            {replyData.map((item1, i) => (
                 <div key={i} style={{ marginLeft: '5%', width: '95.8%' }}>
                     <Card className="mb-3">
                         <Card.Body>
                             <Row className='d-flex'>
                                 <div className='ticket-row'>
-                                    <img className="profile d-inline me-3  rounded-circle" width='50' alt={item.createdUser}
-                                        src={getUserAvatar(item.createdUser) ? `${getUserAvatar(item.createdUser)}` : '../img/system/default-profile.png'} />
+                                    <img className="profile d-inline me-3  rounded-circle" width='50' alt={item1.createdUser}
+                                        src={getUserAvatar(item1.createdUser) ? `${getUserAvatar(item1.createdUser)}` : '../img/system/default-profile.png'} />
                                 </div>
-                                <div className='ticket-button d-flex align-items-center justify-content-start'>
+                                <div className='ticket-button'>
+                           
+                                              <Button className='position-relative d-inline-flex m-1'
+                                                    type="button"
+                                                    size="sm"
+                                                    disabled
+                                                    style={getButtonColor(item1.statusLog[0]&&item1.statusLog[0].afterStatus || item1.status)}
+                                                >
+                                                    {item1.statusLog[0]&&item1.statusLog[0].afterStatus || item1.status}
+                                                </Button>
                                     <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold', marginLeft: 10 }}>
                                         <div style={{ color: 'black', fontSize: 14 }}>
-                                            {getUsername(item.createdUser)} <span style={{ color: '#FD7845', fontWeight: 'bold' }}> | </span>{' '}
-                                            {(item.createdDate?.date).replace(/\.\d+$/, '')}
+                                            {getUsername(item1.createdUser)} <span style={{ color: '#FD7845', fontWeight: 'bold' }}> | </span>{' '}
+                                            {(item1.createdDate?.date).replace(/\.\d+$/, '')}
                                         </div>
                                     </div>
                                 </div>
                                 
                                 {data[0].status !== 'Хаагдсан' && (
                                     <div style={{ width: '10%' }} className="d-flex align-items-start justify-content-end ">  
-                                     <Dropdown as="div" bsPrefix="user-container d-flex" drop="down" show={openDropdown === item.id} onSelect={closeDropdown}>
-                                        <Dropdown.Toggle as={NavUserMenuDropdownToggle}  onClick={() => toggleDropdown(item.id)}/>
+                                     <Dropdown as="div" bsPrefix="user-container d-flex" drop="down" show={openDropdown === item1.id} onSelect={closeDropdown}>
+                                        <Dropdown.Toggle as={NavUserMenuDropdownToggle}  onClick={() => toggleDropdown(item1.id)}/>
                                         <Dropdown.Menu
                                             as={(props) => (
                                                 <NavUserMenuDropdownMenu {...props} />
@@ -268,12 +277,12 @@ const view = (outerProps) => {
                             </Row>
                             <div style={{ marginTop: 10 }} >
                                 <div style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
-                                    Хариу тайлбар. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}> {item.description}</span>
+                                    Хариу тайлбар. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}> {item1.description}</span>
                                 </div>
                             </div>
                             <div className="d-flex " style={{ marginTop: 10 }} >
 
-                                {item.file && item.file.map((dtem, index) => (
+                                {item1.file && item1.file.map((dtem, index) => (
                                     <Col key={index} xs="auto" className="d-flex align-items-start">
                                         <div className="text-center">
                                             <img
