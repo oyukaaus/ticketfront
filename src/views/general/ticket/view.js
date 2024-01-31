@@ -220,15 +220,14 @@ const view = (outerProps) => {
                                         src={getUserAvatar(item1.createdUser) ? `${getUserAvatar(item1.createdUser)}` : '../img/system/default-profile.png'} />
                                 </div>
                                 <div className='ticket-button'>
-                           
-                                              <Button className='position-relative d-inline-flex m-1'
-                                                    type="button"
-                                                    size="sm"
-                                                    disabled
-                                                    style={getButtonColor(item1.statusLog[0]&&item1.statusLog[0].afterStatus || item1.status)}
-                                                >
-                                                    {item1.statusLog[0]&&item1.statusLog[0].afterStatus || item1.status}
-                                                </Button>
+                                    <Button className='position-relative d-inline-flex m-1'
+                                        type="button"
+                                        size="sm"
+                                        disabled
+                                        style={getButtonColor(item1.statusLog[0] && item1.statusLog[0].afterStatus || item1.status)}
+                                    >
+                                        {item1.statusLog[0] && item1.statusLog[0].afterStatus || item1.status}
+                                    </Button>
                                     <div style={{ color: 'black', fontSize: 15, fontWeight: 'semibold', marginLeft: 10 }}>
                                         <div style={{ color: 'black', fontSize: 14 }}>
                                             {getUsername(item1.createdUser)} <span style={{ color: '#FD7845', fontWeight: 'bold' }}> | </span>{' '}
@@ -236,50 +235,52 @@ const view = (outerProps) => {
                                         </div>
                                     </div>
                                 </div>
-                                
-                                {data[0].status !== 'Хаагдсан' && (
-                                    <div style={{ width: '10%' }} className="d-flex align-items-start justify-content-end ">  
-                                     <Dropdown as="div" bsPrefix="user-container d-flex" drop="down" show={openDropdown === item1.id} onSelect={closeDropdown}>
-                                        <Dropdown.Toggle as={NavUserMenuDropdownToggle}  onClick={() => toggleDropdown(item1.id)}/>
-                                        <Dropdown.Menu
-                                            as={(props) => (
-                                                <NavUserMenuDropdownMenu {...props} />
-                                            )}
-                                            // user={person}
-                                            className="dropdown-menu dropdown-menu-start wide"
-                                            style={{
-                                                position: 'absolute',
-                                                transform: 'translate(-140px, 40px)'
-                                            }}
-                                            popperConfig={{
-                                                modifiers: [
-                                                    {
-                                                        name: 'offset',
-                                                        options: {
-                                                            offset: () => {
-                                                                if (placement === MENU_PLACEMENT.Horizontal) {
-                                                                    return [0, 7];
-                                                                }
-                                                                if (window.innerWidth < 768) {
-                                                                    return [-84, 7];
-                                                                }
 
-                                                                return [-78, 7];
+                                {data[0].status !== 'Хаагдсан' && (
+                                    <div style={{ width: '10%' }} className="d-flex align-items-start justify-content-end ">
+                                        <Dropdown as="div" bsPrefix="user-container d-flex" drop="down" show={openDropdown === item1.id} onSelect={closeDropdown}>
+                                            <Dropdown.Toggle as={NavUserMenuDropdownToggle} onClick={() => toggleDropdown(item1.id)} />
+                                            <Dropdown.Menu
+                                                as={(props) => (
+                                                    <NavUserMenuDropdownMenu {...props} />
+                                                )}
+                                                // user={person}
+                                                className="dropdown-menu dropdown-menu-start wide"
+                                                style={{
+                                                    position: 'absolute',
+                                                    transform: 'translate(-140px, 40px)'
+                                                }}
+                                                popperConfig={{
+                                                    modifiers: [
+                                                        {
+                                                            name: 'offset',
+                                                            options: {
+                                                                offset: () => {
+                                                                    if (placement === MENU_PLACEMENT.Horizontal) {
+                                                                        return [0, 7];
+                                                                    }
+                                                                    if (window.innerWidth < 768) {
+                                                                        return [-84, 7];
+                                                                    }
+
+                                                                    return [-78, 7];
+                                                                },
                                                             },
                                                         },
-                                                    },
-                                                ],
-                                            }}
-                                        />
-                                    </Dropdown>
+                                                    ],
+                                                }}
+                                            />
+                                        </Dropdown>
                                     </div>
                                 )}
                             </Row>
-                            <div style={{ marginTop: 10 }} >
-                                <div style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
-                                    Хариу тайлбар. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}> {item1.description}</span>
+                            {item1.description && (
+                                <div style={{ marginTop: 10 }} >
+                                    <div style={{ color: '#FD7845', fontSize: 14, fontWeight: 'bold' }}>
+                                        Хариу тайлбар. <span style={{ color: 'black', fontSize: 14, fontWeight: 'bold', fontFamily: 'Mulish' }}> {item1.description}</span>
+                                    </div>
                                 </div>
-                            </div>
+                            )}
                             <div className="d-flex " style={{ marginTop: 10 }} >
 
                                 {item1.file && item1.file.map((dtem, index) => (

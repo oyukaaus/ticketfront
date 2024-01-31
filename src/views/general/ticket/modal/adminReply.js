@@ -11,7 +11,6 @@ import Select from 'modules/Form/Select';
 
 const ReplyAdmin = ({
     selectedId,
-    statusId,
     statuses,
     tag,
     show,

@@ -299,16 +299,6 @@ const AdminRequest = () => {
         return status ? status.text : 'Unknown Status';
     };
 
-    // const getSchoolName = (schoolId) => {
-    //     const school = schoolData.find((sys) => sys.value === parseInt(schoolId, 10));
-    //     return school ? school.longName : 'Unknown School';
-    // };
-
-    const getTitle = (schoolId) => {
-        const school = schoolData.find((sys) => sys.value === parseInt(schoolId, 10));
-        return school ? school.userTitle : 'Unknown Title';
-    };
-
     const getCreatedPhone = (userId) => {
         const user = createdUsers.find((sys) => sys.userId === userId);
         return user ? user.phone : 'Unknown Phone';
@@ -327,8 +317,6 @@ const AdminRequest = () => {
         return name.length > 25 ? `${name.slice(0, 25)}.png` : name;
     };
 
-    // const [setIsStart] = useState(false);
-    // const [setIsEnd] = useState(false);
     const handleFirstCalendarClose = () => {
         // setIsStart(false);
     };

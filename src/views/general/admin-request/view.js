@@ -152,7 +152,7 @@ const view = (outerProps) => {
     };
 
     const NavUserMenuDropdownMenu = React.memo(
-        React.forwardRef(({ style, className, item }, ref) => {
+        React.forwardRef(({ style, className }, ref) => {
             return (
                 <div ref={ref} style={style} className={classNames('dropdown-menu dropdown-menu-start user-menu wide', className)}>
                     
