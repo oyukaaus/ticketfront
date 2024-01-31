@@ -29,6 +29,7 @@ const AdminRequest = () => {
         })
     )
     const [data, setData] = useState([]);
+    const [consistData, setConsistData] = useState([]);
     const [startDate, setStartDate] = useState(null);
     const [endDate, setEndDate] = useState(null);
     const [searchInput, setSearchInput] = useState('');
@@ -214,6 +215,7 @@ const AdminRequest = () => {
                 const { success = false, message = null } = res;
                 if (success) {
                     setData(res?.tickets);
+                    setConsistData(res?.tickets);
                     setCreatedUsers(res?.users);
                     console.log('ticketIndex: ', res);
                     const assigneeOption = [];
@@ -262,17 +264,18 @@ const AdminRequest = () => {
     }, []);
 
     const handleSearch = (e) => {
-        const inputValue = e.target.value.trim(); // Trim whitespace
+        const inputValue = e.target.value.trim();
         setSearchInput(inputValue);
-    
+
         if (inputValue) {
-            const filtered = data.filter((item) => {
+            const filtered = consistData.filter((item) => {
                 const idMatch = item.id.toString().includes(inputValue);
                 const descriptionMatch = item.description.toLowerCase().includes(inputValue.toLowerCase());
                 const usernameMatch = item.createdUser.toLowerCase().includes(inputValue.toLowerCase());
-                return idMatch || descriptionMatch || usernameMatch;
+                const phoneMatch = item.phone.toLowerCase().includes(inputValue.toLowerCase());
+                return idMatch || descriptionMatch || usernameMatch || phoneMatch;
             });
-    
+
             setData(filtered);
         } else {
             fetchInfo();
@@ -447,18 +450,18 @@ const AdminRequest = () => {
                                                     <div
                                                         className='d-flex align-items-end justify-content-center'
                                                         style={{
-                                                            width: 80, 
-                                                            border: '1px solid hsl(0, 0%, 70%)', 
+                                                            width: 80,
+                                                            border: '1px solid hsl(0, 0%, 70%)',
                                                             borderLeft: 'none',
                                                             borderRight: 'none',
                                                             height: 37,
-                                                            backgroundColor: '#EBEDF2', 
-                                                            opacity: 0.5, 
+                                                            backgroundColor: '#EBEDF2',
+                                                            opacity: 0.5,
                                                             cursor: 'pointer'
                                                         }}
                                                         onClick={clearDate}
                                                     ><span>
-                                                    ...</span>
+                                                            ...</span>
                                                     </div>
                                                     <DatePicker
                                                         locale={mn}
@@ -558,7 +561,7 @@ const AdminRequest = () => {
                                     </div>
                                     <div className='new-button '>
                                         <div className='view-button ' >
-                                            <Button className='customButton position-relative d-inline-flex '    
+                                            <Button className='customButton position-relative d-inline-flex '
                                                 type="button"
                                                 size="sm"
                                                 style={getButtonColor(item?.statusId)}
@@ -587,7 +590,7 @@ const AdminRequest = () => {
                                                 {getCreatedPhone(item.createdUserId)}
                                             </Button>
                                         </div>
-                                        <div style={{ color: 'black', fontSize: 14, fontWeight: 'semibold', opacity: 1, marginLeft:10 }}>
+                                        <div style={{ color: 'black', fontSize: 14, fontWeight: 'semibold', opacity: 1, marginLeft: 10 }}>
                                             {item?.createdDate?.date && (item?.createdDate?.date).replace(/\.\d+$/, '')} <span style={{ color: '#FD7845', fontWeight: 'bold', opacity: 1 }}> <span style={{ color: '#FD7845', fontWeight: 'bold', opacity: 1 }}> | </span> </span> {getTypeName(item?.typeId)} <span style={{ color: '#FD7845', fontWeight: 'bold' }}> | </span> {getSystemName(item?.systemId)}
                                         </div>
                                     </div>

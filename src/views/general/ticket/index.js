@@ -13,7 +13,6 @@ import CancelRequest from './modal/cancel';
 import EditTicket from './modal/edit'
 import classNames from '../../../../node_modules/classnames';
 
-
 const TicketPage = () => {
     const history = useHistory();
     const { t } = useTranslation();
@@ -21,6 +20,7 @@ const TicketPage = () => {
     const { person } = useSelector((state) => state.auth);
     const createdBy = person.id;
     const [data, setData] = useState([]);
+    const [consistData, setConsistData] = useState([]);
     const [systems, setSystems] = useState([]);
     const [users, setUsers] = useState([]);
     const [selectedData, setSelectedData] = useState(null);
@@ -29,6 +29,7 @@ const TicketPage = () => {
     const [showEdit, setShowEdit] = useState(false);
     const [itemId, setItemId] = useState();
     const [searchInput, setSearchInput] = useState('');
+
     const types = [{ value: 1, text: 'Алдаа' }, { value: 2, text: 'Санал хүсэлт' }];
 
     const breadcrumbs = [
@@ -73,6 +74,7 @@ const TicketPage = () => {
                 const { success = false, message = null } = res;
                 if (success) {
                     setData(res?.tickets);
+                    setConsistData(res?.tickets)
                     setSystems(res?.systems);
                     const userOption = [];
                     res?.users.map((param) =>
@@ -110,23 +112,23 @@ const TicketPage = () => {
     };
 
     const handleSearch = (e) => {
-        const inputValue = e.target.value.trim(); // Trim whitespace
+        const inputValue = e.target.value.trim(); 
         setSearchInput(inputValue);
-    
+
         if (inputValue) {
-            const filtered = data.filter((item) => {
+            const filtered = consistData.filter((item) => {
                 const idMatch = item.id.toString().includes(inputValue);
                 const descriptionMatch = item.description.toLowerCase().includes(inputValue.toLowerCase());
                 const usernameMatch = item.createdUser.toLowerCase().includes(inputValue.toLowerCase());
-                return idMatch || descriptionMatch || usernameMatch;
+                const phoneMatch = item.phone.toLowerCase().includes(inputValue.toLowerCase());
+                return idMatch || descriptionMatch || usernameMatch || phoneMatch;
             });
-    
+
             setData(filtered);
         } else {
             fetchInfo();
         }
     };
-    
     
     const getSystemName = (systemId) => {
         const system = systems.find((sys) => sys.value === systemId);
@@ -241,6 +243,7 @@ const TicketPage = () => {
                             className="form-control datatable-search align-items-end justify-content-end "
                             value={searchInput}
                             onChange={handleSearch}
+                            // onKeyUp={handleKeyUp}
                             placeholder="Хайх..."
                             style={{ fontFamily: 'Mulish', borderRadius: 10 }}
                         />
